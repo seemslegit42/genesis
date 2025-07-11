@@ -38,10 +38,10 @@ export async function generateInitialPromptIdeas() {
     // Return a sensible default in case of error
     return {
       prompts: [
-        "Explain the concept of 'cognitive sanctuary' in UI design.",
-        "How would you design a non-intrusive notification system?",
-        "Draft a mission statement for a company focused on digital well-being.",
-        "Onboard a new client named Acme Corp.",
+        'Draft a 3-step launch plan for a new mobile app.',
+        'Generate a boilerplate SwiftUI component for a settings screen.',
+        'Outline a non-intrusive user onboarding flow.',
+        'Propose three names for a new productivity tool.',
       ],
     };
   }
