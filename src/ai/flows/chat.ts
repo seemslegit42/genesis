@@ -12,8 +12,7 @@ import { ai } from '@/ai/genkit';
 import { search, getCalendarEvents } from '@/tools';
 import { z } from 'zod';
 import { summarizeChatHistory } from './summarize-chat-history';
-
-const VowSchema = z.enum(['Architect', 'Oracle', 'Sentinel']);
+import { VowSchema } from '@/lib/types';
 
 /**
  * The Zod schema for the input of the chat flow.
