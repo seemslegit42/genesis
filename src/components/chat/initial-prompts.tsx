@@ -46,7 +46,7 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
             onClick={() => onPromptClick(prompt)}
             className="group cursor-pointer glassmorphism hover:border-accent/50 transition-all duration-300 text-left"
           >
-            <CardContent className="p-4 flex items-center justify-between">
+            <CardContent>
               <p className="text-foreground">{prompt}</p>
             </CardContent>
           </Card>

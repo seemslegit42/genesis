@@ -211,19 +211,19 @@ export default function ChatPage() {
    * This is true only when the chat is empty.
    * @type {boolean}
    */
-  const showObelisk = messages.length === 0 && !streamingMessage;
+  const showObelisk = messages.length === 0 && !isAiResponding && !streamingMessage;
 
   return (
     <div className="flex flex-col h-screen">
       <ChatHeader onNewChat={handleNewChat} />
-
-      <div className="sticky top-16 z-10 w-full bg-transparent p-4 md:px-6">
-        <div className="max-w-4xl mx-auto">
+      
+      <div className="sticky top-16 z-20 w-full bg-transparent">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <MessageInput onSendMessage={handleSendMessage} isLoading={isAiResponding} />
         </div>
       </div>
 
-      <main className="flex-1 flex overflow-hidden px-4 md:px-6">
+      <main className="flex-1 flex overflow-hidden px-4 sm:px-6 lg:px-8 pb-4">
         <div className="flex-1 flex flex-col items-center">
             <div className="max-w-4xl w-full mx-auto flex-1 overflow-y-auto">
               {showObelisk ? (

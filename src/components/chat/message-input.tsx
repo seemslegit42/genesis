@@ -77,7 +77,7 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
         onKeyDown={handleKeyDown}
         placeholder="BEEP..."
         rows={1}
-        className="w-full resize-none pr-16 py-3 pl-6 text-lg bg-input backdrop-blur-sm border-border focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all duration-300 focus:shadow-[0_0_35px_hsl(var(--ring)/0.5)] max-h-48 rounded-full"
+        className="w-full resize-none pr-16 py-3 pl-6 text-base bg-input backdrop-blur-sm border-border focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all duration-300 focus:shadow-[0_0_35px_hsl(var(--ring)/0.5)] max-h-48 rounded-full"
         disabled={isLoading}
       />
        <Button
