@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Audiowide } from 'next/font/google';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
-import { TypographicStateProvider } from '@/hooks/use-typographic-state';
+import { TypographicStateProvider } from '@/hooks/use-typographic-state.tsx';
 
 /**
  * Metadata for the BEEP: Genesis application.
