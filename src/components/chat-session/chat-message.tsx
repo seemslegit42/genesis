@@ -35,7 +35,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           'glassmorphism'
         )}
       >
-        <div className="prose prose-invert prose-p:leading-relaxed">
+        <div className="prose prose-invert prose-p:leading-relaxed prose-p:text-foreground/90">
           {content}
         </div>
       </div>

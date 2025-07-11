@@ -1,28 +1,29 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --background: 240 10% 2%; /* Obsidian Black */
+    --foreground: 0 0% 98%; /* Vitreous White */
+    --card: 271 76% 20%; /* Dark Imperial Purple variant */
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 271 76% 15%;
     --popover-foreground: 0 0% 98%;
-    --primary: 195 89% 51%;
-    --primary-foreground: 195 100% 13%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
+    --primary: 177 68% 40%; /* Roman Aqua */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 158 51% 55%; /* Patina Green */
+    --secondary-foreground: 240 10% 2%;
+    --muted: 240 5% 25%; /* Conchoidal Gray */
     --muted-foreground: 240 5% 64.9%;
-    --accent: 291 82% 62%;
+    --accent: 271 76% 53%; /* Imperial Purple */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 195 89% 51%;
+    --ring: 177 68% 40%; /* Roman Aqua */
     --radius: 0.75rem;
     --obsidian-black: 240 10% 2%;
 
@@ -62,7 +63,7 @@
       radial-gradient(at 52% 99%, hsla(var(--primary), var(--aurora-intensity)) 0px, transparent 50%),
       radial-gradient(at 10% 29%, hsla(var(--accent), calc(var(--aurora-intensity) / 2)) 0px, transparent 50%),
       radial-gradient(at 97% 96%, hsla(var(--foreground), calc(var(--aurora-intensity) / 4)) 0px, transparent 50%),
-      radial-gradient(at 33% 50%, hsla(var(--primary), calc(var(--aurora-intensity) / 2)) 0px, transparent 50%),
+      radial-gradient(at 33% 50%, hsla(var(--secondary), calc(var(--aurora-intensity) / 2)) 0px, transparent 50%),
       radial-gradient(at 79% 53%, hsla(var(--accent), calc(var(--aurora-intensity) / 2)) 0px, transparent 50%);
     background-attachment: fixed;
     background-position: center;
