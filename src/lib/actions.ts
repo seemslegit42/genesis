@@ -4,15 +4,16 @@ import { chat as genkitChat } from '@/ai/flows/chat';
 import { generateInitialPromptIdeas as genkitGenerateInitialPromptIdeas } from '@/ai/flows/generate-initial-prompt-ideas';
 import { speechToText as genkitSpeechToText } from '@/ai/flows/speech-to-text';
 import { textToSpeech as genkitTextToSpeech } from '@/ai/flows/text-to-speech';
-import type { Message, SpeechToTextInput, TextToSpeechInput } from '@/lib/types';
+import type { Message, SpeechToTextInput, TextToSpeechInput, Vow } from '@/lib/types';
 
 /**
  * Server action to get a streaming AI response for a given set of messages.
  * Wraps the main 'chat' Genkit flow.
  * @param {Message[]} messages - The history of messages in the current chat.
+ * @param {Vow} vow - The user's chosen path, which determines the AI's personality.
  * @returns {Promise<ReadableStream<Uint8Array> | null>} A promise that resolves to a readable stream of the AI's response, or null on error.
  */
-export async function getAiResponse(messages: Message[]): Promise<ReadableStream<Uint8Array> | null> {
+export async function getAiResponse(messages: Message[], vow: Vow): Promise<ReadableStream<Uint8Array> | null> {
   if (!messages || messages.length === 0) {
     console.error('getAiResponse called with no messages.');
     return null;
@@ -20,7 +21,7 @@ export async function getAiResponse(messages: Message[]): Promise<ReadableStream
   // We only need the role and content for the AI, so we'll map over the messages
   // to create a new array with just that data.
   const history = messages.map(({ id, ...rest }) => rest);
-  return genkitChat(history);
+  return genkitChat({ messages: history, vow });
 }
 
 /**

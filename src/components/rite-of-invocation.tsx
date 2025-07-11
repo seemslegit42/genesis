@@ -1,8 +1,9 @@
 'use client';
+import { Vow } from '@/lib/types';
 import { InvocationCard } from './invocation-card';
 
 interface RiteOfInvocationProps {
-  onComplete: (vow: string) => void;
+  onComplete: (vow: Vow) => void;
 }
 
 export function RiteOfInvocation({ onComplete }: RiteOfInvocationProps) {

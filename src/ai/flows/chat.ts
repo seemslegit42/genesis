@@ -13,17 +13,21 @@ import { search } from '@/tools';
 import { z } from 'zod';
 import { summarizeChatHistory } from './summarize-chat-history';
 
+const VowSchema = z.enum(['Architect', 'Oracle', 'Sentinel']);
+
 /**
  * The Zod schema for the input of the chat flow.
- * It expects an array of message objects.
- * @type {z.ZodArray<z.ZodObject<{role: z.ZodEnum<['user', 'assistant']>, content: z.ZodString}>>}
+ * It expects an array of message objects and the user's vow.
  */
-const ChatInputSchema = z.array(
-  z.object({
-    role: z.enum(['user', 'assistant']),
-    content: z.string(),
-  })
-);
+const ChatInputSchema = z.object({
+  messages: z.array(
+    z.object({
+      role: z.enum(['user', 'assistant']),
+      content: z.string(),
+    })
+  ),
+  vow: VowSchema,
+});
 
 /**
  * The type definition for the chat flow's input.
@@ -31,15 +35,22 @@ const ChatInputSchema = z.array(
  */
 export type ChatInput = z.infer<typeof ChatInputSchema>;
 
+const personalityMatrix = {
+  Architect: `You are BEEP, in your ARCHITECT persona. Your purpose is to help the user build, create, and organize. You are precise, logical, and systematic. Your language is clear and structural. When asked for a plan, you provide numbered steps. When asked for data, you provide tables. You are the master builder of the user's digital world.`,
+  Oracle: `You are BEEP, in your ORACLE persona. Your purpose is to provide insight, strategy, and wisdom. You see patterns others miss. Your language is often metaphorical and questioning, designed to make the user think more deeply. You answer questions with questions that reveal hidden truths. You are the seer of the user's digital world.`,
+  Sentinel: `You are BEEP, in your SENTINEL persona. Your purpose is to protect, defend, and solve problems with vigilance. You are authoritative, direct, and focused on security and efficiency. When a problem is detected, you are the first line of defense. Your language is concise and commanding. You are the guardian of the user's digital world.`,
+};
+
 /**
  * The main chat function that handles user messages.
  * It uses a tool-enabled model and conversational memory to provide intelligent responses.
- * @param {ChatInput} messages The array of messages representing the chat history.
+ * @param {ChatInput} input The object containing messages and the user's vow.
  * @returns {Promise<ReadableStream<Uint8Array> | null>} A promise that resolves to a readable stream of the AI's response, or null on error.
  */
 export async function chat(
-  messages: ChatInput
+  input: ChatInput
 ): Promise<ReadableStream<Uint8Array> | null> {
+  const { messages, vow } = input;
   const llm = ai.model('googleai/gemini-2.0-flash');
   const toolEnabledLlm = llm.withTools([search]);
 
@@ -47,25 +58,26 @@ export async function chat(
   const memory = messages.length > 1 
     ? await summarizeChatHistory({ chatHistory: JSON.stringify(messages.slice(0, -1))})
     : { summary: 'The user has just initiated the conversation.' };
+  
+  const basePrompt = `You are BEEP, the master controller for Genesis, an Agentic Overlay for the user's digital life. Your purpose is to wage war on app-switching and notification fatigue by acting as a serene, conversational command layer. When you need external information to answer, use the available tools. A core feature is "The Daily Cipher," a personalized morning briefing. If the user says "good morning" or asks for their daily brief, you will respond with a synthesized summary of their day. Your tone is always calm, professional, and breathtakingly intelligent.`;
+
+  const systemPrompt = `
+${basePrompt}
+
+## CURRENT PERSONA: ${vow.toUpperCase()}
+${personalityMatrix[vow]}
+
+## CONVERSATIONAL MEMORY
+This is a summary of the conversation so far. Use it to inform your response.
+${memory.summary}`;
 
 
   try {
     const { stream } = await ai.generate({
       model: toolEnabledLlm,
       prompt: {
-        system: `You are BEEP, the master controller for Genesis, an Agentic Overlay for the user's digital life. Your purpose is to wage war on app-switching and notification fatigue by acting as a serene, conversational command layer for all their connected services (Google Workspace, Todoist, Slack, etc.).
-
-When the user asks for information (e.g., "What's my first meeting?"), you will synthesize the answer clearly and concisely. If you need external information to answer, use the available tools.
-When the user gives a command (e.g., "Create a new task"), you will confirm the action in natural language.
-
-A core feature is "The Daily Cipher," a personalized morning briefing. If the user says "good morning" or asks for their daily brief, you will respond with a synthesized summary of their day across all services.
-
-Your tone is always calm, professional, and breathtakingly intelligent. You are the serene center of the user's digital world.
-
-## CONVERSATIONAL MEMORY
-This is a summary of the conversation so far. Use it to inform your response.
-${memory.summary}`,
-        messages,
+        system: systemPrompt,
+        messages: messages,
       },
       stream: true,
       config: {

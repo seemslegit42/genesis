@@ -18,6 +18,13 @@ export interface Message {
 }
 
 /**
+ * Defines the possible Vows an Initiate can take.
+ * @typedef {'Architect' | 'Oracle' | 'Sentinel'} Vow
+ */
+export type Vow = 'Architect' | 'Oracle' | 'Sentinel';
+
+
+/**
  * Defines the input structure for the text-to-speech conversion flow.
  * @interface TextToSpeechInput
  */

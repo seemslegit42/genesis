@@ -8,7 +8,7 @@ import { InitialPrompts } from '@/components/chat-session/initial-prompts';
 import { generateInitialPromptIdeas, getAiResponse, textToSpeech, speechToText } from '@/lib/actions';
 import { getChatHistory, saveChatHistory } from '@/lib/services/chat';
 import { useAuth } from '@/hooks/use-auth';
-import type { Message } from '@/lib/types';
+import type { Message, Vow } from '@/lib/types';
 import { Obelisk } from '@/components/obelisk';
 import { Progress } from '@/components/ui/progress';
 import { ShareToUnlock } from './share-to-unlock';
@@ -36,6 +36,7 @@ export function ChatSession() {
   const [transcriptionUnlocked, setTranscriptionUnlocked] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const [isInitiated, setIsInitiated] = useState(false);
+  const [vow, setVow] = useState<Vow | null>(null);
   const { currentState } = useTypographicState();
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -51,6 +52,12 @@ export function ChatSession() {
         setMessages(history);
         if (history.length > 0) {
             setIsInitiated(true);
+            // A simple way to persist the vow is to check the first message.
+            // In a real app, this would be stored in the user's profile.
+            const firstUserMessage = history.find(m => m.role === 'user')?.content || '';
+            if (firstUserMessage.includes('Architect')) setVow('Architect');
+            else if (firstUserMessage.includes('Oracle')) setVow('Oracle');
+            else if (firstUserMessage.includes('Sentinel')) setVow('Sentinel');
         }
         setHistoryLoaded(true);
       });
@@ -66,7 +73,7 @@ export function ChatSession() {
 
 
   const handleSendMessage = useCallback(async (content: string) => {
-    if (!content.trim()) return;
+    if (!content.trim() || !vow) return;
     
     const userMessage: Message = {
       id: String(Date.now()),
@@ -74,13 +81,12 @@ export function ChatSession() {
       content,
     };
     
-    // Use a functional update to ensure we have the latest messages state
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsAiResponding(true);
 
     try {
-      const stream = await getAiResponse(updatedMessages);
+      const stream = await getAiResponse(updatedMessages, vow);
       if (!stream) {
         throw new Error("Failed to get a response from the AI. The stream is null.");
       }
@@ -125,7 +131,7 @@ export function ChatSession() {
       setStreamingMessage(null);
       setIsAiResponding(false);
     }
-  }, [messages]);
+  }, [messages, vow]);
 
   const transcribeRecording = useCallback(async (blobUrl: string) => {
     if (!transcriptionUnlocked) {
@@ -193,6 +199,7 @@ export function ChatSession() {
       saveChatHistory(user.uid, []); // Clear history in DB as well
     }
     setIsInitiated(false);
+    setVow(null);
   };
 
   const onPromptClick = (prompt: string) => {
@@ -204,8 +211,9 @@ export function ChatSession() {
     setShowShareModal(false);
   };
 
-  const handleInitiation = (vow: string) => {
-    handleSendMessage(`I have chosen the path of the ${vow}. Guide me.`);
+  const handleInitiation = (chosenVow: Vow) => {
+    setVow(chosenVow);
+    handleSendMessage(`I have chosen the path of the ${chosenVow}. Guide me.`);
     setIsInitiated(true);
   }
 
