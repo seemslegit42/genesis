@@ -170,7 +170,8 @@ export function ChatSession() {
         startRecording={startRecording}
         stopRecording={stopRecording}
       />
-      <Progress value={isAiResponding ? 100 : 0} className="h-[2px] w-full bg-transparent transition-all duration-1000 fixed top-[68px] z-20" />
+      {/* The Psyche-Fuel Gauge: a subtle, persistent signal of the AI's cognitive state. */}
+      <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent fixed top-[68px] z-20" />
       
       <main className="flex-1 flex flex-col overflow-hidden pt-[70px]">
         <div className="flex-1 overflow-y-auto">
