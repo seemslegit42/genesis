@@ -17,6 +17,7 @@ import { RiteOfInvocation } from '@/components/rite-of-invocation';
 import { useTypographicState } from '@/hooks/use-typographic-state';
 import { useCollectiveState } from '@/hooks/use-collective-state';
 import { Sidecar } from '../sidecar';
+import { useAmbientState } from '@/hooks/use-ambient-state';
 
 
 /**
@@ -41,6 +42,7 @@ export function ChatSession() {
   const [vow, setVow] = useState<Vow | null>(null);
   const { currentState } = useTypographicState();
   const { totalUsers, totalEngagement } = useCollectiveState();
+  const { setAmbientState } = useAmbientState();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
 
@@ -97,6 +99,7 @@ export function ChatSession() {
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages);
     setIsAiResponding(true);
+    setAmbientState('focus');
 
     try {
       const stream = await getAiResponse(updatedMessages, vow);
@@ -163,8 +166,9 @@ export function ChatSession() {
     } finally {
       setStreamingMessage(null);
       setIsAiResponding(false);
+      setAmbientState('calm');
     }
-  }, [messages, vow]);
+  }, [messages, vow, setAmbientState]);
 
   const transcribeRecording = useCallback(async (blobUrl: string) => {
     if (!transcriptionUnlocked) {
@@ -173,6 +177,7 @@ export function ChatSession() {
     }
     
     setIsTranscribing(true);
+    setAmbientState('focus');
     try {
       const response = await fetch(blobUrl);
       const blob = await response.blob();
@@ -187,12 +192,14 @@ export function ChatSession() {
             console.error('Transcription failed to return text.');
         }
         setIsTranscribing(false);
+        setAmbientState('calm');
       };
     } catch (error) {
       console.error('Error transcribing audio:', error);
       setIsTranscribing(false);
+      setAmbientState('calm');
     }
-  }, [transcriptionUnlocked, handleSendMessage]);
+  }, [transcriptionUnlocked, handleSendMessage, setAmbientState]);
   
   const handleVoiceRecording = () => {
     if (!transcriptionUnlocked) {
@@ -201,8 +208,11 @@ export function ChatSession() {
     }
     if (status === 'recording') {
         stopRecording();
+        setAmbientState('calm');
+
     } else {
         startRecording();
+        setAmbientState('recording');
     }
   };
 

@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import { Comfortaa, Lexend } from 'next/font/google';
 import { TypographicStateProvider } from '@/hooks/use-typographic-state';
+import { AmbientStateProvider } from '@/hooks/use-ambient-state';
 
 /**
  * Metadata for the BEEP: Genesis application.
@@ -51,9 +52,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("dark", fontInscription.variable, fontCodex.variable)}>
       <body className={cn("antialiased", "min-h-screen", "font-body")}>
-        <TypographicStateProvider>
-            {children}
-        </TypographicStateProvider>
+        <AmbientStateProvider>
+          <TypographicStateProvider>
+              {children}
+          </TypographicStateProvider>
+        </AmbientStateProvider>
         <Toaster />
       </body>
     </html>
