@@ -4,17 +4,24 @@ interface ObeliskProps {
   onClick: () => void;
   summary: string | null;
   isLoading: boolean;
+  isInteractive: boolean;
 }
 
-export function Obelisk({ onClick, summary, isLoading }: ObeliskProps) {
+export function Obelisk({ onClick, summary, isLoading, isInteractive }: ObeliskProps) {
   return (
     <div 
-      className="flex flex-col items-center justify-center h-full w-full relative group cursor-pointer"
-      onClick={onClick}
+      className={cn(
+        "flex flex-col items-center justify-center h-full w-full relative group",
+        isInteractive && "cursor-pointer"
+      )}
+      onClick={isInteractive ? onClick : undefined}
     >
       <div className="relative w-full h-full flex items-center justify-center">
         {/* Glow effect */}
-        <div className="absolute w-32 h-full bg-primary/20 blur-[100px] -translate-y-1/2 top-1/2 group-hover:bg-primary/30 transition-all duration-500"></div>
+        <div className={cn(
+            "absolute w-32 h-full bg-primary/20 blur-[100px] -translate-y-1/2 top-1/2 transition-all duration-500",
+            isInteractive && "group-hover:bg-primary/30"
+        )}></div>
         
         {/* Obelisk */}
         <div 

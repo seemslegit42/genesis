@@ -8,7 +8,6 @@ import { InitialPrompts } from '@/components/chat/initial-prompts';
 import { generateInitialPromptIdeas, summarizeChatHistory } from '@/lib/actions';
 import { getAiResponse } from '@/lib/actions';
 import type { Message } from '@/lib/types';
-import { nanoid } from 'nanoid';
 import { Obelisk } from '@/components/obelisk';
 import { Sidecar } from '@/components/sidecar';
 
@@ -36,7 +35,7 @@ export default function ChatPage() {
 
   const handleSendMessage = (content: string) => {
     const userMessage: Message = {
-      id: nanoid(),
+      id: String(Date.now()),
       role: 'user',
       content,
     };
@@ -64,7 +63,7 @@ export default function ChatPage() {
         const stream = await getAiResponse(newMessages);
         if (!stream) {
             const errorMessage: Message = {
-                id: nanoid(),
+                id: String(Date.now() + 1),
                 role: 'assistant',
                 content: "Sorry, I couldn't get a response. Please check the connection and try again.",
             };
@@ -76,7 +75,7 @@ export default function ChatPage() {
 
 
         const assistantMessage: Message = {
-          id: nanoid(),
+          id: String(Date.now() + 1),
           role: 'assistant',
           content: '',
         };
@@ -98,7 +97,7 @@ export default function ChatPage() {
       } catch (error) {
         console.error("Error getting AI response stream:", error);
         const errorMessage: Message = {
-          id: nanoid(),
+          id: String(Date.now() + 1),
           role: 'assistant',
           content: "Sorry, I encountered an error. Please try again.",
         };
@@ -160,9 +159,9 @@ export default function ChatPage() {
         <div className="flex-1 flex flex-col items-center">
             <div className="max-w-4xl w-full mx-auto flex-1 overflow-y-auto">
               {showObelisk ? (
-                 <Obelisk onClick={handleObeliskClick} summary={obeliskSummary} isLoading={isSummarizing} />
+                 <Obelisk onClick={handleObeliskClick} summary={obeliskSummary} isLoading={isSummarizing} isInteractive={messages.length > 0} />
               ) : (
-                <MessageList messages={messages} streamingMessage={streamingMessage} />
+                <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding}/>
               )}
             </div>
             {showObelisk && (
