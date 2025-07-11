@@ -10,7 +10,7 @@ const SummarizeChatHistoryInputSchema = z.object({
 export type SummarizeChatHistoryInput = z.infer<typeof SummarizeChatHistoryInputSchema>;
 
 const SummarizeChatHistoryOutputSchema = z.object({
-  summary: z.string().describe('A concise summary of the chat history.'),
+  summary: z.string().describe('A concise, one-sentence summary of the chat history.'),
 });
 export type SummarizeChatHistoryOutput = z.infer<typeof SummarizeChatHistoryOutputSchema>;
 
@@ -22,7 +22,7 @@ const summarizeChatHistoryPrompt = ai.definePrompt({
   name: 'summarizeChatHistoryPrompt',
   input: {schema: SummarizeChatHistoryInputSchema},
   output: {schema: SummarizeChatHistoryOutputSchema},
-  prompt: `Summarize the following chat history, extracting the key information and topics discussed:\n\n{{{chatHistory}}}`,
+  prompt: `Provide a concise, one-sentence summary of the following chat history, extracting the key information and topics discussed. The summary should be suitable for a quick status update. Example: "The user is currently onboarding a new client named Acme Corp and has just created the CRM entry.":\n\n{{{chatHistory}}}`,
 });
 
 const summarizeChatHistoryFlow = ai.defineFlow(

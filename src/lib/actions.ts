@@ -1,6 +1,7 @@
 'use server';
 
 import { generateInitialPromptIdeas as genkitGenerateInitialPromptIdeas } from '@/ai/flows/generate-initial-prompt-ideas';
+import { summarizeChatHistory as genkitSummarizeChatHistory, type SummarizeChatHistoryInput } from '@/ai/flows/summarize-chat-history';
 import { chat } from '@/ai/flows/chat';
 import type { Message } from '@/lib/types';
 
@@ -21,6 +22,11 @@ export async function generateInitialPromptIdeas() {
     };
   }
 }
+
+export async function summarizeChatHistory(input: SummarizeChatHistoryInput) {
+    return genkitSummarizeChatHistory(input);
+}
+
 
 export async function getAiResponse(
   messages: Message[]

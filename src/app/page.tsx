@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect } from 'react';
 import { ChatHeader } from '@/components/chat/chat-header';
 import { MessageList } from '@/components/chat/message-list';
 import { MessageInput } from '@/components/chat/message-input';
 import { InitialPrompts } from '@/components/chat/initial-prompts';
-import { generateInitialPromptIdeas } from '@/lib/actions';
+import { generateInitialPromptIdeas, summarizeChatHistory } from '@/lib/actions';
 import { getAiResponse } from '@/lib/actions';
 import type { Message } from '@/lib/types';
 import { nanoid } from 'nanoid';
@@ -18,6 +18,9 @@ export default function ChatPage() {
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
   const [isAiResponding, setIsAiResponding] = useState(false);
   const [sidecarContent, setSidecarContent] = useState<React.ReactNode | null>(null);
+  const [obeliskSummary, setObeliskSummary] = useState<string | null>(null);
+  const [isSummarizing, setIsSummarizing] = useState(false);
+
 
   useEffect(() => {
     const fetchPrompts = async () => {
@@ -40,6 +43,7 @@ export default function ChatPage() {
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setIsAiResponding(true);
+    setObeliskSummary(null); // Clear summary on new message
 
     // MOCK: Trigger Sidecar for onboarding task
     if (content.toLowerCase().includes('onboard')) {
@@ -112,13 +116,35 @@ export default function ChatPage() {
     setMessages([]);
     setStreamingMessage(null);
     setSidecarContent(null);
+    setObeliskSummary(null);
   };
 
   const onPromptClick = (prompt: string) => {
     handleSendMessage(prompt);
   };
+  
+  const handleObeliskClick = async () => {
+    if (isSummarizing || messages.length === 0) return;
+    
+    if (obeliskSummary) {
+        setObeliskSummary(null);
+        return;
+    }
 
-  const showObelisk = messages.length === 0 && !streamingMessage && !isAiResponding;
+    setIsSummarizing(true);
+    try {
+        const chatHistory = messages.map(m => `${m.role}: ${m.content}`).join('\n');
+        const { summary } = await summarizeChatHistory({ chatHistory });
+        setObeliskSummary(summary);
+    } catch (error) {
+        console.error("Failed to summarize chat history:", error);
+        setObeliskSummary("Could not retrieve summary.");
+    } finally {
+        setIsSummarizing(false);
+    }
+  };
+
+  const showObelisk = messages.length === 0 && !streamingMessage;
 
   return (
     <div className="flex flex-col h-screen">
@@ -134,7 +160,7 @@ export default function ChatPage() {
         <div className="flex-1 flex flex-col items-center">
             <div className="max-w-4xl w-full mx-auto flex-1 overflow-y-auto">
               {showObelisk ? (
-                 <Obelisk />
+                 <Obelisk onClick={handleObeliskClick} summary={obeliskSummary} isLoading={isSummarizing} />
               ) : (
                 <MessageList messages={messages} streamingMessage={streamingMessage} />
               )}
