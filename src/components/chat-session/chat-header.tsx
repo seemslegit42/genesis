@@ -70,10 +70,10 @@ const SovereigntyManifest = ({ messages, transcriptionUnlocked }: { messages: Me
     return (
         <div className="flex items-center gap-4 text-xs text-right text-muted-foreground w-48">
             <div className="flex-grow">
-                 <div className="font-bold text-foreground text-right" style={{ textShadow: '0 0 8px hsl(var(--primary)/0.7)' }}>
-                    LVL: {Math.floor(level / 100)}
+                 <div className="font-bold text-foreground text-right text-lg" style={{ textShadow: '0 0 8px hsl(var(--primary)/0.7)' }}>
+                    {Math.floor(level / 100)}
                 </div>
-                <Progress value={progress} className="h-1 bg-primary/20" />
+                <Progress value={progress} className="h-1" />
             </div>
             <div className="font-mono text-lg text-foreground">{time}</div>
         </div>
@@ -114,7 +114,7 @@ const MobileMenu = ({ onNewChat, messages, transcriptionUnlocked }: { onNewChat:
                        <span className="font-mono">{time}</span>
                    </div>
                     <div className="flex justify-between items-center">
-                       <span>Level:</span>
+                       <span>Relationship Lvl:</span>
                        <span>{Math.floor(level / 100)}</span>
                    </div>
                 </div>
