@@ -6,10 +6,14 @@ import { ChatHeader } from '@/components/chat-session/chat-header';
 import { MessageList } from '@/components/chat-session/message-list';
 import { InitialPrompts } from '@/components/chat-session/initial-prompts';
 import { generateInitialPromptIdeas, getAiResponse, textToSpeech, speechToText } from '@/lib/actions';
+import { getChatHistory, saveChatHistory } from '@/lib/services/chat';
+import { useAuth } from '@/hooks/use-auth';
 import type { Message } from '@/lib/types';
 import { Obelisk } from '@/components/obelisk';
 import { Progress } from '@/components/ui/progress';
 import { ShareToUnlock } from './share-to-unlock';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 /**
  * The main component that orchestrates the entire chat session.
@@ -20,34 +24,40 @@ import { ShareToUnlock } from './share-to-unlock';
  * @returns {JSX.Element} The rendered chat session interface.
  */
 export function ChatSession() {
-  // State for managing the list of messages in the chat.
+  const { user, loading: authLoading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
-  // State for the message currently being streamed from the AI.
   const [streamingMessage, setStreamingMessage] = useState<Message | null>(null);
-  // State for the initial prompt suggestions shown to the user.
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
-  // State to track if the AI is currently processing and responding.
   const [isAiResponding, setIsAiResponding] = useState(false);
-  // State to track if audio is currently being transcribed.
   const [isTranscribing, setIsTranscribing] = useState(false);
-  // State to control the visibility of the "Share to Unlock" modal, a key viral loop.
   const [showShareModal, setShowShareModal] = useState(false);
-  // State to track if the transcription feature has been unlocked by the user.
   const [transcriptionUnlocked, setTranscriptionUnlocked] = useState(false);
-  // Ref to the audio element for playing back TTS audio.
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
     video: false,
     audio: true,
   });
+  
+  // Effect to load chat history once the user is authenticated.
+  useEffect(() => {
+    if (user && !historyLoaded) {
+      getChatHistory(user.uid).then((history) => {
+        setMessages(history);
+        setHistoryLoaded(true);
+      });
+    }
+  }, [user, historyLoaded]);
 
-  /**
-   * Handles sending a message to the AI and processing the streaming response.
-   * This function is memoized with `useCallback` to prevent unnecessary re-renders,
-   * which is critical for performance in a real-time chat application.
-   * @param {string} content The text content of the user's message.
-   */
+  // Effect to save chat history whenever messages change.
+  useEffect(() => {
+    if (user && historyLoaded && messages.length > 0) {
+      saveChatHistory(user.uid, messages);
+    }
+  }, [messages, user, historyLoaded]);
+
+
   const handleSendMessage = useCallback(async (content: string) => {
     if (!content.trim()) return;
     
@@ -56,12 +66,14 @@ export function ChatSession() {
       role: 'user',
       content,
     };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    
+    // Use a functional update to ensure we have the latest messages state
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setIsAiResponding(true);
 
     try {
-      const stream = await getAiResponse(newMessages);
+      const stream = await getAiResponse(updatedMessages);
       if (!stream) {
         throw new Error("Failed to get a response from the AI. The stream is null.");
       }
@@ -88,7 +100,6 @@ export function ChatSession() {
       const finalMessage = { ...assistantMessage, content: accumulatedContent };
       setMessages(prev => [...prev, finalMessage]);
       
-      // Once text is fully received, generate and play audio for a full voice modality experience.
       const { audioDataUri } = await textToSpeech({ text: accumulatedContent });
       if (audioRef.current) {
         audioRef.current.src = audioDataUri;
@@ -109,12 +120,6 @@ export function ChatSession() {
     }
   }, [messages]);
 
-  /**
-   * Transcribes recorded audio and sends the resulting text as a message.
-   * This function is memoized with `useCallback` for performance optimization.
-   * It also contains the logic for the share-to-unlock viral loop.
-   * @param {string} blobUrl The URL of the recorded audio blob.
-   */
   const transcribeRecording = useCallback(async (blobUrl: string) => {
     if (!transcriptionUnlocked) {
       setShowShareModal(true);
@@ -155,8 +160,6 @@ export function ChatSession() {
     }
   };
 
-  // Effect to handle transcription when a recording is finished.
-  // This effect correctly includes all its dependencies.
   useEffect(() => {
     if (mediaBlobUrl) {
       transcribeRecording(mediaBlobUrl);
@@ -164,8 +167,6 @@ export function ChatSession() {
   }, [mediaBlobUrl, transcribeRecording]);
 
 
-  // Effect to fetch initial prompt ideas on component mount. This improves the
-  // onboarding experience by providing immediate, actionable suggestions.
   useEffect(() => {
     const fetchPrompts = async () => {
       try {
@@ -178,39 +179,44 @@ export function ChatSession() {
     fetchPrompts();
   }, []);
 
-  /**
-   * Resets the chat session to its initial state, clearing all messages.
-   * This action allows the Initiate to exit the "Focus Tunnel" and return to the calm
-   * of the Obelisk.
-   * @returns {void}
-   */
   const handleNewChat = () => {
     setMessages([]);
     setStreamingMessage(null);
+     if (user) {
+      saveChatHistory(user.uid, []); // Clear history in DB as well
+    }
   };
 
-  /**
-   * Handles the click event on an initial prompt suggestion, sending it as a message.
-   * This is the first step in the Initiate's journey, transforming their intent into action.
-   * @param {string} prompt The text of the clicked prompt.
-   * @returns {void}
-   */
   const onPromptClick = (prompt: string) => {
     handleSendMessage(prompt);
   };
   
-  /**
-   * Handles unlocking the transcription feature after a successful share.
-   * This is the reward mechanism for our viral loop.
-   * @returns {void}
-   */
   const handleUnlock = () => {
     setTranscriptionUnlocked(true);
     setShowShareModal(false);
   };
 
-  // Determines if the UI should be in its initial state (showing the Obelisk)
-  // or in the "Focus Tunnel" (showing the message list).
+  if (authLoading || !historyLoaded) {
+    return (
+       <div className="flex flex-col h-screen">
+        <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
+          <div className="flex items-center justify-between p-4 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 gap-4">
+            <Skeleton className="h-6 w-24" />
+            <Skeleton className="h-12 w-full max-w-2xl rounded-full" />
+            <Skeleton className="h-8 w-40 hidden md:block" />
+          </div>
+        </header>
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex flex-col items-center justify-center h-full p-4">
+            <div className="flex-1 flex items-center justify-center w-full">
+              <Skeleton className="w-24 h-80" />
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
   const showInitialState = messages.length === 0 && !isAiResponding && !streamingMessage;
 
   return (
@@ -228,7 +234,6 @@ export function ChatSession() {
         startRecording={handleVoiceRecording}
         stopRecording={handleVoiceRecording}
       />
-      {/* The Psyche-Fuel Gauge: a subtle, persistent signal of the AI's cognitive state. */}
       <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
       
       <div className="flex-1 flex flex-col overflow-hidden">
