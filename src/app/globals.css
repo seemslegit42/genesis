@@ -13,16 +13,16 @@
     --popover: 275 10% 2%; 
     --popover-foreground: 0 0% 95%;
 
-    --primary: 173 66% 47%; /* Roman Aqua */
+    --primary: 173 66% 47%; /* Roman Aqua: #20B2AA */
     --primary-foreground: 0 0% 95%;
 
-    --secondary: 158 51% 55%; /* Patina Green */
+    --secondary: 158 51% 55%; /* Patina Green: #3EB991 */
     --secondary-foreground: 0 0% 95%;
 
     --muted: 240 4% 16%; /* Conchoidal Gray */
     --muted-foreground: 240 4% 65%;
 
-    --accent: 274 70% 40%; /* Imperial Purple */
+    --accent: 274 70% 40%; /* Imperial Purple: #6A0DAD */
     --accent-foreground: 0 0% 95%;
 
     --destructive: 0 84.2% 60.2%;
