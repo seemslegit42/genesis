@@ -16,6 +16,8 @@ interface MessageListProps {
   streamingMessage: Message | null;
   /** A boolean indicating if the app is waiting for or receiving an AI response. */
   isAiResponding: boolean;
+  /** A boolean indicating if transcription is in progress. */
+  isTranscribing: boolean;
 }
 
 const TranscribingMessage = () => {
@@ -44,7 +46,7 @@ const TranscribingMessage = () => {
  * @param {MessageListProps} props The props for the component.
  * @returns {JSX.Element} The rendered list of messages.
  */
-export function MessageList({ messages, streamingMessage, isAiResponding }: MessageListProps) {
+export function MessageList({ messages, streamingMessage, isAiResponding, isTranscribing }: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Effect to scroll to the bottom of the message list as new messages are added.
@@ -58,9 +60,7 @@ export function MessageList({ messages, streamingMessage, isAiResponding }: Mess
    * Determines if the loading indicator should be shown.
    * This is true if the AI is responding but has not yet started streaming content.
    */
-  const showLoading = isAiResponding && !streamingMessage;
-  const showTranscribing = isAiResponding && !streamingMessage && messages[messages.length-1]?.role !== 'user';
-
+  const showLoading = isAiResponding && !streamingMessage && !isTranscribing;
 
   return (
     <div className="space-y-8 pt-8">
@@ -69,7 +69,7 @@ export function MessageList({ messages, streamingMessage, isAiResponding }: Mess
       ))}
       {streamingMessage && <ChatMessage message={streamingMessage} />}
       {showLoading && <LoadingMessage />}
-      {isAiResponding && !messages.some(m => m.role === 'user') && <TranscribingMessage />}
+      {isTranscribing && <TranscribingMessage />}
       <div ref={scrollRef} />
     </div>
   );

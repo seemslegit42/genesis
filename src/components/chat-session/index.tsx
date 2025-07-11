@@ -9,6 +9,7 @@ import { generateInitialPromptIdeas, getAiResponse, textToSpeech, speechToText }
 import type { Message } from '@/lib/types';
 import { Obelisk } from '@/components/obelisk';
 import { Progress } from '@/components/ui/progress';
+import { ShareToUnlock } from './share-to-unlock';
 
 export function ChatSession() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -16,6 +17,8 @@ export function ChatSession() {
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
   const [isAiResponding, setIsAiResponding] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [transcriptionUnlocked, setTranscriptionUnlocked] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
@@ -30,6 +33,11 @@ export function ChatSession() {
   }, [mediaBlobUrl]);
 
   const transcribeRecording = async (blobUrl: string) => {
+    if (!transcriptionUnlocked) {
+      setShowShareModal(true);
+      return;
+    }
+    
     setIsTranscribing(true);
     try {
       const response = await fetch(blobUrl);
@@ -140,10 +148,20 @@ export function ChatSession() {
     handleSendMessage(prompt);
   };
   
+  const handleUnlock = () => {
+    setTranscriptionUnlocked(true);
+    setShowShareModal(false);
+  };
+
   const showInitialState = messages.length === 0 && !isAiResponding && !streamingMessage;
 
   return (
     <div className="flex flex-col h-screen">
+       <ShareToUnlock 
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        onUnlock={handleUnlock}
+      />
       <ChatHeader 
         onNewChat={handleNewChat} 
         onSendMessage={handleSendMessage} 
@@ -167,7 +185,7 @@ export function ChatSession() {
              </div>
           ) : (
             <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-              <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding || isTranscribing}/>
+              <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
             </div>
           )}
         </div>
