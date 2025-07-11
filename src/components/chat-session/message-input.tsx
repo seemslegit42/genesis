@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ArrowUp } from 'lucide-react';
-import { useTypographicState } from '@/hooks/use-typographic-state';
+import { useTypographicState } from '@/hooks/use-typographic-state.tsx';
 
 /**
  * Props for the MessageInput component.

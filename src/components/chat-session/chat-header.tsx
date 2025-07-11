@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { MessageInput } from '@/components/chat/message-input';
+import { MessageInput } from '@/components/chat-session/message-input';
 
 /**
  * Props for the ChatHeader component.

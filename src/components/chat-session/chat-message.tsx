@@ -1,6 +1,6 @@
 import type { Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { ChatAvatar } from '@/components/chat/chat-avatar';
+import { ChatAvatar } from '@/components/chat-session/chat-avatar';
 
 /**
  * Props for the ChatMessage component.
