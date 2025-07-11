@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import { ChatHeader } from '@/components/chat-session/chat-header';
 import { MessageList } from '@/components/chat-session/message-list';
@@ -26,54 +26,7 @@ export function ChatSession() {
     audio: true,
   });
 
-  useEffect(() => {
-    if (mediaBlobUrl) {
-      transcribeRecording(mediaBlobUrl);
-    }
-  }, [mediaBlobUrl]);
-
-  const transcribeRecording = async (blobUrl: string) => {
-    if (!transcriptionUnlocked) {
-      setShowShareModal(true);
-      return;
-    }
-    
-    setIsTranscribing(true);
-    try {
-      const response = await fetch(blobUrl);
-      const blob = await response.blob();
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = async () => {
-        const base64Audio = reader.result as string;
-        const { text } = await speechToText({ audioDataUri: base64Audio });
-        if (text) {
-          handleSendMessage(text);
-        } else {
-            console.error('Transcription failed to return text.');
-        }
-        setIsTranscribing(false);
-      };
-    } catch (error) {
-      console.error('Error transcribing audio:', error);
-      setIsTranscribing(false);
-    }
-  };
-
-
-  useEffect(() => {
-    const fetchPrompts = async () => {
-      try {
-        const { prompts } = await generateInitialPromptIdeas();
-        setInitialPrompts(prompts);
-      } catch (error) {
-        console.error("Failed to fetch initial prompts:", error);
-      }
-    };
-    fetchPrompts();
-  }, []);
-
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = useCallback(async (content: string) => {
     const userMessage: Message = {
       id: String(Date.now()),
       role: 'user',
@@ -137,7 +90,54 @@ export function ChatSession() {
       setStreamingMessage(null);
       setIsAiResponding(false);
     }
-  };
+  }, [messages]);
+
+  const transcribeRecording = useCallback(async (blobUrl: string) => {
+    if (!transcriptionUnlocked) {
+      setShowShareModal(true);
+      return;
+    }
+    
+    setIsTranscribing(true);
+    try {
+      const response = await fetch(blobUrl);
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = async () => {
+        const base64Audio = reader.result as string;
+        const { text } = await speechToText({ audioDataUri: base64Audio });
+        if (text) {
+          handleSendMessage(text);
+        } else {
+            console.error('Transcription failed to return text.');
+        }
+        setIsTranscribing(false);
+      };
+    } catch (error) {
+      console.error('Error transcribing audio:', error);
+      setIsTranscribing(false);
+    }
+  }, [transcriptionUnlocked, handleSendMessage]);
+
+  useEffect(() => {
+    if (mediaBlobUrl) {
+      transcribeRecording(mediaBlobUrl);
+    }
+  }, [mediaBlobUrl, transcribeRecording]);
+
+
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      try {
+        const { prompts } = await generateInitialPromptIdeas();
+        setInitialPrompts(prompts);
+      } catch (error) {
+        console.error("Failed to fetch initial prompts:", error);
+      }
+    };
+    fetchPrompts();
+  }, []);
 
   const handleNewChat = () => {
     setMessages([]);
