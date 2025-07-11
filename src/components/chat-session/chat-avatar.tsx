@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 /**
  * Props for the ChatAvatar component.
@@ -13,30 +14,41 @@ interface ChatAvatarProps {
    * @type {'user' | 'assistant'}
    */
   role: 'user' | 'assistant';
+  /** 
+   * Optional path to a custom SVG icon for the avatar.
+   * If provided, this will be rendered instead of the text identifier.
+   * @type {string}
+   * @example "/icons/user-sigil.svg"
+   */
+  icon?: string;
 }
 
 /**
- * Displays a minimalist, text-based avatar for a chat participant (USER or BEEP).
- * This component strictly adheres to the "NO ICONS" design principle, using only
- * typography to identify the speaker.
+ * Displays an avatar for a chat participant.
+ * It can render a custom SVG icon if provided, otherwise it defaults to a
+ * minimalist, text-based identifier (USER or BEEP).
  * @param {ChatAvatarProps} props The props for the component.
  * @returns {JSX.Element} The rendered avatar component.
  */
-export function ChatAvatar({ role }: ChatAvatarProps) {
+export function ChatAvatar({ role, icon }: ChatAvatarProps) {
   return (
     <div
       className={cn(
-        'flex items-center justify-center size-10 shrink-0'
+        'flex items-center justify-center size-10 shrink-0 rounded-full'
       )}
     >
-      <div
-        className={cn(
-          'text-xs font-bold tracking-widest',
-          role === 'user' ? 'text-accent' : 'text-primary'
-        )}
-      >
-        {role === 'user' ? 'USER' : 'BEEP'}
-      </div>
+      {icon ? (
+        <Image src={icon} alt={`${role} avatar`} width={24} height={24} className="opacity-80" />
+      ) : (
+        <div
+          className={cn(
+            'text-xs font-bold tracking-widest',
+            role === 'user' ? 'text-accent' : 'text-primary'
+          )}
+        >
+          {role === 'user' ? 'USER' : 'BEEP'}
+        </div>
+      )}
     </div>
   );
 }
