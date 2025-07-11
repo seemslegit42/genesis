@@ -46,6 +46,8 @@ const ChatSession = dynamic(
  * orchestrates the entire user experience. This modular approach ensures
  * the main page remains clean and is prepared for future logic, such as
  * gating access for different user tiers.
+ * It uses dynamic import with `ssr: false` to prevent server-side rendering
+ * issues with browser-specific APIs like the Web Audio API.
  * @returns {JSX.Element} The rendered chat page, the user's cognitive sanctuary.
  */
 export default function ChatPage() {

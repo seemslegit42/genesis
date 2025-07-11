@@ -9,15 +9,33 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+/**
+ * The Zod schema for the output of the initial prompt ideas flow.
+ * It expects an object with a 'prompts' array of strings.
+ * @type {z.ZodObject<{prompts: z.ZodArray<z.ZodString>}>}
+ */
 const InitialPromptIdeasOutputSchema = z.object({
   prompts: z.array(z.string()).describe('A list of suggested prompts for the user to try.'),
 });
+
+/**
+ * The type definition for the output of the initial prompt ideas flow.
+ * @typedef {z.infer<typeof InitialPromptIdeasOutputSchema>} InitialPromptIdeasOutput
+ */
 export type InitialPromptIdeasOutput = z.infer<typeof InitialPromptIdeasOutputSchema>;
 
+/**
+ * Generates a list of suggested prompts to help new users get started.
+ * This function calls the underlying Genkit flow.
+ * @returns {Promise<InitialPromptIdeasOutput>} A promise that resolves to an object containing a list of prompts.
+ */
 export async function generateInitialPromptIdeas(): Promise<InitialPromptIdeasOutput> {
   return generateInitialPromptIdeasFlow();
 }
 
+/**
+ * The Genkit prompt that defines the AI's task for generating initial prompt ideas.
+ */
 const prompt = ai.definePrompt({
   name: 'initialPromptIdeasPrompt',
   output: {schema: InitialPromptIdeasOutputSchema},
@@ -39,6 +57,9 @@ const prompt = ai.definePrompt({
   }`,
 });
 
+/**
+ * The Genkit flow that orchestrates the generation of initial prompt ideas.
+ */
 const generateInitialPromptIdeasFlow = ai.defineFlow(
   {
     name: 'generateInitialPromptIdeasFlow',

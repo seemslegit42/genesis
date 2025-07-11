@@ -13,14 +13,30 @@ import { search } from '@/tools';
 import { z } from 'zod';
 import { summarizeChatHistory } from './summarize-chat-history';
 
+/**
+ * The Zod schema for the input of the chat flow.
+ * It expects an array of message objects.
+ * @type {z.ZodArray<z.ZodObject<{role: z.ZodEnum<['user', 'assistant']>, content: z.ZodString}>>}
+ */
 const ChatInputSchema = z.array(
   z.object({
     role: z.enum(['user', 'assistant']),
     content: z.string(),
   })
 );
+
+/**
+ * The type definition for the chat flow's input.
+ * @typedef {z.infer<typeof ChatInputSchema>} ChatInput
+ */
 export type ChatInput = z.infer<typeof ChatInputSchema>;
 
+/**
+ * The main chat function that handles user messages.
+ * It uses a tool-enabled model and conversational memory to provide intelligent responses.
+ * @param {ChatInput} messages The array of messages representing the chat history.
+ * @returns {Promise<ReadableStream<Uint8Array> | null>} A promise that resolves to a readable stream of the AI's response, or null on error.
+ */
 export async function chat(
   messages: ChatInput
 ): Promise<ReadableStream<Uint8Array> | null> {

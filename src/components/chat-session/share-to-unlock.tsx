@@ -9,12 +9,25 @@ import {
 import { Button } from '@/components/ui/button';
 import { Twitter, Linkedin } from 'lucide-react';
 
+/**
+ * Props for the ShareToUnlock component.
+ * @interface ShareToUnlockProps
+ */
 interface ShareToUnlockProps {
+  /** A boolean indicating whether the dialog is open. */
   isOpen: boolean;
+  /** A callback function invoked when the dialog is closed. */
   onClose: () => void;
+  /** A callback function invoked when the user "unlocks" the feature. */
   onUnlock: () => void;
 }
 
+/**
+ * A modal dialog that prompts the user to share the application on social media
+ * in order to unlock a feature. This is a powerful viral marketing tactic.
+ * @param {ShareToUnlockProps} props The props for the component.
+ * @returns {JSX.Element} The rendered dialog component.
+ */
 export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps) {
   // This is the ADHD-friendly dopamine trigger. A simple, one-time action for a permanent reward.
   const handleShare = () => {

@@ -1,11 +1,27 @@
 'use server';
 
+import { chat as genkitChat } from '@/ai/flows/chat';
 import { generateInitialPromptIdeas as genkitGenerateInitialPromptIdeas } from '@/ai/flows/generate-initial-prompt-ideas';
-import { summarizeChatHistory as genkitSummarizeChatHistory, type SummarizeChatHistoryInput } from '@/ai/flows/summarize-chat-history';
-import { chat } from '@/ai/flows/chat';
-import { textToSpeech as genkitTextToSpeech, type TextToSpeechInput } from '@/ai/flows/text-to-speech';
-import { speechToText as genkitSpeechToText, type SpeechToTextInput } from '@/ai/flows/speech-to-text';
-import type { Message } from '@/lib/types';
+import { speechToText as genkitSpeechToText } from '@/ai/flows/speech-to-text';
+import { textToSpeech as genkitTextToSpeech } from '@/ai/flows/text-to-speech';
+import type { Message, SpeechToTextInput, TextToSpeechInput } from '@/lib/types';
+
+/**
+ * Server action to get a streaming AI response for a given set of messages.
+ * Wraps the main 'chat' Genkit flow.
+ * @param {Message[]} messages - The history of messages in the current chat.
+ * @returns {Promise<ReadableStream<Uint8Array> | null>} A promise that resolves to a readable stream of the AI's response, or null on error.
+ */
+export async function getAiResponse(messages: Message[]): Promise<ReadableStream<Uint8Array> | null> {
+  if (!messages || messages.length === 0) {
+    console.error('getAiResponse called with no messages.');
+    return null;
+  }
+  // We only need the role and content for the AI, so we'll map over the messages
+  // to create a new array with just that data.
+  const history = messages.map(({ id, ...rest }) => rest);
+  return genkitChat(history);
+}
 
 /**
  * Server action to generate initial prompt ideas for the user.
@@ -31,37 +47,8 @@ export async function generateInitialPromptIdeas() {
 }
 
 /**
- * Server action to summarize a chat history.
- * Wraps the 'summarizeChatHistory' Genkit flow.
- * @param {SummarizeChatHistoryInput} input - The input object containing the chat history string.
- * @returns {Promise<{summary: string}>} A promise that resolves to an object containing the summary.
- */
-export async function summarizeChatHistory(input: SummarizeChatHistoryInput) {
-    return genkitSummarizeChatHistory(input);
-}
-
-
-/**
- * Server action to get a streaming AI response for a given set of messages.
- * Wraps the main 'chat' Genkit flow.
- * @param {Message[]} messages - The history of messages in the current chat.
- * @returns {Promise<ReadableStream<Uint8Array> | null>} A promise that resolves to a readable stream of the AI's response, or null on error.
- */
-export async function getAiResponse(
-  messages: Message[]
-): Promise<ReadableStream<Uint8Array> | null> {
-  if (!messages || messages.length === 0) {
-    console.error('getAiResponse called with no messages.');
-    return null;
-  }
-  // We only need the role and content for the AI, so we'll map over the messages
-  // to create a new array with just that data.
-  const history = messages.map(({ id, ...rest }) => rest);
-  return chat(history);
-}
-
-/**
  * Server action to convert text to speech.
+ * Wraps the 'textToSpeech' Genkit flow.
  * @param {TextToSpeechInput} input - The text to be converted.
  * @returns {Promise<{audioDataUri: string}>} A promise that resolves to the audio data URI.
  */
@@ -71,6 +58,7 @@ export async function textToSpeech(input: TextToSpeechInput) {
 
 /**
  * Server action to convert speech to text.
+ * Wraps the 'speechToText' Genkit flow.
  * @param {SpeechToTextInput} input - The audio data URI to be transcribed.
  * @returns {Promise<{text: string}>} A promise that resolves to the transcribed text.
  */

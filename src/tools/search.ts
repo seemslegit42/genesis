@@ -8,7 +8,11 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
-// Defines a tool named 'search' that the AI can learn to call.
+/**
+ * Defines a tool named 'search' that the AI can learn to call.
+ * This allows the AI to search for information on the web. In a real application,
+ * this would be wired up to a proper search API.
+ */
 export const search = ai.defineTool(
   {
     name: 'search',

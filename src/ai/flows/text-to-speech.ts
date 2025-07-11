@@ -11,20 +11,44 @@ import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'genkit';
 import wav from 'wav';
 
+/**
+ * The Zod schema for the input of the text-to-speech flow.
+ * @type {z.ZodObject<{text: z.ZodString}>}
+ */
 const TextToSpeechInputSchema = z.object({
   text: z.string().describe('The text to synthesize.'),
 });
+/**
+ * The type definition for the input of the text-to-speech flow.
+ * @typedef {z.infer<typeof TextToSpeechInputSchema>} TextToSpeechInput
+ */
 export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
 
+/**
+ * The Zod schema for the output of the text-to-speech flow.
+ * @type {z.ZodObject<{audioDataUri: z.ZodString}>}
+ */
 const TextToSpeechOutputSchema = z.object({
   audioDataUri: z.string().describe('The synthesized audio as a data URI.'),
 });
+/**
+ * The type definition for the output of the text-to-speech flow.
+ * @typedef {z.infer<typeof TextToSpeechOutputSchema>} TextToSpeechOutput
+ */
 export type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
 
+/**
+ * Converts text to speech by calling the underlying Genkit flow.
+ * @param {TextToSpeechInput} input - The text to synthesize.
+ * @returns {Promise<TextToSpeechOutput>} A promise that resolves to the audio data URI.
+ */
 export async function textToSpeech(input: TextToSpeechInput): Promise<TextToSpeechOutput> {
   return textToSpeechFlow(input);
 }
 
+/**
+ * The Genkit flow that orchestrates the text-to-speech conversion.
+ */
 const textToSpeechFlow = ai.defineFlow(
   {
     name: 'textToSpeechFlow',
@@ -58,6 +82,15 @@ const textToSpeechFlow = ai.defineFlow(
   }
 );
 
+/**
+ * Converts raw PCM audio data to a WAV format Base64 string.
+ * This is necessary because the TTS model returns raw audio data.
+ * @param {Buffer} pcmData - The raw PCM audio data.
+ * @param {number} [channels=1] - The number of audio channels.
+ * @param {number} [rate=24000] - The sample rate of the audio.
+ * @param {number} [sampleWidth=2] - The sample width in bytes.
+ * @returns {Promise<string>} A promise that resolves to the Base64 encoded WAV data.
+ */
 async function toWav(
   pcmData: Buffer,
   channels = 1,

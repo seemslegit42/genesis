@@ -11,14 +11,29 @@ import { Obelisk } from '@/components/obelisk';
 import { Progress } from '@/components/ui/progress';
 import { ShareToUnlock } from './share-to-unlock';
 
+/**
+ * The main component that orchestrates the entire chat session.
+ * It manages message state, handles user input (text and voice),
+ * interacts with AI services, and controls the UI state (loading, recording, etc.).
+ * This component is the heart of the user-facing application.
+ * @returns {JSX.Element} The rendered chat session interface.
+ */
 export function ChatSession() {
+  // State for managing the list of messages in the chat.
   const [messages, setMessages] = useState<Message[]>([]);
+  // State for the message currently being streamed from the AI.
   const [streamingMessage, setStreamingMessage] = useState<Message | null>(null);
+  // State for the initial prompt suggestions shown to the user.
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
+  // State to track if the AI is currently processing and responding.
   const [isAiResponding, setIsAiResponding] = useState(false);
+  // State to track if audio is currently being transcribed.
   const [isTranscribing, setIsTranscribing] = useState(false);
+  // State to control the visibility of the "Share to Unlock" modal.
   const [showShareModal, setShowShareModal] = useState(false);
+  // State to track if the transcription feature has been unlocked.
   const [transcriptionUnlocked, setTranscriptionUnlocked] = useState(false);
+  // Ref to the audio element for playing back TTS audio.
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
@@ -26,7 +41,13 @@ export function ChatSession() {
     audio: true,
   });
 
+  /**
+   * Handles sending a message to the AI and processing the response.
+   * This function is memoized with `useCallback` to prevent unnecessary re-renders.
+   */
   const handleSendMessage = useCallback(async (content: string) => {
+    if (!content.trim()) return;
+    
     const userMessage: Message = {
       id: String(Date.now()),
       role: 'user',
@@ -68,8 +89,9 @@ export function ChatSession() {
         accumulatedContent += chunk;
         setStreamingMessage({ ...assistantMessage, content: accumulatedContent });
       }
-
-      setMessages(prev => [...prev, { ...assistantMessage, content: accumulatedContent }]);
+      
+      const finalMessage = { ...assistantMessage, content: accumulatedContent };
+      setMessages(prev => [...prev, finalMessage]);
       
       // Once text is fully received, generate and play audio
       const { audioDataUri } = await textToSpeech({ text: accumulatedContent });
@@ -92,6 +114,10 @@ export function ChatSession() {
     }
   }, [messages]);
 
+  /**
+   * Transcribes recorded audio and sends the resulting text as a message.
+   * This function is memoized with `useCallback` for performance optimization.
+   */
   const transcribeRecording = useCallback(async (blobUrl: string) => {
     if (!transcriptionUnlocked) {
       setShowShareModal(true);
@@ -120,6 +146,7 @@ export function ChatSession() {
     }
   }, [transcriptionUnlocked, handleSendMessage]);
 
+  // Effect to handle transcription when a recording is finished.
   useEffect(() => {
     if (mediaBlobUrl) {
       transcribeRecording(mediaBlobUrl);
@@ -127,6 +154,7 @@ export function ChatSession() {
   }, [mediaBlobUrl, transcribeRecording]);
 
 
+  // Effect to fetch initial prompt ideas on component mount.
   useEffect(() => {
     const fetchPrompts = async () => {
       try {
@@ -139,15 +167,25 @@ export function ChatSession() {
     fetchPrompts();
   }, []);
 
+  /**
+   * Resets the chat session to its initial state.
+   */
   const handleNewChat = () => {
     setMessages([]);
     setStreamingMessage(null);
   };
 
+  /**
+   * Handles the click event on an initial prompt suggestion.
+   * @param {string} prompt The text of the clicked prompt.
+   */
   const onPromptClick = (prompt: string) => {
     handleSendMessage(prompt);
   };
   
+  /**
+   * Handles unlocking the transcription feature after a successful share.
+   */
   const handleUnlock = () => {
     setTranscriptionUnlocked(true);
     setShowShareModal(false);

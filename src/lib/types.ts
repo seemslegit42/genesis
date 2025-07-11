@@ -1,51 +1,36 @@
 /**
+ * @fileoverview This file centralizes all core type definitions for the application,
+ * creating a single source of truth for our data structures.
+ */
+
+/**
  * Represents a single message in a chat conversation.
- * This is the fundamental unit of communication between the user and the AI,
- * forming the building blocks of the dialogue on the Canvas.
+ * This is the fundamental unit of communication between the user and the AI.
  * @interface Message
  */
 export interface Message {
-  /** 
-   * A unique identifier for the message, typically a timestamp or a UUID.
-   * @type {string}
-   */
+  /** A unique identifier for the message. */
   id: string;
-  /** 
-   * The role of the entity that sent the message.
-   * 'user' represents the human user.
-   * 'assistant' represents the AI, BEEP.
-   * @type {'user' | 'assistant'}
-   */
+  /** The role of the entity that sent the message ('user' or 'assistant'). */
   role: 'user' | 'assistant';
-  /** 
-   * The text content of the message.
-   * @type {string}
-   */
+  /** The text content of the message. */
   content: string;
 }
 
 /**
- * Represents a full chat session or conversation history.
- * While not actively used for session management in the current implementation,
- * it defines the structure for potentially storing and retrieving past conversations
- * in future versions.
- * @interface Chat
+ * Defines the input structure for the text-to-speech conversion flow.
+ * @interface TextToSpeechInput
  */
-export interface Chat {
-  /** 
-   * A unique identifier for the chat session.
-   * @type {string}
-   */
-  id: string;
-  /** 
-   * The title of the chat session, which could be user-defined or auto-generated
-   * from a summary of the conversation.
-   * @type {string}
-   */
-  title: string;
-  /** 
-   * An array of Message objects that make up the conversation.
-   * @type {Message[]}
-   */
-  messages: Message[];
+export interface TextToSpeechInput {
+    /** The text to be synthesized into audio. */
+    text: string;
+}
+
+/**
+ * Defines the input structure for the speech-to-text transcription flow.
+ * @interface SpeechToTextInput
+ */
+export interface SpeechToTextInput {
+    /** The audio to transcribe, as a Base64 encoded data URI. */
+    audioDataUri: string;
 }
