@@ -17,8 +17,12 @@ export default function ChatPage() {
 
   useEffect(() => {
     const fetchPrompts = async () => {
-      const prompts = await generateInitialPromptIdeas();
-      setInitialPrompts(prompts);
+      try {
+        const prompts = await generateInitialPromptIdeas();
+        setInitialPrompts(prompts);
+      } catch (error) {
+        console.error("Failed to fetch initial prompts:", error);
+      }
     };
     fetchPrompts();
   }, []);
@@ -33,24 +37,40 @@ export default function ChatPage() {
     setMessages(newMessages);
 
     startTransition(async () => {
-      const stream = await getAiResponse(newMessages);
+      try {
+        const stream = await getAiResponse(newMessages);
 
-      const assistantMessage: Message = {
-        id: nanoid(),
-        role: 'assistant',
-        content: '',
-      };
-      setStreamingMessage(assistantMessage);
+        const assistantMessage: Message = {
+          id: nanoid(),
+          role: 'assistant',
+          content: '',
+        };
+        setStreamingMessage(assistantMessage);
 
-      for await (const chunk of stream) {
-        setStreamingMessage(prev => ({
-          ...prev!,
-          content: prev!.content + chunk,
-        }));
+        let accumulatedContent = '';
+        const reader = stream.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          accumulatedContent += chunk;
+          setStreamingMessage({ ...assistantMessage, content: accumulatedContent });
+        }
+        
+        setMessages(prev => [...prev, { ...assistantMessage, content: accumulatedContent }]);
+      } catch (error) {
+        console.error("Error getting AI response stream:", error);
+        const errorMessage: Message = {
+          id: nanoid(),
+          role: 'assistant',
+          content: "Sorry, I encountered an error. Please try again.",
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      } finally {
+        setStreamingMessage(null);
       }
-      
-      setMessages(prev => [...prev, streamingMessage!]);
-      setStreamingMessage(null);
     });
   };
   
@@ -61,7 +81,6 @@ export default function ChatPage() {
 
   const onPromptClick = (prompt: string) => {
     handleSendMessage(prompt);
-    setInitialPrompts([]);
   };
 
   return (
@@ -69,16 +88,16 @@ export default function ChatPage() {
       <ChatHeader onNewChat={handleNewChat} />
       <main className="flex-1 overflow-y-auto p-4 md:p-6">
         <div className="max-w-4xl mx-auto h-full">
-          {messages.length === 0 && initialPrompts.length > 0 && !isLoading && !streamingMessage ? (
+          {messages.length === 0 && !streamingMessage && !isLoading ? (
             <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
           ) : (
-            <MessageList messages={messages} streamingMessage={streamingMessage} isLoading={isLoading} />
+            <MessageList messages={messages} streamingMessage={streamingMessage} />
           )}
         </div>
       </main>
-      <div className="p-4 md:p-6 bg-background/0">
+      <div className="p-4 md:p-6 bg-transparent">
         <div className="max-w-4xl mx-auto">
-          <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+          <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading || !!streamingMessage} />
         </div>
       </div>
     </div>

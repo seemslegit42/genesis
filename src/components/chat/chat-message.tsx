@@ -1,6 +1,7 @@
 import type { Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChatAvatar } from '@/components/chat/chat-avatar';
+import { Bot, User } from 'lucide-react';
 
 interface ChatMessageProps {
   message: Message;
@@ -19,9 +20,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={cn(
           'p-4 rounded-lg max-w-xs md:max-w-md lg:max-w-2xl break-words prose prose-invert prose-p:my-0',
+          'glassmorphism',
           role === 'user'
-            ? 'bg-accent/10 border border-accent/20 rounded-br-none'
-            : 'bg-primary/10 border border-primary/20 rounded-bl-none'
+            ? 'rounded-br-none'
+            : 'rounded-bl-none'
         )}
       >
         <p>{content}</p>
@@ -35,7 +37,7 @@ export function LoadingMessage() {
   return (
     <div className="flex items-center gap-3 md:gap-4">
       <ChatAvatar role="assistant" />
-      <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
+      <div className="p-4 rounded-lg glassmorphism">
         <div className="flex items-center justify-center gap-1.5">
           <span className="size-2 rounded-full bg-primary/70 animate-pulse [animation-delay:-0.3s]" />
           <span className="size-2 rounded-full bg-primary/70 animate-pulse [animation-delay:-0.15s]" />

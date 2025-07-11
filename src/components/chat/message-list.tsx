@@ -7,17 +7,18 @@ import { ChatMessage, LoadingMessage } from './chat-message';
 interface MessageListProps {
   messages: Message[];
   streamingMessage: Message | null;
-  isLoading: boolean;
 }
 
-export function MessageList({ messages, streamingMessage, isLoading }: MessageListProps) {
+export function MessageList({ messages, streamingMessage }: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, streamingMessage, isLoading]);
+  }, [messages, streamingMessage]);
+
+  const isLoading = messages.length > 0 && messages[messages.length - 1].role === 'user' && !streamingMessage;
 
   return (
     <div className="space-y-6">
@@ -25,7 +26,7 @@ export function MessageList({ messages, streamingMessage, isLoading }: MessageLi
         <ChatMessage key={message.id} message={message} />
       ))}
       {streamingMessage && <ChatMessage message={streamingMessage} />}
-      {isLoading && !streamingMessage && <LoadingMessage />}
+      {isLoading && <LoadingMessage />}
       <div ref={scrollRef} />
     </div>
   );

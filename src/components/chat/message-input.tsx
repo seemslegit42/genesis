@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { SendHorizonal } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 
 interface MessageInputProps {
   onSendMessage: (content: string) => void;
@@ -39,9 +39,9 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Message BEEP..."
+        placeholder="BEEP..."
         rows={1}
-        className="w-full resize-none pr-14 py-3 pl-4 text-base bg-input backdrop-blur-sm border-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0"
+        className="w-full resize-none pr-14 py-3 pl-4 text-base bg-input backdrop-blur-sm border-border focus-visible:ring-1 focus-visible:ring-accent focus-visible:ring-offset-0 transition-shadow duration-300 focus:shadow-[0_0_15px_hsl(var(--accent)/0.5)]"
         disabled={isLoading}
       />
       <Button
@@ -51,7 +51,7 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
         className="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50"
         disabled={isLoading || !content.trim()}
       >
-        <SendHorizonal className="size-6" />
+        <ArrowUp className="size-6" />
         <span className="sr-only">Send Message</span>
       </Button>
     </form>
