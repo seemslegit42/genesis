@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ArrowUp } from 'lucide-react';
+import { useTypographicState } from '@/hooks/use-typographic-state';
 
 /**
  * Props for the MessageInput component.
@@ -28,6 +29,7 @@ interface MessageInputProps {
 export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
   const [content, setContent] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { applyState } = useTypographicState();
 
   /**
    * Handles the form submission event.
@@ -77,6 +79,8 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}
+        onFocus={() => applyState('active')}
+        onBlur={() => applyState('default')}
         placeholder="BEEP..."
         rows={1}
         className="w-full resize-none pr-12 py-3 pl-6 text-base bg-input backdrop-blur-sm border-border focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all duration-300 focus:shadow-[0_0_35px_hsl(var(--ring)/0.5)] max-h-48 rounded-full font-body"

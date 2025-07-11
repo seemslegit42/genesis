@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Audiowide } from 'next/font/google';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
-import { TypographicStateProvider } from '@/hooks/use-typographic-state.tsx';
+import { TypographicStateProvider } from '@/hooks/use-typographic-state';
 
 /**
  * Metadata for the BEEP: Genesis application.
@@ -42,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("dark", GeistSans.variable, GeistMono.variable, fontInscription.variable)}>
-      <body className={cn("font-body antialiased", "min-h-screen")}>
+      <body className={cn("antialiased", "min-h-screen")}>
         <TypographicStateProvider>
             {children}
         </TypographicStateProvider>

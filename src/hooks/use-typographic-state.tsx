@@ -1,4 +1,3 @@
-
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -27,7 +26,7 @@ interface TypographicStateContextType {
   applyState: (nexusState: NexusState) => void;
 }
 
-// Create the React Context. Initial value is null.
+// Create the React Context.
 const TypographicStateContext = createContext<TypographicStateContextType | null>(null);
 
 // The provider component that wraps the application.

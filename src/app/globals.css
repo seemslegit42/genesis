@@ -71,7 +71,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground;
     font-variation-settings: 'wght' var(--sigil-wght), 'slnt' var(--sigil-slnt);
     letter-spacing: var(--sigil-letterspacing);
     transform: var(--sigil-transform);
