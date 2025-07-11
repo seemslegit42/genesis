@@ -15,6 +15,7 @@ import { ShareToUnlock } from './share-to-unlock';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RiteOfInvocation } from '@/components/rite-of-invocation';
 import { useTypographicState } from '@/hooks/use-typographic-state';
+import { useCollectiveState } from '@/hooks/use-collective-state';
 
 
 /**
@@ -38,6 +39,7 @@ export function ChatSession() {
   const [isInitiated, setIsInitiated] = useState(false);
   const [vow, setVow] = useState<Vow | null>(null);
   const { currentState } = useTypographicState();
+  const { totalUsers, totalEngagement } = useCollectiveState();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
@@ -268,7 +270,11 @@ export function ChatSession() {
                 {showInitialPrompts ? (
                     <div className="flex flex-col items-center justify-center h-full p-4">
                         <div className="flex-1 flex items-center justify-center w-full">
-                          <Obelisk typographicState={currentState} />
+                          <Obelisk 
+                            typographicState={currentState}
+                            totalUsers={totalUsers}
+                            totalEngagement={totalEngagement}
+                          />
                         </div>
                         <div className="pb-8 w-full max-w-4xl mx-auto">
                             <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />

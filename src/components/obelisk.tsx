@@ -4,17 +4,55 @@ import { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { TypographicState } from '@/hooks/use-typographic-state';
 
+/**
+ * A single, permanent sigil carved into the Obelisk.
+ * Its properties are determined by a seed to give each one a unique,
+ * yet deterministic, appearance and animation.
+ */
+const PermanentSigil = ({ seed }: { seed: number }) => {
+    const size = 1 + (seed % 3); // 1, 2, or 3
+    const animationDelay = (seed * 1.37 % 5).toFixed(2);
+    const opacity = (0.05 + (seed * 0.13 % 0.1)).toFixed(2);
+    const top = (10 + (seed * 3.14 % 80));
+    const left = (20 + (seed * 2.71 % 60));
+
+    return (
+        <div 
+            className="absolute animate-pulse"
+            style={{
+                width: `${size * 5}px`,
+                height: `${size * 5}px`,
+                top: `${top}%`,
+                left: `${left}%`,
+                animationDelay: `${animationDelay}s`,
+                animationDuration: `${6 + (seed % 4)}s`,
+                opacity: Number(opacity),
+                transform: `rotate(${seed * 17 % 360}deg)`
+            }}
+        >
+            <svg viewBox="0 0 100 100" stroke="hsl(var(--primary-foreground))" strokeWidth="10" fill="none">
+                 <circle cx="50" cy="50" r={20 + (seed % 15)} />
+                 <line x1={20 + (seed%10)} y1={20 + (seed%10)} x2={80 - (seed%10)} y2={80 - (seed%10)} />
+            </svg>
+        </div>
+    )
+}
+
 interface ObeliskProps {
   typographicState: TypographicState;
+  totalUsers: number;
+  totalEngagement: number;
 }
 
 /**
  * Renders the central Obelisk of Genesis, a core visual and interactive element.
  * It's a pseudo-3D object that reacts to mouse movement and the application's
  * typographic state, creating an interactive and mesmerizing centerpiece.
+ * As a Legacy Engine, its luminosity and the number of "carved" sigils on its
+ * surface reflect the collective activity of the entire user base.
  * @returns {JSX.Element} The rendered Obelisk component.
  */
-export function Obelisk({ typographicState }: ObeliskProps) {
+export function Obelisk({ typographicState, totalUsers, totalEngagement }: ObeliskProps) {
   const [transform, setTransform] = useState('rotateX(0deg) rotateY(0deg)');
 
   useEffect(() => {
@@ -37,7 +75,11 @@ export function Obelisk({ typographicState }: ObeliskProps) {
     };
   }, []);
   
-  const { obeliskColor1, obeliskColor2, obeliskColor3, obeliskGlow, obeliskAnimation } = typographicState;
+  const { obeliskColor1, obeliskColor2, obeliskColor3 } = typographicState;
+  
+  // The Obelisk's energy state is now tied to the collective, not just the individual.
+  const collectiveGlow = Math.min(0.2 + (totalEngagement / 5000), 0.7);
+  const collectiveAnimation = `float ${Math.max(6 - (totalEngagement / 200), 1.5)}s ease-in-out infinite`;
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full relative group animate-float-in" style={{animationFillMode: 'backwards'}}>
@@ -48,7 +90,7 @@ export function Obelisk({ typographicState }: ObeliskProps) {
         {/* The glow effect behind the Obelisk */}
         <div 
             className="absolute w-48 h-48 bg-primary/20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 transition-all duration-500 group-hover:bg-primary/30"
-            style={{ opacity: obeliskGlow }}
+            style={{ opacity: collectiveGlow }}
         ></div>
         
         {/* The Obelisk structure itself */}
@@ -57,16 +99,23 @@ export function Obelisk({ typographicState }: ObeliskProps) {
           style={{
             transformStyle: 'preserve-3d',
             clipPath: 'polygon(20% 0, 80% 0, 100% 100%, 0% 100%)',
-            animation: obeliskAnimation
+            animation: collectiveAnimation
           }}
         >
           {/* Surface textures to give the Obelisk a more complex, ancient feel */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50 opacity-70"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 opacity-70"></div>
           
+           {/* The permanent sigils carved by the collective of Initiates */}
+          <div className="absolute inset-0 z-0">
+             {Array.from({ length: Math.min(totalUsers, 50) }).map((_, i) => (
+                <PermanentSigil key={i} seed={i} />
+            ))}
+          </div>
+
           {/* Luminous Sigils "carved" into the surface */}
           <div 
-            className="space-y-8" 
+            className="space-y-8 relative z-10" 
             style={{ transform: 'translateZ(10px)' }} // Bring sigils forward
           >
             <div className="w-8 h-8 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse" data-ai-hint="ancient symbol">
