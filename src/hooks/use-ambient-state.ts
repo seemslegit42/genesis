@@ -3,56 +3,49 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 
-// Defines the shape of the ambient properties that can be manipulated.
-interface AmbientState {
-  intensity: number; // The opacity of the aurora effect.
-  speed: number; // The duration of the background animation in seconds.
-}
+// Defines the possible ambient states of the application, which directly control
+// the visual feedback of the "Living Sanctuary" environment.
+type AmbientState = 'calm' | 'focus' | 'recording';
 
-// Defines the possible states the ambient background can be in.
-type FocusState = 'calm' | 'focus' | 'recording';
-
-// Maps the FocusState to specific ambient values.
-const stateMappings: Record<FocusState, AmbientState> = {
-  calm: {
-    intensity: 0.2,
-    speed: 30,
-  },
-  focus: {
-    intensity: 0.4,
-    speed: 15,
-  },
-  recording: {
-    intensity: 0.6,
-    speed: 5,
-  },
+// Maps each AmbientState to specific CSS variable values that control the aurora.
+// 'calm': The default, gentle state.
+// 'focus': A more intense state, triggered by user interaction like typing.
+// 'recording': A vibrant, pulsating state for voice input.
+const stateMappings: Record<AmbientState, { intensity: number; speed: number }> = {
+  calm: { intensity: 0.2, speed: 30 },
+  focus: { intensity: 0.5, speed: 15 },
+  recording: { intensity: 0.7, speed: 5 },
 };
 
-// Defines the shape of the context that will be provided.
+// Defines the shape of the context that will be provided to consumers.
 interface AmbientStateContextType {
-  setAmbientState: (focusState: FocusState) => void;
+  setAmbientState: (state: AmbientState) => void;
   currentState: AmbientState;
 }
 
-// Create the React Context.
+// Create the React Context for the ambient state.
 const AmbientStateContext = createContext<AmbientStateContextType | null>(null);
 
-// The provider component that wraps the application.
-export const AmbientStateProvider = ({ children }: { children: ReactNode }) => {
-  const [ambientState, setAmbientState] = useState<AmbientState>(stateMappings.calm);
+/**
+ * The provider component that wraps the application, making the ambient state
+ * available to all child components. It manages the current state and applies
+ * the corresponding CSS variables to the root element.
+ * @param {Readonly<{children: ReactNode}>} props The component's children.
+ * @returns {JSX.Element} The rendered provider component.
+ */
+export const AmbientStateProvider = ({ children }: Readonly<{ children: ReactNode }>) => {
+  const [ambientState, setAmbientState] = useState<AmbientState>('calm');
 
-  // Function to change the ambient state based on a FocusState.
-  const setFocusState = useCallback((focusState: FocusState) => {
-    setAmbientState(stateMappings[focusState] || stateMappings.calm);
+  const setFocusState = useCallback((state: AmbientState) => {
+    setAmbientState(state);
   }, []);
 
   // Effect to apply the ambient state to the document's CSS custom properties.
   useEffect(() => {
     const root = document.documentElement;
-    if (root) {
-      root.style.setProperty('--aurora-intensity', String(ambientState.intensity));
-      root.style.setProperty('--aurora-speed', `${ambientState.speed}s`);
-    }
+    const { intensity, speed } = stateMappings[ambientState] || stateMappings.calm;
+    root.style.setProperty('--aurora-intensity', String(intensity));
+    root.style.setProperty('--aurora-speed', `${speed}s`);
   }, [ambientState]);
 
   return (
@@ -62,7 +55,11 @@ export const AmbientStateProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Custom hook to easily consume the AmbientStateContext.
+/**
+ * Custom hook to easily consume the AmbientStateContext from any component.
+ * This provides a simple API to change the application's ambient visual state.
+ * @returns {AmbientStateContextType} The context value.
+ */
 export const useAmbientState = () => {
   const context = useContext(AmbientStateContext);
   if (context === null) {
