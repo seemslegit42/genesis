@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useTransition } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect, useTransition } from 'react';
 import { ChatHeader } from '@/components/chat/chat-header';
 import { MessageList } from '@/components/chat/message-list';
 import { MessageInput } from '@/components/chat/message-input';
@@ -12,6 +11,7 @@ import { nanoid } from 'nanoid';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [streamingMessage, setStreamingMessage] = useState<Message | null>(null);
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
   const [isLoading, startTransition] = useTransition();
 
@@ -33,18 +33,30 @@ export default function ChatPage() {
     setMessages(newMessages);
 
     startTransition(async () => {
-      const aiResponse = await getAiResponse(newMessages);
+      const stream = await getAiResponse(newMessages);
+
       const assistantMessage: Message = {
         id: nanoid(),
         role: 'assistant',
-        content: aiResponse,
+        content: '',
       };
-      setMessages(prev => [...prev, assistantMessage]);
+      setStreamingMessage(assistantMessage);
+
+      for await (const chunk of stream) {
+        setStreamingMessage(prev => ({
+          ...prev!,
+          content: prev!.content + chunk,
+        }));
+      }
+      
+      setMessages(prev => [...prev, streamingMessage!]);
+      setStreamingMessage(null);
     });
   };
   
   const handleNewChat = () => {
     setMessages([]);
+    setStreamingMessage(null);
   };
 
   const onPromptClick = (prompt: string) => {
@@ -57,10 +69,10 @@ export default function ChatPage() {
       <ChatHeader onNewChat={handleNewChat} />
       <main className="flex-1 overflow-y-auto p-4 md:p-6">
         <div className="max-w-4xl mx-auto h-full">
-          {messages.length === 0 && initialPrompts.length > 0 && !isLoading ? (
+          {messages.length === 0 && initialPrompts.length > 0 && !isLoading && !streamingMessage ? (
             <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
           ) : (
-            <MessageList messages={messages} isLoading={isLoading} />
+            <MessageList messages={messages} streamingMessage={streamingMessage} isLoading={isLoading} />
           )}
         </div>
       </main>

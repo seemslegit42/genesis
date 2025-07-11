@@ -15,25 +15,30 @@ export async function generateInitialPromptIdeas() {
   }
 }
 
-export async function getAiResponse(messages: Message[]): Promise<string> {
+export async function getAiResponse(messages: Message[]) {
   if (!messages || messages.length === 0) {
-    return "I can't respond to an empty conversation. Say something!";
+    throw new Error("I can't respond to an empty conversation. Say something!");
   }
 
-  try {
-    const llmResponse = await ai.generate({
-      prompt: `You are BEEP, a futuristic AI assistant. Your responses should be helpful and concise. You have a slightly robotic but friendly tone. Use markdown for formatting when appropriate. The user is interacting with you through a sleek, neon-themed chat interface.
+  const { stream } = await ai.generate({
+    prompt: `You are BEEP, a futuristic AI assistant. Your responses should be helpful and concise. You have a slightly robotic but friendly tone. Use markdown for formatting when appropriate. The user is interacting with you through a sleek, neon-themed chat interface.
 
-      Current conversation:
-      ${messages.map(m => `${m.role}: ${m.content}`).join('\n')}`,
-      config: {
-        temperature: 0.7,
+    Current conversation:
+    ${messages.map(m => `${m.role}: ${m.content}`).join('\n')}`,
+    config: {
+      temperature: 0.7,
+    },
+    stream: true,
+  });
+
+  const textStream = new ReadableStream({
+    async start(controller) {
+      for await (const chunk of stream) {
+        controller.enqueue(chunk.text());
       }
-    });
+      controller.close();
+    },
+  });
 
-    return llmResponse.text();
-  } catch (error) {
-    console.error('Error getting AI response:', error);
-    return 'I am unable to respond at the moment due to a system error.';
-  }
+  return textStream;
 }
