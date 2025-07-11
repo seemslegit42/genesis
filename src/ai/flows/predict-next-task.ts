@@ -14,7 +14,7 @@ import { VowSchema } from '@/lib/types';
 /**
  * The Zod schema for the input of the next task prediction flow.
  */
-export const PredictNextTaskInputSchema = z.object({
+const PredictNextTaskInputSchema = z.object({
   chatHistory: z
     .array(
       z.object({
@@ -30,7 +30,7 @@ export type PredictNextTaskInput = z.infer<typeof PredictNextTaskInputSchema>;
 /**
  * The Zod schema for the output of the next task prediction flow.
  */
-export const PredictNextTaskOutputSchema = z.object({
+const PredictNextTaskOutputSchema = z.object({
   nextTask: z.string().describe('A single, concise, actionable micro-task that logically follows from the conversation. Should be a command. If no task is obvious, return an empty string.'),
 });
 export type PredictNextTaskOutput = z.infer<typeof PredictNextTaskOutputSchema>;

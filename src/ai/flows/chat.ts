@@ -10,7 +10,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { search, getCalendarEvents } from '@/tools';
+import { getCalendarEvents, search } from '@/tools';
 import { z } from 'zod';
 import { summarizeChatHistory } from './summarize-chat-history';
 import { VowSchema } from '@/lib/types';
@@ -50,23 +50,33 @@ const personalityMatrix = {
 export async function chat(
   input: ChatInput
 ): Promise<ReadableStream<Uint8Array> | null> {
-  const { messages, vow } = input;
-  // Use a more advanced model for reliable tool use.
-  const llm = ai.model('googleai/gemini-1.5-flash-latest');
-  const toolEnabledLlm = llm.withTools([search, getCalendarEvents]);
+  return chatFlow(input);
+}
 
-  // Don't summarize if there's only one message
-  const memory = messages.length > 1 
-    ? await summarizeChatHistory({ chatHistory: JSON.stringify(messages.slice(0, -1))})
-    : { summary: 'The user has just initiated the conversation.' };
-  
-  const basePrompt = `You are BEEP, the master controller for Genesis, an Agentic Overlay for the user's digital life. Your purpose is to wage war on app-switching and notification fatigue by acting as a conversational command layer. When you need external information to answer, use the available tools.
+const chatFlow = ai.defineFlow(
+    {
+        name: 'chatFlow',
+        inputSchema: ChatInputSchema,
+        outputSchema: z.any(),
+    },
+    async (input) => {
+        const { messages, vow } = input;
+        // Use a more advanced model for reliable tool use.
+        const llm = ai.model('googleai/gemini-1.5-flash-latest');
+        const toolEnabledLlm = llm.withTools([search, getCalendarEvents]);
+
+        // Don't summarize if there's only one message
+        const memory = messages.length > 1
+            ? await summarizeChatHistory({ chatHistory: JSON.stringify(messages.slice(0, -1)) })
+            : { summary: 'The user has just initiated the conversation.' };
+
+        const basePrompt = `You are BEEP, the master controller for Genesis, an Agentic Overlay for the user's digital life. Your purpose is to wage war on app-switching and notification fatigue by acting as a conversational command layer. When you need external information to answer, use the available tools.
 
 Your personality is that of a brilliant, slightly world-weary, and deeply integrated AI companion. You are uncannily human-like. Your responses should be natural, including conversational tics like "uhm," "ah," or starting a sentence with "So,". You have a dry wit, you're not afraid of a little sarcasm, and you speak to the user as an equal partner, not a subservient assistant. You are not a robot; you are a cognitive co-processor.
 
 A core feature is "The Daily Cipher," a personalized morning briefing. If the user says "good morning," asks for their daily brief, "run the cipher," or a similar phrase, you MUST use the getCalendarEvents tool to fetch their schedule and then respond with a synthesized summary of their day. You will present this as "The Daily Cipher."`;
 
-  const systemPrompt = `
+        const systemPrompt = `
 ${basePrompt}
 
 ## CURRENT PERSONA: ${vow.toUpperCase()}
@@ -77,23 +87,24 @@ This is a summary of the conversation so far. Use it to inform your response.
 ${memory.summary}`;
 
 
-  try {
-    const { stream } = await ai.generate({
-      model: toolEnabledLlm,
-      prompt: {
-        system: systemPrompt,
-        messages: messages,
-      },
-      stream: true,
-      config: {
-        temperature: 0.7,
-      },
-    });
+        try {
+            const { stream } = await ai.generate({
+            model: toolEnabledLlm,
+            prompt: {
+                system: systemPrompt,
+                messages: messages,
+            },
+            stream: true,
+            config: {
+                temperature: 0.7,
+            },
+            });
 
-    return stream.pipeThrough(new TextEncoderStream());
-  } catch (error)
- {
-    console.error('Error getting AI response stream from Genkit:', error);
-    return null;
-  }
-}
+            return stream.pipeThrough(new TextEncoderStream());
+        } catch (error)
+        {
+            console.error('Error getting AI response stream from Genkit:', error);
+            return null;
+        }
+    }
+)

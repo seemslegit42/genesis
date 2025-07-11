@@ -1,11 +1,11 @@
 'use server';
 
-import { chat as genkitChat } from '@/ai/flows/chat';
-import { generateInitialPromptIdeas as genkitGenerateInitialPromptIdeas } from '@/ai/flows/generate-initial-prompt-ideas';
-import { speechToText as genkitSpeechToText } from '@/ai/flows/speech-to-text';
-import { textToSpeech as genkitTextToSpeech } from '@/ai/flows/text-to-speech';
-import { predictNextTask as genkitPredictNextTask } from '@/ai/flows/predict-next-task';
-import { suggestBreak as genkitSuggestBreak } from '@/ai/flows/suggest-break';
+import { chat } from '@/ai/flows/chat';
+import { generateInitialPromptIdeas as generateInitialPromptIdeasFlow } from '@/ai/flows/generate-initial-prompt-ideas';
+import { speechToText as speechToTextFlow } from '@/ai/flows/speech-to-text';
+import { textToSpeech as textToSpeechFlow } from '@/ai/flows/text-to-speech';
+import { predictNextTask as predictNextTaskFlow } from '@/ai/flows/predict-next-task';
+import { suggestBreak as suggestBreakFlow } from '@/ai/flows/suggest-break';
 
 
 import type { Message, SpeechToTextInput, TextToSpeechInput, Vow, PredictNextTaskInput, PredictNextTaskOutput, SuggestBreakInput, SuggestBreakOutput } from '@/lib/types';
@@ -25,7 +25,7 @@ export async function getAiResponse(messages: Message[], vow: Vow): Promise<Read
   // We only need the role and content for the AI, so we'll map over the messages
   // to create a new array with just that data.
   const history = messages.map(({ id, ...rest }) => rest);
-  return genkitChat({ messages: history, vow });
+  return chat({ messages: history, vow });
 }
 
 /**
@@ -35,7 +35,7 @@ export async function getAiResponse(messages: Message[], vow: Vow): Promise<Read
  */
 export async function generateInitialPromptIdeas() {
   try {
-    const result = await genkitGenerateInitialPromptIdeas();
+    const result = await generateInitialPromptIdeasFlow();
     return result;
   } catch (error) {
     console.error('Error generating initial prompt ideas:', error);
@@ -58,7 +58,7 @@ export async function generateInitialPromptIdeas() {
  * @returns {Promise<{audioDataUri: string}>} A promise that resolves to the audio data URI.
  */
 export async function textToSpeech(input: TextToSpeechInput) {
-  return genkitTextToSpeech(input);
+  return textToSpeechFlow(input);
 }
 
 /**
@@ -68,7 +68,7 @@ export async function textToSpeech(input: TextToSpeechInput) {
  * @returns {Promise<{text: string}>} A promise that resolves to the transcribed text.
  */
 export async function speechToText(input: SpeechToTextInput) {
-  return genkitSpeechToText(input);
+  return speechToTextFlow(input);
 }
 
 
@@ -79,7 +79,7 @@ export async function speechToText(input: SpeechToTextInput) {
  * @returns {Promise<PredictNextTaskOutput>} A promise that resolves to the predicted task.
  */
 export async function predictNextTask(input: PredictNextTaskInput): Promise<PredictNextTaskOutput> {
-    return genkitPredictNextTask(input);
+    return predictNextTaskFlow(input);
 }
 
 /**
@@ -89,5 +89,5 @@ export async function predictNextTask(input: PredictNextTaskInput): Promise<Pred
  * @returns {Promise<SuggestBreakOutput>} A promise that resolves to the break suggestion.
  */
 export async function suggestBreak(input: SuggestBreakInput): Promise<SuggestBreakOutput> {
-    return genkitSuggestBreak(input);
+    return suggestBreakFlow(input);
 }
