@@ -26,7 +26,7 @@ interface InitialPromptsProps {
 export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) {
   if (prompts.length === 0) {
     return (
-        <div className="flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms'}}>
+        <div className="flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
              <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
                 AWAITING COMMAND
             </h2>
@@ -38,7 +38,7 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
   }
 
   return (
-    <div className="flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms'}}>
+    <div className="flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
       <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
         AWAITING COMMAND
       </h2>

@@ -33,7 +33,7 @@ export function Obelisk() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full relative group animate-float-in">
+    <div className="flex flex-col items-center justify-center h-full w-full relative group animate-float-in" style={{animationFillMode: 'backwards'}}>
       <div 
         className="relative transition-transform duration-200 ease-out" 
         style={{ transform, transformStyle: 'preserve-3d' }}
