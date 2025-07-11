@@ -10,8 +10,8 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
   if (prompts.length === 0) {
     return (
         <div className="flex flex-col items-center justify-center h-full text-center">
-             <h2 className="text-3xl font-headline mb-2 text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]">
-                Welcome
+             <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]">
+                BEEP
             </h2>
              <p className="text-muted-foreground mb-8 max-w-md">
                 Loading suggestions...
@@ -22,8 +22,8 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
 
   return (
     <div className="flex flex-col items-center justify-center h-full text-center">
-      <h2 className="text-3xl font-headline mb-2 text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]">
-        Welcome
+      <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]">
+        BEEP
       </h2>
       <p className="text-muted-foreground mb-8 max-w-md">
         This is your cognitive and operational sanctuary. How can I assist?

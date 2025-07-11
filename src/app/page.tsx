@@ -8,12 +8,13 @@ import { InitialPrompts } from '@/components/chat/initial-prompts';
 import { generateInitialPromptIdeas, getAiResponse } from '@/lib/actions';
 import type { Message } from '@/lib/types';
 import { nanoid } from 'nanoid';
+import { Obelisk } from '@/components/obelisk';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [streamingMessage, setStreamingMessage] = useState<Message | null>(null);
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
-  const [isLoading, startTransition] = useTransition();
+  const [isAiResponding, setIsAiResponding] = useState(false);
 
   useEffect(() => {
     const fetchPrompts = async () => {
@@ -35,8 +36,9 @@ export default function ChatPage() {
     };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
+    setIsAiResponding(true);
 
-    startTransition(async () => {
+    const processStream = async () => {
       try {
         const stream = await getAiResponse(newMessages);
 
@@ -70,8 +72,11 @@ export default function ChatPage() {
         setMessages(prev => [...prev, errorMessage]);
       } finally {
         setStreamingMessage(null);
+        setIsAiResponding(false);
       }
-    });
+    };
+    
+    processStream();
   };
   
   const handleNewChat = () => {
@@ -83,23 +88,32 @@ export default function ChatPage() {
     handleSendMessage(prompt);
   };
 
+  const showObelisk = messages.length === 0 && !streamingMessage && !isAiResponding;
+
   return (
     <div className="flex flex-col h-screen">
       <ChatHeader onNewChat={handleNewChat} />
-      <main className="flex-1 overflow-y-auto p-4 md:p-6">
-        <div className="max-w-4xl mx-auto h-full">
-          {messages.length === 0 && !streamingMessage && !isLoading ? (
-            <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+
+      <div className="sticky top-16 z-10 w-full bg-transparent p-4 md:p-6 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto">
+          <MessageInput onSendMessage={handleSendMessage} isLoading={isAiResponding} />
+        </div>
+      </div>
+
+      <main className="flex-1 flex flex-col overflow-y-auto p-4 md:p-6">
+        <div className="max-w-4xl w-full mx-auto flex-1">
+          {showObelisk ? (
+             <Obelisk />
           ) : (
             <MessageList messages={messages} streamingMessage={streamingMessage} />
           )}
         </div>
+        {showObelisk && (
+          <div className="pb-8">
+            <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+          </div>
+        )}
       </main>
-      <div className="p-4 md:p-6 bg-transparent">
-        <div className="max-w-4xl mx-auto">
-          <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading || !!streamingMessage} />
-        </div>
-      </div>
     </div>
   );
 }

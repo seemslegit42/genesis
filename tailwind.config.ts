@@ -48,6 +48,7 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        'obsidian-black': 'hsl(var(--obsidian-black))'
       },
       borderRadius: {
         lg: 'var(--radius)',
