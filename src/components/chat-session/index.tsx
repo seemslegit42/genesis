@@ -18,6 +18,9 @@ import { useTypographicState } from '@/hooks/use-typographic-state';
 import { useCollectiveState } from '@/hooks/use-collective-state';
 import { Sidecar } from '../sidecar';
 import { useAmbientState } from '@/hooks/use-ambient-state';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { BottomBar } from './bottom-bar';
+import { MessageInput } from './message-input';
 
 
 /**
@@ -45,6 +48,7 @@ export function ChatSession() {
   const { setAmbientState } = useAmbientState();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
+  const isMobile = useIsMobile();
 
 
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
@@ -288,6 +292,17 @@ export function ChatSession() {
   }
 
   const showInitialPrompts = messages.length === 0 && !isAiResponding && !streamingMessage;
+  
+  const messageInput = (
+    <MessageInput
+        onSendMessage={handleSendMessage}
+        isLoading={isAiResponding || isTranscribing}
+        isRecording={status === 'recording'}
+        startRecording={handleVoiceRecording}
+        stopRecording={handleVoiceRecording}
+    />
+  );
+
 
   return (
     <div className="flex flex-col h-screen">
@@ -301,15 +316,13 @@ export function ChatSession() {
                 onUnlock={handleUnlock}
             />
             <ChatHeader 
-                onNewChat={handleNewChat} 
-                onSendMessage={handleSendMessage} 
-                isLoading={isAiResponding || isTranscribing}
-                isRecording={status === 'recording'}
-                startRecording={handleVoiceRecording}
-                stopRecording={handleVoiceRecording}
+                onNewChat={handleNewChat}
                 messages={messages}
                 transcriptionUnlocked={transcriptionUnlocked}
-            />
+                isMobile={isMobile}
+            >
+                {!isMobile && messageInput}
+            </ChatHeader>
             <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
             <div className="flex-1 flex overflow-hidden">
@@ -339,6 +352,11 @@ export function ChatSession() {
                     onClose={() => setPredictedTask('')}
                 />
             </div>
+             {isMobile && (
+                <BottomBar>
+                    {messageInput}
+                </BottomBar>
+            )}
             <audio ref={audioRef} className="hidden" />
         </>
       )}

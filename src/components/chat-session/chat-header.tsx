@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MessageInput } from '@/components/chat-session/message-input';
 import { Progress } from '../ui/progress';
 import { Message } from '@/lib/types';
 import { Logo } from '../logo';
@@ -27,20 +26,14 @@ interface ChatHeaderProps {
    * reset mechanism for the user's workflow.
    */
   onNewChat: () => void;
-  /** A callback function invoked when the user sends a message. */
-  onSendMessage: (content: string) => void;
-  /** A boolean indicating if the AI is currently processing a message, which disables the input. */
-  isLoading: boolean;
-  /** A boolean indicating if audio is currently being recorded. */
-  isRecording: boolean;
-  /** A callback function to start audio recording. */
-  startRecording: () => void;
-  /** A callback function to stop audio recording. */
-  stopRecording: () => void;
   /** The array of messages in the current chat. */
   messages: Message[];
   /** A boolean indicating if transcription is unlocked. */
   transcriptionUnlocked: boolean;
+  /** The content to be rendered in the center of the header (e.g., the message input on desktop). */
+  children?: React.ReactNode;
+  /** A boolean indicating if the current view is mobile. */
+  isMobile: boolean;
 }
 
 /**
@@ -141,28 +134,27 @@ const MobileMenu = ({ onNewChat, messages, transcriptionUnlocked }: { onNewChat:
  * @param {ChatHeaderProps} props The props for the component.
  * @returns {JSX.Element} The rendered header component.
  */
-export function ChatHeader({ onNewChat, onSendMessage, isLoading, isRecording, startRecording, stopRecording, messages, transcriptionUnlocked }: ChatHeaderProps) {
+export function ChatHeader({ onNewChat, messages, transcriptionUnlocked, children, isMobile }: ChatHeaderProps) {
   return (
     <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
       <div className="flex items-center justify-between p-2 sm:p-4 h-full w-full mx-auto px-2 sm:px-6 lg:px-8 gap-2 sm:gap-4">
         <div className="flex items-center gap-2 cursor-pointer font-headline shrink-0" onClick={onNewChat} title="Start New Chat">
            <Logo className="h-6 w-auto" />
         </div>
+        
         <div className="flex-1 w-full min-w-0 max-w-2xl">
-          <MessageInput 
-            onSendMessage={onSendMessage} 
-            isLoading={isLoading}
-            isRecording={isRecording}
-            startRecording={startRecording}
-            stopRecording={stopRecording}
-          />
+          {children}
         </div>
+
         <div className="hidden md:flex items-center justify-end shrink-0">
           <SovereigntyManifest messages={messages} transcriptionUnlocked={transcriptionUnlocked} />
         </div>
-        <div className="md:hidden">
-          <MobileMenu onNewChat={onNewChat} messages={messages} transcriptionUnlocked={transcriptionUnlocked} />
-        </div>
+
+        {isMobile && (
+           <div className="md:hidden">
+                <MobileMenu onNewChat={onNewChat} messages={messages} transcriptionUnlocked={transcriptionUnlocked} />
+            </div>
+        )}
       </div>
     </header>
   );
