@@ -46,7 +46,7 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
       <div 
         className={cn(
           "absolute inset-x-0 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-accent/50 via-primary/50 to-accent/50 blur-2xl transition-opacity duration-1000",
-          isLoading ? "opacity-100 animate-pulse" : "opacity-0"
+          !isLoading ? "opacity-100 animate-pulse" : "opacity-0"
         )}
       ></div>
       <Textarea
