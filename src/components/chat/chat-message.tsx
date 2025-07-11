@@ -35,7 +35,9 @@ export function ChatMessage({ message }: ChatMessageProps) {
           'glassmorphism'
         )}
       >
-        <p className="leading-relaxed">{content}</p>
+        <div className="prose prose-invert prose-p:leading-relaxed">
+          {content}
+        </div>
       </div>
       {role === 'user' && <ChatAvatar role="user" />}
     </div>

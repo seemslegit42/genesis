@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ChatHeader } from '@/components/chat/chat-header';
 import { MessageList } from '@/components/chat/message-list';
 import { InitialPrompts } from '@/components/chat/initial-prompts';
-import { generateInitialPromptIdeas, summarizeChatHistory } from '@/lib/actions';
+import { generateInitialPromptIdeas } from '@/lib/actions';
 import { getAiResponse } from '@/lib/actions';
 import type { Message } from '@/lib/types';
 import { Obelisk } from '@/components/obelisk';
@@ -154,17 +154,19 @@ export default function ChatPage() {
     <div className="flex flex-col h-screen">
       <ChatHeader onNewChat={handleNewChat} onSendMessage={handleSendMessage} isLoading={isAiResponding} />
       
-      <main className="flex-1 flex flex-col overflow-hidden px-4 sm:px-6 lg:px-8 pb-4">
+      <main className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto">
           {showInitialState ? (
-             <div className="flex flex-col h-full">
-                <Obelisk />
-                <div className="pb-8 w-full">
+             <div className="flex flex-col items-center justify-center h-full p-4">
+                <div className="flex-1 flex items-center justify-center w-full">
+                  <Obelisk />
+                </div>
+                <div className="pb-8 w-full max-w-4xl mx-auto">
                     <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
                 </div>
              </div>
           ) : (
-            <div className="max-w-4xl w-full mx-auto">
+            <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
               <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding}/>
             </div>
           )}

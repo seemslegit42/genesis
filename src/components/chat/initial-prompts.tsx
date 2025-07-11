@@ -1,3 +1,4 @@
+import { ArrowUpRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 /**
@@ -25,7 +26,7 @@ interface InitialPromptsProps {
 export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) {
   if (prompts.length === 0) {
     return (
-        <div className="flex flex-col items-center justify-center h-full text-center">
+        <div className="flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms'}}>
              <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
                 AWAITING COMMAND
             </h2>
@@ -37,7 +38,7 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center">
+    <div className="flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms'}}>
       <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
         AWAITING COMMAND
       </h2>
@@ -51,8 +52,9 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
             onClick={() => onPromptClick(prompt)}
             className="group cursor-pointer glassmorphism hover:border-primary/50 transition-all duration-300 text-left hover:-translate-y-1 hover:shadow-primary/20 hover:shadow-2xl"
           >
-            <CardContent>
+            <CardContent className="flex items-center justify-between">
               <p className="text-foreground font-medium">{prompt}</p>
+              <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </CardContent>
           </Card>
         ))}
