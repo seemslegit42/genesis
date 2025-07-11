@@ -52,8 +52,8 @@ const TypographicStateContext = createContext<TypographicStateContextType | unde
  * The provider component for the Typographic State Engine (TSE).
  * It manages the typographic state and applies it to the document's root element.
  * This component should wrap the entire application.
- * @param {{ children: ReactNode }} { children }
- * @returns {JSX.Element}
+ * @param {{ children: ReactNode }} props The props for the component.
+ * @returns {JSX.Element} The rendered provider component.
  */
 export const TypographicStateProvider = ({ children }: { children: ReactNode }) => {
   const [typographicState, setTypographicState] = useState<TypographicState>(stateMappings.default);
