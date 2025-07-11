@@ -2,7 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
-import { Audiowide, Inter } from 'next/font/google';
+import { Audiowide } from 'next/font/google';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 
@@ -28,17 +28,6 @@ const fontInscription = Audiowide({
 });
 
 /**
- * The Codex: The workhorse font for all UI text and body copy.
- * It is exceptionally clear, legible, and minimalist, providing
- * effortless clarity. This is the Codex Tier of our Typographic Sigil System.
- * @type {NextFont}
- */
-const fontCodex = Inter({
-  subsets: ['latin'],
-  variable: '--font-codex',
-});
-
-/**
  * Defines the root layout for the application, wrapping all pages.
  * It sets up the global fonts, theme, and Toaster component.
  * This is the foundational structure of the "Digital Temple."
@@ -51,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("dark", GeistSans.variable, GeistMono.variable, fontInscription.variable, fontCodex.variable)}>
+    <html lang="en" className={cn("dark", GeistSans.variable, GeistMono.variable, fontInscription.variable)}>
       <body className={cn("font-body antialiased", "min-h-screen")}>
         {children}
         <Toaster />
