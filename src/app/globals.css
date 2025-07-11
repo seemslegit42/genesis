@@ -35,6 +35,12 @@
     --obsidian-black: 275 10% 5%;
 
     --radius: 0.75rem;
+
+    /* Typographic Sigil System Variables */
+    --sigil-wght: 400;
+    --sigil-slnt: 0;
+    --sigil-letterspacing: 0%;
+    --sigil-transform: none;
   }
 
   .dark {
@@ -65,7 +71,11 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
+    font-variation-settings: 'wght' var(--sigil-wght), 'slnt' var(--sigil-slnt);
+    letter-spacing: var(--sigil-letterspacing);
+    transform: var(--sigil-transform);
+    transition: font-variation-settings 0.4s ease, letter-spacing 0.4s ease, transform 0.4s ease;
   }
 }
 
