@@ -7,7 +7,21 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Twitter, Linkedin } from 'lucide-react';
+
+const Twitter = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+        <path d="M22 4s-.7 2.1-2 3.4c1.6 1.4 3.3 4.9 3.3 4.9-3.3 1.4-6.7 1.4-6.7-1.4 0-5.6 5.6-5.6 5.6-3.3 0-3.3-1.4-3.3-1.4-1.4 0-2.1.7-2.1.7-1.4.7-2.8 1.4-2.8 1.4-2.8 0-5.6-2.1-5.6-2.1L.8 12.1c0 0 2.1-2.1 3.5-2.1S6 12.1 6 12.1s3.3-2.1 4.2-2.1c.9 0 2.1 2.1 2.1 2.1L15 14.2s-2.1 2.8-4.2 2.8c-2.1 0-4.2-1.4-4.2-1.4" />
+    </svg>
+)
+
+const Linkedin = () => (
+     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect width="4" height="12" x="2" y="9" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+)
+
 
 /**
  * Props for the ShareToUnlock component.
@@ -58,7 +72,7 @@ export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps)
             className="w-full font-bold text-lg"
             onClick={handleShare}
           >
-            <Twitter className="mr-2" />
+            <Twitter />
             Share on X
           </Button>
           <Button
@@ -66,7 +80,7 @@ export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps)
             className="w-full font-bold text-lg"
             onClick={handleShare}
           >
-            <Linkedin className="mr-2" />
+            <Linkedin />
             Share on LinkedIn
           </Button>
         </div>

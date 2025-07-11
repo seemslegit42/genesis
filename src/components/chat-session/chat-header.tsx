@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { MessageInput } from '@/components/chat-session/message-input';
 import { Progress } from '../ui/progress';
 import { Message } from '@/lib/types';
+import { Logo } from '../logo';
 
 /**
  * Props for the ChatHeader component.
@@ -92,14 +92,7 @@ export function ChatHeader({ onNewChat, onSendMessage, isLoading, isRecording, s
     <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
       <div className="flex items-center justify-between p-4 h-full w-full mx-auto px-4 sm:px-6 lg:px-8 gap-4">
         <div className="flex items-center gap-2 cursor-pointer font-headline shrink-0" onClick={onNewChat} title="Start New Chat">
-           <Image 
-              src="/icons/logo.svg"
-              alt="BEEP Logo"
-              width={100}
-              height={40}
-              data-ai-hint="futuristic geometric logo"
-              className="w-auto h-6"
-           />
+           <Logo className="h-6 w-auto" />
         </div>
         <div className="flex-1 w-full min-w-0 max-w-2xl">
           <MessageInput 

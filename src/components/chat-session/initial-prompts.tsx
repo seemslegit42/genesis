@@ -1,4 +1,3 @@
-import { ArrowUpRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 /**
@@ -15,6 +14,12 @@ interface InitialPromptsProps {
    */
   onPromptClick: (prompt: string) => void;
 }
+
+const ArrowUpRight = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4 text-muted-foreground group-hover:text-primary transition-colors">
+        <path d="M7 17l9.2-9.2M17 17V7H7" />
+    </svg>
+)
 
 /**
  * The Invocation Interface.
@@ -57,7 +62,7 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <p className="text-foreground font-medium">{prompt}</p>
-                <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                <ArrowUpRight />
               </div>
             </CardContent>
           </Card>

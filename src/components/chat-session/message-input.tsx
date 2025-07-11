@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ArrowUp, Mic, Square } from 'lucide-react';
 import { useTypographicState } from '@/hooks/use-typographic-state';
+import { SendSigil, MicSigil, StopSigil } from '../aetheric-sigils';
 
 /**
  * Props for the MessageInput component.
@@ -100,13 +100,10 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
           size="icon"
           variant="ghost"
           onClick={isRecording ? stopRecording : startRecording}
-          className={cn(
-            "text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-9 w-9",
-            isRecording && "text-red-500 animate-pulse"
-          )}
+          className="text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-9 w-9"
           disabled={isLoading}
         >
-          {isRecording ? <Square className="size-5"/> : <Mic className="size-5" />}
+          {isRecording ? <StopSigil isActive /> : <MicSigil isActive={isRecording} />}
           <span className="sr-only">{isRecording ? "Stop Recording" : "Start Recording"}</span>
         </Button>
         <Button
@@ -116,7 +113,7 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
           className="text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-9 w-9"
           disabled={isLoading || !content.trim() || isRecording}
         >
-          <ArrowUp className="size-5" />
+          <SendSigil isActive={!!content.trim()} />
           <span className="sr-only">Send</span>
         </Button>
       </div>
