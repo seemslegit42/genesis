@@ -5,7 +5,7 @@ import { useReactMediaRecorder } from 'react-media-recorder';
 import { ChatHeader } from '@/components/chat-session/chat-header';
 import { MessageList } from '@/components/chat-session/message-list';
 import { InitialPrompts } from '@/components/chat-session/initial-prompts';
-import { generateInitialPromptIdeas, getAiResponse, textToSpeech, speechToText, predictNextTask } from '@/lib/actions';
+import { generateInitialPromptIdeas, getAiResponse, textToSpeech, speechToText, predictNextTask, suggestBreak } from '@/lib/actions';
 import { getChatHistory, saveChatHistory } from '@/lib/services/chat';
 import { useAuth } from '@/hooks/use-auth';
 import type { Message, Vow } from '@/lib/types';
@@ -77,17 +77,24 @@ export function ChatSession() {
   }, [messages, user, historyLoaded]);
 
 
-  const handleSendMessage = useCallback(async (content: string) => {
+  const handleSendMessage = useCallback(async (content: string, isBreakSuggestion: boolean = false) => {
     if (!content.trim() || !vow) return;
     
     setPredictedTask(''); // Clear previous prediction
-    const userMessage: Message = {
+    
+    const newMessage: Message = {
       id: String(Date.now()),
-      role: 'user',
+      role: isBreakSuggestion ? 'assistant' : 'user',
       content,
     };
     
-    const updatedMessages = [...messages, userMessage];
+    // If it's a break suggestion, just add it to messages and don't expect a response.
+    if (isBreakSuggestion) {
+      setMessages(prev => [...prev, newMessage]);
+      return;
+    }
+    
+    const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages);
     setIsAiResponding(true);
 
@@ -117,7 +124,8 @@ export function ChatSession() {
       }
       
       const finalMessage = { ...assistantMessage, content: accumulatedContent };
-      setMessages(prev => [...prev, finalMessage]);
+      const finalHistoryForPrediction = [...updatedMessages, finalMessage];
+      setMessages(finalHistoryForPrediction);
       
       const { audioDataUri } = await textToSpeech({ text: accumulatedContent });
       if (audioRef.current) {
@@ -126,10 +134,22 @@ export function ChatSession() {
       }
       
       // After response, predict the next task
-      const finalHistory = [...updatedMessages, finalMessage].map(({id, ...rest}) => rest);
+      const finalHistory = finalHistoryForPrediction.map(({id, ...rest}) => rest);
       const prediction = await predictNextTask({ chatHistory: finalHistory, vow });
       if (prediction && prediction.nextTask) {
         setPredictedTask(prediction.nextTask);
+      }
+      
+      // After a certain number of interactions, suggest a break.
+      const userMessagesCount = updatedMessages.filter(m => m.role === 'user').length;
+      if (userMessagesCount > 0 && userMessagesCount % 8 === 0) {
+          const breakSuggestion = await suggestBreak({ vow });
+          if(breakSuggestion.suggestion) {
+            // Use a timeout to make it feel less immediate
+            setTimeout(() => {
+                handleSendMessage(breakSuggestion.suggestion, true);
+            }, 1500);
+          }
       }
 
     } catch (error) {

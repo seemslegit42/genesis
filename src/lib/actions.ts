@@ -5,8 +5,10 @@ import { generateInitialPromptIdeas as genkitGenerateInitialPromptIdeas } from '
 import { speechToText as genkitSpeechToText } from '@/ai/flows/speech-to-text';
 import { textToSpeech as genkitTextToSpeech } from '@/ai/flows/text-to-speech';
 import { predictNextTask as genkitPredictNextTask } from '@/ai/flows/predict-next-task';
+import { suggestBreak as genkitSuggestBreak } from '@/ai/flows/suggest-break';
 
-import type { Message, SpeechToTextInput, TextToSpeechInput, Vow, PredictNextTaskInput, PredictNextTaskOutput } from '@/lib/types';
+
+import type { Message, SpeechToTextInput, TextToSpeechInput, Vow, PredictNextTaskInput, PredictNextTaskOutput, SuggestBreakInput, SuggestBreakOutput } from '@/lib/types';
 
 /**
  * Server action to get a streaming AI response for a given set of messages.
@@ -78,4 +80,14 @@ export async function speechToText(input: SpeechToTextInput) {
  */
 export async function predictNextTask(input: PredictNextTaskInput): Promise<PredictNextTaskOutput> {
     return genkitPredictNextTask(input);
+}
+
+/**
+ * Server action to suggest a break to the user.
+ * Wraps the 'suggestBreak' Genkit flow.
+ * @param {SuggestBreakInput} input - The user's current vow.
+ * @returns {Promise<SuggestBreakOutput>} A promise that resolves to the break suggestion.
+ */
+export async function suggestBreak(input: SuggestBreakInput): Promise<SuggestBreakOutput> {
+    return genkitSuggestBreak(input);
 }

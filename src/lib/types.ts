@@ -4,6 +4,7 @@
  */
 import { z } from 'zod';
 import { PredictNextTaskInputSchema, PredictNextTaskOutputSchema } from '@/ai/flows/predict-next-task';
+import { SuggestBreakInputSchema, SuggestBreakOutputSchema } from '@/ai/flows/suggest-break';
 
 /**
  * Represents a single message in a chat conversation.
@@ -47,3 +48,6 @@ export interface SpeechToTextInput {
 
 export type PredictNextTaskInput = z.infer<typeof PredictNextTaskInputSchema>;
 export type PredictNextTaskOutput = z.infer<typeof PredictNextTaskOutputSchema>;
+
+export type SuggestBreakInput = z.infer<typeof SuggestBreakInputSchema>;
+export type SuggestBreakOutput = z.infer<typeof SuggestBreakOutputSchema>;

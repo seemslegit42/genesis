@@ -7,3 +7,4 @@ import '@/ai/flows/chat.ts';
 import '@/ai/flows/text-to-speech';
 import '@/ai/flows/speech-to-text';
 import '@/ai/flows/predict-next-task';
+import '@/ai/flows/suggest-break';
