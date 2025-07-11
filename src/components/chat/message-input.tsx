@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { ArrowUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MessageInputProps {
@@ -33,7 +32,8 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      // A little extra height to prevent scrollbar from flashing
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   }, [content]);
 
@@ -43,10 +43,12 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
       onSubmit={handleSubmit}
       className="relative flex items-center w-full"
     >
-      <div className={cn(
-        "absolute inset-0 rounded-full bg-primary/50 blur-xl transition-opacity duration-500",
-        isLoading ? "opacity-100 animate-pulse" : "opacity-0"
-      )}></div>
+      <div 
+        className={cn(
+          "absolute inset-x-0 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-accent/50 via-primary/50 to-accent/50 blur-2xl transition-opacity duration-1000",
+          isLoading ? "opacity-100 animate-pulse" : "opacity-0"
+        )}
+      ></div>
       <Textarea
         ref={textareaRef}
         value={content}
@@ -54,18 +56,16 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
         onKeyDown={handleKeyDown}
         placeholder="BEEP..."
         rows={1}
-        className="w-full resize-none pr-14 py-3 pl-6 text-lg bg-input backdrop-blur-sm border-border focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-0 transition-all duration-300 focus:shadow-[0_0_25px_hsl(var(--accent)/0.7)] max-h-48 rounded-full"
+        className="w-full resize-none pr-16 py-3 pl-6 text-lg bg-input backdrop-blur-sm border-border focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all duration-300 focus:shadow-[0_0_35px_hsl(var(--ring)/0.5)] max-h-48 rounded-full"
         disabled={isLoading}
       />
-      <Button
+       <Button
         type="submit"
-        size="icon"
         variant="ghost"
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-9 w-9"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-10 w-auto px-4 text-sm font-bold"
         disabled={isLoading || !content.trim()}
       >
-        <ArrowUp className="size-6" />
-        <span className="sr-only">Send Message</span>
+        SEND
       </Button>
     </form>
   );

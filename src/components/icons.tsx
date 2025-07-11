@@ -1,5 +1,3 @@
-import { Bot, User } from 'lucide-react';
-import type { SVGProps } from 'react';
-
-export const BeepIcon = Bot;
-export const UserIcon = User;
+// This file is intentionally left blank to adhere to the "NO ICONS" design principle.
+// All iconographic elements have been removed from the application.
+export {};

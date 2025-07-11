@@ -5,7 +5,8 @@ import { ChatHeader } from '@/components/chat/chat-header';
 import { MessageList } from '@/components/chat/message-list';
 import { MessageInput } from '@/components/chat/message-input';
 import { InitialPrompts } from '@/components/chat/initial-prompts';
-import { generateInitialPromptIdeas, getAiResponse } from '@/lib/actions';
+import { generateInitialPromptIdeas } from '@/lib/actions';
+import { getAiResponse } from '@/lib/actions';
 import type { Message } from '@/lib/types';
 import { nanoid } from 'nanoid';
 import { Obelisk } from '@/components/obelisk';
@@ -19,7 +20,7 @@ export default function ChatPage() {
   useEffect(() => {
     const fetchPrompts = async () => {
       try {
-        const prompts = await generateInitialPromptIdeas();
+        const {prompts} = await generateInitialPromptIdeas();
         setInitialPrompts(prompts);
       } catch (error) {
         console.error("Failed to fetch initial prompts:", error);
@@ -41,6 +42,18 @@ export default function ChatPage() {
     const processStream = async () => {
       try {
         const stream = await getAiResponse(newMessages);
+        if (!stream) {
+            const errorMessage: Message = {
+                id: nanoid(),
+                role: 'assistant',
+                content: "Sorry, I couldn't get a response. Please check the connection and try again.",
+            };
+            setMessages(prev => [...prev, errorMessage]);
+            setStreamingMessage(null);
+            setIsAiResponding(false);
+            return;
+        }
+
 
         const assistantMessage: Message = {
           id: nanoid(),
@@ -94,13 +107,13 @@ export default function ChatPage() {
     <div className="flex flex-col h-screen">
       <ChatHeader onNewChat={handleNewChat} />
 
-      <div className="sticky top-16 z-10 w-full bg-transparent p-4 md:p-6 backdrop-blur-sm">
+      <div className="sticky top-16 z-10 w-full bg-transparent p-4 md:px-6">
         <div className="max-w-4xl mx-auto">
           <MessageInput onSendMessage={handleSendMessage} isLoading={isAiResponding} />
         </div>
       </div>
 
-      <main className="flex-1 flex flex-col overflow-y-auto p-4 md:p-6">
+      <main className="flex-1 flex flex-col overflow-y-auto px-4 md:px-6">
         <div className="max-w-4xl w-full mx-auto flex-1">
           {showObelisk ? (
              <Obelisk />

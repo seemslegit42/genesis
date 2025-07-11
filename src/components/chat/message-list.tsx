@@ -16,17 +16,19 @@ export function MessageList({ messages, streamingMessage }: MessageListProps) {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, streamingMessage]);
+  }, [messages.length, streamingMessage?.content]);
 
-  const isLoading = messages.length > 0 && messages[messages.length - 1].role === 'user' && !streamingMessage;
+  // Determine if we should show the loading indicator.
+  // This is true if the last message is from the user, and we are not yet streaming a response.
+  const isAiResponding = messages.length > 0 && messages[messages.length - 1].role === 'user' && !streamingMessage;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pt-8">
       {messages.map((message) => (
         <ChatMessage key={message.id} message={message} />
       ))}
       {streamingMessage && <ChatMessage message={streamingMessage} />}
-      {isLoading && <LoadingMessage />}
+      {isAiResponding && <LoadingMessage />}
       <div ref={scrollRef} />
     </div>
   );
