@@ -2,9 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
-import { Audiowide } from 'next/font/google';
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
+import { Comfortaa, Lexend } from 'next/font/google';
 import { TypographicStateProvider } from '@/hooks/use-typographic-state';
 
 /**
@@ -22,10 +20,20 @@ export const metadata: Metadata = {
  * This is the Obelisk Tier of our Typographic Sigil System.
  * @type {NextFont}
  */
-const fontInscription = Audiowide({
+const fontInscription = Comfortaa({
   subsets: ['latin'],
   variable: '--font-inscription',
-  weight: ['400'],
+});
+
+/**
+ * The Codex: The font for body text, UI elements, and detailed content.
+ * It is chosen for its clarity, legibility, and calming presence.
+ * This is the Scribe Tier of our Typographic Sigil System.
+ * @type {NextFont}
+ */
+const fontCodex = Lexend({
+  subsets: ['latin'],
+  variable: '--font-codex',
 });
 
 /**
@@ -41,8 +49,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("dark", GeistSans.variable, GeistMono.variable, fontInscription.variable)}>
-      <body className={cn("antialiased", "min-h-screen")}>
+    <html lang="en" className={cn("dark", fontInscription.variable, fontCodex.variable)}>
+      <body className={cn("antialiased", "min-h-screen", "font-body")}>
         <TypographicStateProvider>
             {children}
         </TypographicStateProvider>
