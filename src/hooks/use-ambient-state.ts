@@ -1,4 +1,3 @@
-
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
@@ -33,7 +32,7 @@ const AmbientStateContext = createContext<AmbientStateContextType | null>(null);
  * @param {Readonly<{children: ReactNode}>} props The component's children.
  * @returns {JSX.Element} The rendered provider component.
  */
-export const AmbientStateProvider = ({ children }: Readonly<{ children: ReactNode }>) => {
+export const AmbientStateProvider = ({ children }: { children: ReactNode }) => {
   const [ambientState, setAmbientState] = useState<AmbientState>('calm');
 
   const setFocusState = useCallback((state: AmbientState) => {
