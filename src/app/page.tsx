@@ -11,17 +11,61 @@ import type { Message } from '@/lib/types';
 import { Obelisk } from '@/components/obelisk';
 import { Sidecar } from '@/components/sidecar';
 
+/**
+ * The main chat page component for the BEEP: Genesis application.
+ * It orchestrates the entire chat experience, managing message state,
+ * AI interactions, and the display of core UI elements like the Obelisk and Sidecar.
+ * @returns {JSX.Element} The rendered chat page.
+ */
 export default function ChatPage() {
+  /**
+   * State for storing the list of messages in the current chat session.
+   * @type {[Message[], React.Dispatch<React.SetStateAction<Message[]>>]}
+   */
   const [messages, setMessages] = useState<Message[]>([]);
+
+  /**
+   * State for storing the message currently being streamed from the AI.
+   * @type {[Message | null, React.Dispatch<React.SetStateAction<Message | null>>]}
+   */
   const [streamingMessage, setStreamingMessage] = useState<Message | null>(null);
+
+  /**
+   * State for storing the initial prompt suggestions for the user.
+   * @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]}
+   */
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
+
+  /**
+   * State to track whether the AI is currently generating a response.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
   const [isAiResponding, setIsAiResponding] = useState(false);
+
+  /**
+   * State for the content to be displayed in the Sidecar component.
+   * Null if the sidecar should be hidden.
+   * @type {[React.ReactNode | null, React.Dispatch<React.SetStateAction<React.ReactNode | null>>]}
+   */
   const [sidecarContent, setSidecarContent] = useState<React.ReactNode | null>(null);
+  
+  /**
+   * State for storing the summary of the chat history, displayed by the Obelisk.
+   * @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]}
+   */
   const [obeliskSummary, setObeliskSummary] = useState<string | null>(null);
+  
+  /**
+   * State to track if the chat history is currently being summarized.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
   const [isSummarizing, setIsSummarizing] = useState(false);
 
 
   useEffect(() => {
+    /**
+     * Fetches the initial prompt ideas when the component mounts.
+     */
     const fetchPrompts = async () => {
       try {
         const {prompts} = await generateInitialPromptIdeas();
@@ -33,6 +77,11 @@ export default function ChatPage() {
     fetchPrompts();
   }, []);
 
+  /**
+   * Handles sending a new message from the user.
+   * It adds the user's message to the state and triggers the AI response stream.
+   * @param {string} content The text content of the message to send.
+   */
   const handleSendMessage = (content: string) => {
     const userMessage: Message = {
       id: String(Date.now()),
@@ -57,7 +106,9 @@ export default function ChatPage() {
         setSidecarContent(null);
     }
 
-
+    /**
+     * Processes the streaming response from the AI.
+     */
     const processStream = async () => {
       try {
         const stream = await getAiResponse(newMessages);
@@ -111,6 +162,9 @@ export default function ChatPage() {
     processStream();
   };
   
+  /**
+   * Resets the chat state to start a new conversation.
+   */
   const handleNewChat = () => {
     setMessages([]);
     setStreamingMessage(null);
@@ -118,10 +172,19 @@ export default function ChatPage() {
     setObeliskSummary(null);
   };
 
+  /**
+   * Handles the click event on an initial prompt suggestion.
+   * @param {string} prompt The text of the clicked prompt.
+   */
   const onPromptClick = (prompt: string) => {
     handleSendMessage(prompt);
   };
   
+  /**
+   * Handles the click event on the Obelisk.
+   * Toggles the display of the chat summary. If no summary is present,
+   * it calls the summarization flow to generate one.
+   */
   const handleObeliskClick = async () => {
     if (isSummarizing || messages.length === 0) return;
     
@@ -143,6 +206,11 @@ export default function ChatPage() {
     }
   };
 
+  /**
+   * Determines whether to show the Obelisk and initial prompts.
+   * This is true only when the chat is empty.
+   * @type {boolean}
+   */
   const showObelisk = messages.length === 0 && !streamingMessage;
 
   return (

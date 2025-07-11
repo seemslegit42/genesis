@@ -1,12 +1,26 @@
 import { cn } from "@/lib/utils";
 
+/**
+ * Props for the Obelisk component.
+ * @interface
+ */
 interface ObeliskProps {
+  /** Callback function invoked when the Obelisk is clicked. */
   onClick: () => void;
+  /** The summary text to display, or null if no summary is active. */
   summary: string | null;
+  /** Boolean indicating if a summary is currently being loaded. */
   isLoading: boolean;
+  /** Boolean indicating if the Obelisk should be interactive (i.e., if a chat has started). */
   isInteractive: boolean;
 }
 
+/**
+ * Renders the central Obelisk of Genesis, a core visual and interactive element.
+ * It serves as a visual anchor and an "Action Hub" to summarize the current task.
+ * @param {ObeliskProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered Obelisk.
+ */
 export function Obelisk({ onClick, summary, isLoading, isInteractive }: ObeliskProps) {
   return (
     <div 

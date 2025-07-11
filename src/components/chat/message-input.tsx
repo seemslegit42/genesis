@@ -5,15 +5,31 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
+/**
+ * Props for the MessageInput component.
+ * @interface
+ */
 interface MessageInputProps {
+  /** Callback function invoked when the user sends a message. */
   onSendMessage: (content: string) => void;
+  /** Boolean indicating if the AI is currently processing a message. */
   isLoading: boolean;
 }
 
+/**
+ * A controlled component for the user to type and send chat messages.
+ * It serves as the "Central BEEP™ Command Strip".
+ * @param {MessageInputProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered message input form.
+ */
 export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
   const [content, setContent] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  /**
+   * Handles the form submission event.
+   * @param {React.FormEvent} e - The form event.
+   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (content.trim() && !isLoading) {
@@ -22,6 +38,10 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
     }
   };
 
+  /**
+   * Handles keydown events on the textarea for send-on-enter functionality.
+   * @param {React.KeyboardEvent<HTMLTextAreaElement>} e - The keyboard event.
+   */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -29,6 +49,7 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
     }
   };
   
+  // Effect to auto-resize the textarea based on its content.
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';

@@ -2,10 +2,21 @@ import type { Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChatAvatar } from '@/components/chat/chat-avatar';
 
+/**
+ * Props for the ChatMessage component.
+ * @interface
+ */
 interface ChatMessageProps {
+  /** The message object to display. */
   message: Message;
 }
 
+/**
+ * Renders a single chat message, including the avatar and the message content bubble.
+ * It adapts its layout based on whether the message is from the 'user' or 'assistant'.
+ * @param {ChatMessageProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered chat message.
+ */
 export function ChatMessage({ message }: ChatMessageProps) {
   const { role, content } = message;
   return (
@@ -29,6 +40,11 @@ export function ChatMessage({ message }: ChatMessageProps) {
   );
 }
 
+/**
+ * Displays a loading indicator to show that the AI assistant is "thinking".
+ * This is shown after a user sends a message but before the AI response stream begins.
+ * @returns {JSX.Element} The rendered loading indicator.
+ */
 export function LoadingMessage() {
   return (
     <div className="flex items-center gap-3 md:gap-4">

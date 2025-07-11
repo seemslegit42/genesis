@@ -1,10 +1,23 @@
 import { cn } from "@/lib/utils";
 
+/**
+ * Props for the Sidecar component.
+ * @interface
+ */
 interface SidecarProps {
+    /** The content to be rendered inside the sidecar panel. */
     children: React.ReactNode;
+    /** Optional additional class names for custom styling. */
     className?: string;
 }
 
+/**
+ * A persistent panel that docks to the side of the screen.
+ * It's used to display contextual information or the next step in a guided task,
+ * serving as the user's "true north" during a workflow.
+ * @param {SidecarProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered sidecar panel.
+ */
 export function Sidecar({ children, className }: SidecarProps) {
     return (
         <aside className={cn("w-full max-w-sm ml-6 flex flex-col", className)}>

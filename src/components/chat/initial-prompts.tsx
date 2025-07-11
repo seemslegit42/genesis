@@ -1,10 +1,22 @@
 import { Card, CardContent } from '@/components/ui/card';
 
+/**
+ * Props for the InitialPrompts component.
+ * @interface
+ */
 interface InitialPromptsProps {
+  /** An array of suggested prompt strings. */
   prompts: string[];
+  /** Callback function invoked when a prompt is clicked. */
   onPromptClick: (prompt: string) => void;
 }
 
+/**
+ * Displays a list of suggested prompts to help the user get started.
+ * This component is shown on the initial empty state of the chat.
+ * @param {InitialPromptsProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered list of initial prompts.
+ */
 export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) {
   if (prompts.length === 0) {
     return (

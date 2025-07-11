@@ -5,6 +5,11 @@ import { summarizeChatHistory as genkitSummarizeChatHistory, type SummarizeChatH
 import { chat } from '@/ai/flows/chat';
 import type { Message } from '@/lib/types';
 
+/**
+ * Server action to generate initial prompt ideas for the user.
+ * Wraps the 'generateInitialPromptIdeas' Genkit flow.
+ * @returns {Promise<{prompts: string[]}>} A promise that resolves to an object containing a list of prompts.
+ */
 export async function generateInitialPromptIdeas() {
   try {
     const result = await genkitGenerateInitialPromptIdeas();
@@ -23,11 +28,23 @@ export async function generateInitialPromptIdeas() {
   }
 }
 
+/**
+ * Server action to summarize a chat history.
+ * Wraps the 'summarizeChatHistory' Genkit flow.
+ * @param {SummarizeChatHistoryInput} input - The input object containing the chat history string.
+ * @returns {Promise<{summary: string}>} A promise that resolves to an object containing the summary.
+ */
 export async function summarizeChatHistory(input: SummarizeChatHistoryInput) {
     return genkitSummarizeChatHistory(input);
 }
 
 
+/**
+ * Server action to get a streaming AI response for a given set of messages.
+ * Wraps the main 'chat' Genkit flow.
+ * @param {Message[]} messages - The history of messages in the current chat.
+ * @returns {Promise<ReadableStream<Uint8Array> | null>} A promise that resolves to a readable stream of the AI's response, or null on error.
+ */
 export async function getAiResponse(
   messages: Message[]
 ): Promise<ReadableStream<Uint8Array> | null> {
