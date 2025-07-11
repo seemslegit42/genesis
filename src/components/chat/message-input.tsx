@@ -84,7 +84,7 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
        <Button
         type="submit"
         variant="ghost"
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-10 w-auto px-4 text-sm font-bold"
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-10 w-auto px-4 text-sm font-bold"
         disabled={isLoading || !content.trim()}
       >
         SEND

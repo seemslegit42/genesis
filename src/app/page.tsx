@@ -3,18 +3,16 @@
 import { useState, useEffect } from 'react';
 import { ChatHeader } from '@/components/chat/chat-header';
 import { MessageList } from '@/components/chat/message-list';
-import { MessageInput } from '@/components/chat/message-input';
 import { InitialPrompts } from '@/components/chat/initial-prompts';
 import { generateInitialPromptIdeas, summarizeChatHistory } from '@/lib/actions';
 import { getAiResponse } from '@/lib/actions';
 import type { Message } from '@/lib/types';
 import { Obelisk } from '@/components/obelisk';
-import { Sidecar } from '@/components/sidecar';
 
 /**
  * The main chat page component for the BEEP: Genesis application.
  * It orchestrates the entire chat experience, managing message state,
- * AI interactions, and the display of core UI elements like the Obelisk and Sidecar.
+ * AI interactions, and the display of core UI elements.
  * This component serves as the "Canvas" where the user's dialogue with BEEP unfolds.
  * @returns {JSX.Element} The rendered chat page, the user's cognitive sanctuary.
  */
@@ -46,14 +44,6 @@ export default function ChatPage() {
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
   const [isAiResponding, setIsAiResponding] = useState(false);
-
-  /**
-   * State for the content to be displayed in the Sidecar component. The Sidecar
-   * acts as a "true north," holding the immediate next step of a guided task.
-   * Null if no task is active.
-   * @type {[React.ReactNode | null, React.Dispatch<React.SetStateAction<React.ReactNode | null>>]}
-   */
-  const [sidecarContent, setSidecarContent] = useState<React.ReactNode | null>(null);
 
   /**
    * State for storing the summary of the chat history, which is displayed by the
@@ -97,21 +87,6 @@ export default function ChatPage() {
     setMessages(newMessages);
     setIsAiResponding(true);
     setObeliskSummary(null); // Clear summary on new message
-
-    // MOCK: This simulates BEEP acting as a Task Architect. If the user's
-    // command includes "onboard", BEEP initiates a guided workflow and populates
-    // the Sidecar with the first step.
-    if (content.toLowerCase().includes('onboard')) {
-      setSidecarContent(
-        <div>
-          <h3 className="font-headline text-lg text-primary mb-2">Onboard New Client</h3>
-          <p className="text-sm text-muted-foreground">Step 1: Create CRM Entry</p>
-          <p className="mt-4 text-sm">Please provide the client's full name and email address.</p>
-        </div>
-      );
-    } else if (content.toLowerCase().includes('complete')) {
-        setSidecarContent(null);
-    }
 
     // Processes the streaming response from the AI.
     const processStream = async () => {
@@ -172,7 +147,6 @@ export default function ChatPage() {
   const handleNewChat = () => {
     setMessages([]);
     setStreamingMessage(null);
-    setSidecarContent(null);
     setObeliskSummary(null);
   };
 
@@ -220,31 +194,23 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <ChatHeader onNewChat={handleNewChat} />
+      <ChatHeader onNewChat={handleNewChat} onSendMessage={handleSendMessage} isLoading={isAiResponding} />
       
-      <div className="sticky top-16 z-20 w-full bg-transparent">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <MessageInput onSendMessage={handleSendMessage} isLoading={isAiResponding} />
-        </div>
-      </div>
-
-      <main className="flex-1 flex overflow-hidden px-4 sm:px-6 lg:px-8 pb-4">
-        <div className="flex-1 flex flex-col items-center">
-            <div className="max-w-4xl w-full mx-auto flex-1 overflow-y-auto">
-              {showInitialState ? (
-                 <Obelisk onClick={handleObeliskClick} summary={obeliskSummary} isLoading={isSummarizing} isInteractive={messages.length > 0} />
-              ) : (
-                <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding}/>
-              )}
+      <main className="flex-1 flex flex-col overflow-hidden px-4 sm:px-6 lg:px-8 pb-4">
+        <div className="flex-1 overflow-y-auto">
+          {showInitialState ? (
+             <div className="flex flex-col h-full">
+                <Obelisk onClick={handleObeliskClick} summary={obeliskSummary} isLoading={isSummarizing} isInteractive={messages.length > 0} />
+                <div className="pb-8 w-full">
+                    <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+                </div>
+             </div>
+          ) : (
+            <div className="max-w-4xl w-full mx-auto">
+              <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding}/>
             </div>
-            {showInitialState && (
-              <div className="pb-8 w-full">
-                <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
-              </div>
-            )}
+          )}
         </div>
-
-        {sidecarContent && <Sidecar>{sidecarContent}</Sidecar>}
       </main>
     </div>
   );
