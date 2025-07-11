@@ -2,15 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
+import { TypographicState } from '@/hooks/use-typographic-state';
+
+interface ObeliskProps {
+  typographicState: TypographicState;
+}
 
 /**
  * Renders the central Obelisk of Genesis, a core visual and interactive element.
- * It's a pseudo-3D object that reacts to mouse movement, creating an interactive
- * and mesmerizing centerpiece for the application's initial state. It is the primary
- * action hub, inviting the user to begin their journey.
+ * It's a pseudo-3D object that reacts to mouse movement and the application's
+ * typographic state, creating an interactive and mesmerizing centerpiece.
  * @returns {JSX.Element} The rendered Obelisk component.
  */
-export function Obelisk() {
+export function Obelisk({ typographicState }: ObeliskProps) {
   const [transform, setTransform] = useState('rotateX(0deg) rotateY(0deg)');
 
   useEffect(() => {
@@ -32,6 +36,8 @@ export function Obelisk() {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+  
+  const { obeliskColor1, obeliskColor2, obeliskColor3, obeliskGlow, obeliskAnimation } = typographicState;
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full relative group animate-float-in" style={{animationFillMode: 'backwards'}}>
@@ -40,22 +46,18 @@ export function Obelisk() {
         style={{ transform, transformStyle: 'preserve-3d' }}
       >
         {/* The glow effect behind the Obelisk */}
-        <div className={cn(
-            "absolute w-48 h-48 bg-primary/20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 transition-all duration-500",
-            "group-hover:bg-primary/30",
-            "opacity-[var(--obelisk-glow)]"
-        )}></div>
+        <div 
+            className="absolute w-48 h-48 bg-primary/20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 transition-all duration-500 group-hover:bg-primary/30"
+            style={{ opacity: obeliskGlow }}
+        ></div>
         
         {/* The Obelisk structure itself */}
         <div 
-          className={cn(
-            "relative w-24 h-80 bg-obsidian-black flex flex-col items-center py-8 transition-all duration-300",
-            "shadow-[0_0_40px_10px_hsl(var(--primary)/0.1)]",
-            "animate-[var(--obelisk-animation)]"
-          )}
+          className="relative w-24 h-80 bg-obsidian-black flex flex-col items-center py-8 transition-all duration-300 shadow-[0_0_40px_10px_hsl(var(--primary)/0.1)]"
           style={{
             transformStyle: 'preserve-3d',
             clipPath: 'polygon(20% 0, 80% 0, 100% 100%, 0% 100%)',
+            animation: obeliskAnimation
           }}
         >
           {/* Surface textures to give the Obelisk a more complex, ancient feel */}
@@ -68,18 +70,18 @@ export function Obelisk() {
             style={{ transform: 'translateZ(10px)' }} // Bring sigils forward
           >
             <div className="w-8 h-8 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse" data-ai-hint="ancient symbol">
-                <svg viewBox="0 0 100 100" fill="hsl(var(--obelisk-color-1))">
+                <svg viewBox="0 0 100 100" fill={obeliskColor1}>
                     <path d="M50 0 L61.8 38.2 L100 38.2 L69.1 61.8 L80.9 100 L50 76.4 L19.1 100 L30.9 61.8 L0 38.2 L38.2 38.2 Z" />
                 </svg>
             </div>
              <div className="w-6 h-6 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse [animation-delay:0.2s]" data-ai-hint="geometric pattern">
-                <svg viewBox="0 0 100 100" stroke="hsl(var(--obelisk-color-2))" strokeWidth="8" fill="transparent" >
+                <svg viewBox="0 0 100 100" stroke={obeliskColor2} strokeWidth="8" fill="transparent" >
                     <circle cx="50" cy="50" r="40" />
                     <line x1="50" y1="10" x2="50" y2="90" />
                 </svg>
             </div>
              <div className="w-10 h-10 opacity-10 group-hover:opacity-40 transition-opacity duration-300 animate-pulse [animation-delay:0.4s]" data-ai-hint="arcane circle">
-                <svg viewBox="0 0 100 100" stroke="hsl(var(--obelisk-color-3))" strokeWidth="4" fill="transparent">
+                <svg viewBox="0 0 100 100" stroke={obeliskColor3} strokeWidth="4" fill="transparent">
                     <circle cx="50" cy="50" r="45" />
                     <circle cx="50" cy="50" r="35" />
                     <path d="M 50,5 L 95,50 L 50,95 L 5,50 Z" />

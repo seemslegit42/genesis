@@ -13,6 +13,8 @@ import { Obelisk } from '@/components/obelisk';
 import { Progress } from '@/components/ui/progress';
 import { ShareToUnlock } from './share-to-unlock';
 import { Skeleton } from '@/components/ui/skeleton';
+import { RiteOfInvocation } from '@/components/rite-of-invocation';
+import { useTypographicState } from '@/hooks/use-typographic-state';
 
 
 /**
@@ -33,6 +35,8 @@ export function ChatSession() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [transcriptionUnlocked, setTranscriptionUnlocked] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState(false);
+  const [isInitiated, setIsInitiated] = useState(false);
+  const { currentState } = useTypographicState();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
@@ -45,6 +49,9 @@ export function ChatSession() {
     if (user && !historyLoaded) {
       getChatHistory(user.uid).then((history) => {
         setMessages(history);
+        if (history.length > 0) {
+            setIsInitiated(true);
+        }
         setHistoryLoaded(true);
       });
     }
@@ -185,6 +192,7 @@ export function ChatSession() {
      if (user) {
       saveChatHistory(user.uid, []); // Clear history in DB as well
     }
+    setIsInitiated(false);
   };
 
   const onPromptClick = (prompt: string) => {
@@ -195,6 +203,11 @@ export function ChatSession() {
     setTranscriptionUnlocked(true);
     setShowShareModal(false);
   };
+
+  const handleInitiation = (vow: string) => {
+    handleSendMessage(`I have chosen the path of the ${vow}. Guide me.`);
+    setIsInitiated(true);
+  }
 
   if (authLoading || !historyLoaded) {
     return (
@@ -217,44 +230,52 @@ export function ChatSession() {
     )
   }
 
-  const showInitialState = messages.length === 0 && !isAiResponding && !streamingMessage;
+  const showInitialPrompts = messages.length === 0 && !isAiResponding && !streamingMessage;
 
   return (
-    <div className="flex flex-col h-full">
-       <ShareToUnlock 
-        isOpen={showShareModal}
-        onClose={() => setShowShareModal(false)}
-        onUnlock={handleUnlock}
-      />
-      <ChatHeader 
-        onNewChat={handleNewChat} 
-        onSendMessage={handleSendMessage} 
-        isLoading={isAiResponding || isTranscribing}
-        isRecording={status === 'recording'}
-        startRecording={handleVoiceRecording}
-        stopRecording={handleVoiceRecording}
-      />
-      <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
-      
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto">
-          {showInitialState ? (
-             <div className="flex flex-col items-center justify-center h-full p-4">
-                <div className="flex-1 flex items-center justify-center w-full">
-                  <Obelisk />
+    <div className="flex flex-col h-screen">
+      {!isInitiated ? (
+        <RiteOfInvocation onComplete={handleInitiation} />
+      ) : (
+        <>
+            <ShareToUnlock 
+                isOpen={showShareModal}
+                onClose={() => setShowShareModal(false)}
+                onUnlock={handleUnlock}
+            />
+            <ChatHeader 
+                onNewChat={handleNewChat} 
+                onSendMessage={handleSendMessage} 
+                isLoading={isAiResponding || isTranscribing}
+                isRecording={status === 'recording'}
+                startRecording={handleVoiceRecording}
+                stopRecording={handleVoiceRecording}
+                messages={messages}
+                transcriptionUnlocked={transcriptionUnlocked}
+            />
+            <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
+            
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex-1 overflow-y-auto">
+                {showInitialPrompts ? (
+                    <div className="flex flex-col items-center justify-center h-full p-4">
+                        <div className="flex-1 flex items-center justify-center w-full">
+                          <Obelisk typographicState={currentState} />
+                        </div>
+                        <div className="pb-8 w-full max-w-4xl mx-auto">
+                            <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+                        </div>
+                    </div>
+                ) : (
+                    <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+                    <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
+                    </div>
+                )}
                 </div>
-                <div className="pb-8 w-full max-w-4xl mx-auto">
-                    <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
-                </div>
-             </div>
-          ) : (
-            <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-              <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
             </div>
-          )}
-        </div>
-      </div>
-      <audio ref={audioRef} className="hidden" />
+            <audio ref={audioRef} className="hidden" />
+        </>
+      )}
     </div>
   );
 }

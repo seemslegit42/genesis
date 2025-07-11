@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { MessageInput } from '@/components/chat-session/message-input';
+import { Progress } from '../ui/progress';
+import { Message } from '@/lib/types';
 
 /**
  * Props for the ChatHeader component.
@@ -25,6 +27,10 @@ interface ChatHeaderProps {
   startRecording: () => void;
   /** A callback function to stop audio recording. */
   stopRecording: () => void;
+  /** The array of messages in the current chat. */
+  messages: Message[];
+  /** A boolean indicating if transcription is unlocked. */
+  transcriptionUnlocked: boolean;
 }
 
 /**
@@ -35,7 +41,7 @@ interface ChatHeaderProps {
  * and robust identity system, key components for a profit-driven architecture.
  * @returns {JSX.Element} The rendered component.
  */
-const SovereigntyManifest = () => {
+const SovereigntyManifest = ({ messages, transcriptionUnlocked }: { messages: Message[], transcriptionUnlocked: boolean }) => {
     const [time, setTime] = useState('');
 
     useEffect(() => {
@@ -49,13 +55,23 @@ const SovereigntyManifest = () => {
         return () => clearInterval(timer);
     }, []);
 
+    const calculateRelationshipLevel = () => {
+        const basePoints = messages.length * 10;
+        const bonusPoints = transcriptionUnlocked ? 1000 : 0;
+        return basePoints + bonusPoints;
+    }
+
+    const level = calculateRelationshipLevel();
+    const pointsForNextLevel = Math.floor(level / 100 + 1) * 100;
+    const progress = (level % 100);
+
     return (
-        <div className="flex items-center gap-4 text-xs text-right text-muted-foreground">
-            <div className="flex flex-col items-end">
-                <div className="font-bold text-foreground" style={{ textShadow: '0 0 8px hsl(var(--primary)/0.7)' }}>
-                    1,337.42 Ξ
+        <div className="flex items-center gap-4 text-xs text-right text-muted-foreground w-48">
+            <div className="flex-grow">
+                 <div className="font-bold text-foreground text-right" style={{ textShadow: '0 0 8px hsl(var(--primary)/0.7)' }}>
+                    LVL: {Math.floor(level / 100)}
                 </div>
-                <div className='hidden sm:block'>Admin User | Session: Active</div>
+                <Progress value={progress} className="h-1 bg-primary/20" />
             </div>
             <div className="font-mono text-lg text-foreground">{time}</div>
         </div>
@@ -71,7 +87,7 @@ const SovereigntyManifest = () => {
  * @param {ChatHeaderProps} props The props for the component.
  * @returns {JSX.Element} The rendered header component.
  */
-export function ChatHeader({ onNewChat, onSendMessage, isLoading, isRecording, startRecording, stopRecording }: ChatHeaderProps) {
+export function ChatHeader({ onNewChat, onSendMessage, isLoading, isRecording, startRecording, stopRecording, messages, transcriptionUnlocked }: ChatHeaderProps) {
   return (
     <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
       <div className="flex items-center justify-between p-4 h-full w-full mx-auto px-4 sm:px-6 lg:px-8 gap-4">
@@ -95,7 +111,7 @@ export function ChatHeader({ onNewChat, onSendMessage, isLoading, isRecording, s
           />
         </div>
         <div className="hidden md:flex items-center justify-end shrink-0">
-          <SovereigntyManifest />
+          <SovereigntyManifest messages={messages} transcriptionUnlocked={transcriptionUnlocked} />
         </div>
       </div>
     </header>
