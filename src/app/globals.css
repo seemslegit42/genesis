@@ -11,9 +11,9 @@
     --card-foreground: 0 0% 98%;
     --popover: 271 76% 15%;
     --popover-foreground: 0 0% 98%;
-    --primary: 177 68% 40%; /* Roman Aqua */
-    --primary-foreground: 0 0% 98%;
-    --secondary: 158 51% 55%; /* Patina Green */
+    --primary: 158 51% 55%; /* Patina Green */
+    --primary-foreground: 240 10% 2%;
+    --secondary: 177 68% 40%; /* Roman Aqua */
     --secondary-foreground: 240 10% 2%;
     --muted: 240 5% 25%; /* Conchoidal Gray */
     --muted-foreground: 240 5% 64.9%;
@@ -23,7 +23,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 177 68% 40%; /* Roman Aqua */
+    --ring: 158 51% 55%; /* Patina Green */
     --radius: 0.75rem;
     --obsidian-black: 240 10% 2%;
 

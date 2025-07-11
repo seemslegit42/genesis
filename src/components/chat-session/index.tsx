@@ -5,6 +5,7 @@ import { useReactMediaRecorder } from 'react-media-recorder';
 import { ChatHeader } from '@/components/chat-session/chat-header';
 import { MessageList } from '@/components/chat-session/message-list';
 import { InitialPrompts } from '@/components/chat-session/initial-prompts';
+import { MessageInput } from '@/components/chat-session/message-input';
 import { generateInitialPromptIdeas, getAiResponse, textToSpeech, speechToText, predictNextTask, suggestBreak } from '@/lib/actions';
 import { getChatHistory, saveChatHistory } from '@/lib/services/chat';
 import { useAuth } from '@/hooks/use-auth';
@@ -20,7 +21,6 @@ import { Sidecar } from '../sidecar';
 import { useAmbientState } from '@/hooks/use-ambient-state';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BottomBar } from './bottom-bar';
-import { MessageInput } from './message-input';
 
 
 /**

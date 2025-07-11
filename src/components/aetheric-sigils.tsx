@@ -7,7 +7,7 @@ interface SigilProps {
 
 export function SendSigil({ className, isActive }: SigilProps) {
     return (
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={cn("w-6 h-6", className)}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={cn("w-8 h-8", className)}>
             <defs>
                 <filter id="glow-send" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation={isActive ? "2.5" : "1.5"} result="coloredBlur" />
@@ -32,7 +32,7 @@ export function SendSigil({ className, isActive }: SigilProps) {
 
 export function MicSigil({ className, isActive }: SigilProps) {
     return (
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={cn("w-6 h-6", className)}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={cn("w-8 h-8", className)}>
              <defs>
                 <filter id="glow-mic" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation={isActive ? "3" : "2"} result="coloredBlur" />
@@ -60,7 +60,7 @@ export function MicSigil({ className, isActive }: SigilProps) {
 
 export function StopSigil({ className, isActive }: SigilProps) {
      return (
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={cn("w-6 h-6", className)}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={cn("w-8 h-8", className)}>
              <defs>
                 <filter id="glow-stop" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
