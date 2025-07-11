@@ -10,12 +10,14 @@ import { getAiResponse } from '@/lib/actions';
 import type { Message } from '@/lib/types';
 import { nanoid } from 'nanoid';
 import { Obelisk } from '@/components/obelisk';
+import { Sidecar } from '@/components/sidecar';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [streamingMessage, setStreamingMessage] = useState<Message | null>(null);
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
   const [isAiResponding, setIsAiResponding] = useState(false);
+  const [sidecarContent, setSidecarContent] = useState<React.ReactNode | null>(null);
 
   useEffect(() => {
     const fetchPrompts = async () => {
@@ -38,6 +40,20 @@ export default function ChatPage() {
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setIsAiResponding(true);
+
+    // MOCK: Trigger Sidecar for onboarding task
+    if (content.toLowerCase().includes('onboard')) {
+      setSidecarContent(
+        <div>
+          <h3 className="font-headline text-lg text-primary mb-2">Onboard New Client</h3>
+          <p className="text-sm text-muted-foreground">Step 1: Create CRM Entry</p>
+          <p className="mt-4 text-sm">Please provide the client's full name and email address.</p>
+        </div>
+      );
+    } else if (content.toLowerCase().includes('complete')) {
+        setSidecarContent(null);
+    }
+
 
     const processStream = async () => {
       try {
@@ -95,6 +111,7 @@ export default function ChatPage() {
   const handleNewChat = () => {
     setMessages([]);
     setStreamingMessage(null);
+    setSidecarContent(null);
   };
 
   const onPromptClick = (prompt: string) => {
@@ -113,19 +130,23 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <main className="flex-1 flex flex-col overflow-y-auto px-4 md:px-6">
-        <div className="max-w-4xl w-full mx-auto flex-1">
-          {showObelisk ? (
-             <Obelisk />
-          ) : (
-            <MessageList messages={messages} streamingMessage={streamingMessage} />
-          )}
+      <main className="flex-1 flex overflow-hidden px-4 md:px-6">
+        <div className="flex-1 flex flex-col items-center">
+            <div className="max-w-4xl w-full mx-auto flex-1 overflow-y-auto">
+              {showObelisk ? (
+                 <Obelisk />
+              ) : (
+                <MessageList messages={messages} streamingMessage={streamingMessage} />
+              )}
+            </div>
+            {showObelisk && (
+              <div className="pb-8 w-full">
+                <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+              </div>
+            )}
         </div>
-        {showObelisk && (
-          <div className="pb-8">
-            <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
-          </div>
-        )}
+
+        {sidecarContent && <Sidecar>{sidecarContent}</Sidecar>}
       </main>
     </div>
   );
