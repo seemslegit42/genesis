@@ -65,11 +65,7 @@
     --ring: 173 66% 47%;
   }
 
-  * {
-    @apply border-border;
-  }
   body {
-    @apply bg-background text-foreground;
     font-variation-settings: 'wght' var(--sigil-wght), 'slnt' var(--sigil-slnt);
     letter-spacing: var(--sigil-letterspacing);
     transform: var(--sigil-transform);
@@ -77,41 +73,45 @@
   }
 }
 
-@keyframes aurora {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(at 20% 20%, hsl(var(--accent) / 0.25) 0px, transparent 50%),
-    radial-gradient(at 80% 20%, hsl(var(--primary) / 0.25) 0px, transparent 50%),
-    radial-gradient(at 20% 80%, hsl(var(--secondary) / 0.25) 0px, transparent 50%),
-    radial-gradient(at 80% 80%, hsl(var(--accent) / 0.15) 0px, transparent 50%);
-  background-size: 250% 250%;
-  animation: aurora 20s ease infinite;
-  filter: blur(120px);
-}
-
-.glassmorphism {
-  @apply bg-card/70 backdrop-blur-xl border border-border shadow-lg shadow-black/20;
-  /* Add a subtle inner shadow to create the "glass edge" effect */
-  box-shadow: inset 0 1px 1px hsl(var(--border)), 0 2px 8px hsl(var(--obsidian-black) / 0.5);
-}
-
-@keyframes float-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
+@layer components {
+  .glassmorphism {
+    @apply bg-card/70 backdrop-blur-xl border border-border shadow-lg shadow-black/20;
+    /* Add a subtle inner shadow to create the "glass edge" effect */
+    box-shadow: inset 0 1px 1px hsl(var(--border)), 0 2px 8px hsl(var(--obsidian-black) / 0.5);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+}
+
+@layer utilities {
+  @keyframes aurora {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(at 20% 20%, hsl(var(--accent) / 0.25) 0px, transparent 50%),
+      radial-gradient(at 80% 20%, hsl(var(--primary) / 0.25) 0px, transparent 50%),
+      radial-gradient(at 20% 80%, hsl(var(--secondary) / 0.25) 0px, transparent 50%),
+      radial-gradient(at 80% 80%, hsl(var(--accent) / 0.15) 0px, transparent 50%);
+    background-size: 250% 250%;
+    animation: aurora 20s ease infinite;
+    filter: blur(120px);
+  }
+
+  @keyframes float-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 }
