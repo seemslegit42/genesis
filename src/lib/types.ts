@@ -2,6 +2,8 @@
  * @fileoverview This file centralizes all core type definitions for the application,
  * creating a single source of truth for our data structures.
  */
+import { z } from 'zod';
+import { PredictNextTaskInputSchema, PredictNextTaskOutputSchema } from '@/ai/flows/predict-next-task';
 
 /**
  * Represents a single message in a chat conversation.
@@ -21,7 +23,8 @@ export interface Message {
  * Defines the possible Vows an Initiate can take.
  * @typedef {'Architect' | 'Oracle' | 'Sentinel'} Vow
  */
-export type Vow = 'Architect' | 'Oracle' | 'Sentinel';
+export const VowSchema = z.enum(['Architect', 'Oracle', 'Sentinel']);
+export type Vow = z.infer<typeof VowSchema>;
 
 
 /**
@@ -41,3 +44,6 @@ export interface SpeechToTextInput {
     /** The audio to transcribe, as a Base64 encoded data URI. */
     audioDataUri: string;
 }
+
+export type PredictNextTaskInput = z.infer<typeof PredictNextTaskInputSchema>;
+export type PredictNextTaskOutput = z.infer<typeof PredictNextTaskOutputSchema>;

@@ -5,7 +5,7 @@ import { useReactMediaRecorder } from 'react-media-recorder';
 import { ChatHeader } from '@/components/chat-session/chat-header';
 import { MessageList } from '@/components/chat-session/message-list';
 import { InitialPrompts } from '@/components/chat-session/initial-prompts';
-import { generateInitialPromptIdeas, getAiResponse, textToSpeech, speechToText } from '@/lib/actions';
+import { generateInitialPromptIdeas, getAiResponse, textToSpeech, speechToText, predictNextTask } from '@/lib/actions';
 import { getChatHistory, saveChatHistory } from '@/lib/services/chat';
 import { useAuth } from '@/hooks/use-auth';
 import type { Message, Vow } from '@/lib/types';
@@ -16,6 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { RiteOfInvocation } from '@/components/rite-of-invocation';
 import { useTypographicState } from '@/hooks/use-typographic-state';
 import { useCollectiveState } from '@/hooks/use-collective-state';
+import { Sidecar } from '../sidecar';
 
 
 /**
@@ -41,6 +42,8 @@ export function ChatSession() {
   const { currentState } = useTypographicState();
   const { totalUsers, totalEngagement } = useCollectiveState();
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [predictedTask, setPredictedTask] = useState<string>('');
+
 
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
     video: false,
@@ -77,6 +80,7 @@ export function ChatSession() {
   const handleSendMessage = useCallback(async (content: string) => {
     if (!content.trim() || !vow) return;
     
+    setPredictedTask(''); // Clear previous prediction
     const userMessage: Message = {
       id: String(Date.now()),
       role: 'user',
@@ -119,6 +123,13 @@ export function ChatSession() {
       if (audioRef.current) {
         audioRef.current.src = audioDataUri;
         audioRef.current.play();
+      }
+      
+      // After response, predict the next task
+      const finalHistory = [...updatedMessages, finalMessage].map(({id, ...rest}) => rest);
+      const prediction = await predictNextTask({ chatHistory: finalHistory, vow });
+      if (prediction && prediction.nextTask) {
+        setPredictedTask(prediction.nextTask);
       }
 
     } catch (error) {
@@ -202,6 +213,7 @@ export function ChatSession() {
     }
     setIsInitiated(false);
     setVow(null);
+    setPredictedTask('');
   };
 
   const onPromptClick = (prompt: string) => {
@@ -265,7 +277,7 @@ export function ChatSession() {
             />
             <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex overflow-hidden">
                 <div className="flex-1 overflow-y-auto">
                 {showInitialPrompts ? (
                     <div className="flex flex-col items-center justify-center h-full p-4">
@@ -282,10 +294,14 @@ export function ChatSession() {
                     </div>
                 ) : (
                     <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-                    <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
+                      <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
                     </div>
                 )}
                 </div>
+                <Sidecar 
+                    predictedTask={predictedTask} 
+                    onAcceptTask={(task) => handleSendMessage(task)}
+                />
             </div>
             <audio ref={audioRef} className="hidden" />
         </>

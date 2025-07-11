@@ -4,7 +4,9 @@ import { chat as genkitChat } from '@/ai/flows/chat';
 import { generateInitialPromptIdeas as genkitGenerateInitialPromptIdeas } from '@/ai/flows/generate-initial-prompt-ideas';
 import { speechToText as genkitSpeechToText } from '@/ai/flows/speech-to-text';
 import { textToSpeech as genkitTextToSpeech } from '@/ai/flows/text-to-speech';
-import type { Message, SpeechToTextInput, TextToSpeechInput, Vow } from '@/lib/types';
+import { predictNextTask as genkitPredictNextTask } from '@/ai/flows/predict-next-task';
+
+import type { Message, SpeechToTextInput, TextToSpeechInput, Vow, PredictNextTaskInput, PredictNextTaskOutput } from '@/lib/types';
 
 /**
  * Server action to get a streaming AI response for a given set of messages.
@@ -65,4 +67,15 @@ export async function textToSpeech(input: TextToSpeechInput) {
  */
 export async function speechToText(input: SpeechToTextInput) {
   return genkitSpeechToText(input);
+}
+
+
+/**
+ * Server action to predict the user's next logical task.
+ * Wraps the 'predictNextTask' Genkit flow.
+ * @param {PredictNextTaskInput} input - The conversation context.
+ * @returns {Promise<PredictNextTaskOutput>} A promise that resolves to the predicted task.
+ */
+export async function predictNextTask(input: PredictNextTaskInput): Promise<PredictNextTaskOutput> {
+    return genkitPredictNextTask(input);
 }
