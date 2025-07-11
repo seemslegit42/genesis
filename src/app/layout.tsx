@@ -16,8 +16,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * The font for headings, logos, and sacred names. It is sharp, futuristic,
- * and carries an air of ancient authority.
+ * The Inscription: The font for headings, logos, and sacred names.
+ * It is sharp, futuristic, and carries an air of ancient authority.
+ * This is the Obelisk Tier of our Typographic Sigil System.
  * @type {NextFont}
  */
 const fontInscription = Audiowide({
@@ -27,8 +28,9 @@ const fontInscription = Audiowide({
 });
 
 /**
- * The workhorse font for all UI text and body copy. It is exceptionally
- * clear, legible, and minimalist, providing effortless clarity.
+ * The Codex: The workhorse font for all UI text and body copy.
+ * It is exceptionally clear, legible, and minimalist, providing
+ * effortless clarity. This is the Codex Tier of our Typographic Sigil System.
  * @type {NextFont}
  */
 const fontCodex = Inter({
@@ -49,8 +51,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("dark", GeistSans.variable, GeistMono.variable)}>
-      <body className={cn("font-body antialiased", fontInscription.variable, fontCodex.variable, "min-h-screen")}>
+    <html lang="en" className={cn("dark", GeistSans.variable, GeistMono.variable, fontInscription.variable, fontCodex.variable)}>
+      <body className={cn("font-body antialiased", "min-h-screen")}>
         {children}
         <Toaster />
       </body>
