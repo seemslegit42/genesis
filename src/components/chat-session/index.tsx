@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -18,7 +19,7 @@ import { RiteOfInvocation } from '@/components/rite-of-invocation';
 import { useTypographicState } from '@/hooks/use-typographic-state';
 import { useCollectiveState } from '@/hooks/use-collective-state';
 import { Sidecar } from '../sidecar';
-import { useAmbientState } from '@/hooks/use-ambient-state';
+import { useAppStore } from '@/hooks/use-app-store';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BottomBar } from './bottom-bar';
 
@@ -45,7 +46,7 @@ export function ChatSession() {
   const [vow, setVow] = useState<Vow | null>(null);
   const { currentState } = useTypographicState();
   const { totalUsers, totalEngagement } = useCollectiveState();
-  const { setAmbientState } = useAmbientState();
+  const setAmbientState = useAppStore((state) => state.setAmbientState);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
   const isMobile = useIsMobile();

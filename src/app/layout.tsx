@@ -1,10 +1,9 @@
-import type {Metadata} from 'next';
+
+import type { Metadata } from 'next';
 import './globals.css';
-import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import { Comfortaa, Lexend } from 'next/font/google';
-import { TypographicStateProvider } from '@/hooks/use-typographic-state';
-import { AmbientStateProvider } from '@/hooks/use-ambient-state';
+import { AppProvider } from '@/components/app-provider';
 
 /**
  * Metadata for the BEEP: Genesis application.
@@ -39,7 +38,7 @@ const fontCodex = Lexend({
 
 /**
  * Defines the root layout for the application, wrapping all pages.
- * It sets up the global fonts, theme, Toaster, and the TypographicStateProvider.
+ * It sets up the global fonts, theme, and providers.
  * This is the foundational structure of the "Digital Temple."
  * @param {Readonly<{children: React.ReactNode;}>} props The props for the component.
  * @returns {JSX.Element} The rendered root layout.
@@ -52,12 +51,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("dark", fontInscription.variable, fontCodex.variable)}>
       <body className={cn("antialiased", "min-h-screen", "font-body")}>
-        <AmbientStateProvider>
-          <TypographicStateProvider>
-              {children}
-          </TypographicStateProvider>
-        </AmbientStateProvider>
-        <Toaster />
+        <AppProvider>
+            {children}
+        </AppProvider>
       </body>
     </html>
   );
