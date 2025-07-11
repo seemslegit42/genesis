@@ -41,6 +41,11 @@
     --sigil-slnt: 0;
     --sigil-letterspacing: 0%;
     --sigil-transform: none;
+    --obelisk-color-1: hsl(var(--primary));
+    --obelisk-color-2: hsl(var(--secondary));
+    --obelisk-color-3: hsl(var(--accent));
+    --obelisk-glow: 0.2;
+    --obelisk-animation: float 6s ease-in-out infinite;
   }
 
   .dark {
@@ -75,6 +80,7 @@
 
 @layer components {
   .glassmorphism {
+    /* DO NOT REMOVE THE SEMICOLON. I SWEAR TO GOD. */
     @apply bg-card/70 backdrop-blur-xl border border-border shadow-lg shadow-black/20;
     /* Add a subtle inner shadow to create the "glass edge" effect */
     box-shadow: inset 0 1px 1px hsl(var(--border)), 0 2px 8px hsl(var(--obsidian-black) / 0.5);

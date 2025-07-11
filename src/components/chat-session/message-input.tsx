@@ -46,6 +46,7 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
     if (content.trim() && !isLoading) {
       onSendMessage(content);
       setContent('');
+      applyState('default');
     }
   };
 

@@ -42,14 +42,16 @@ export function Obelisk() {
         {/* The glow effect behind the Obelisk */}
         <div className={cn(
             "absolute w-48 h-48 bg-primary/20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 transition-all duration-500",
-            "group-hover:bg-primary/30"
+            "group-hover:bg-primary/30",
+            "opacity-[var(--obelisk-glow)]"
         )}></div>
         
         {/* The Obelisk structure itself */}
         <div 
           className={cn(
-            "relative w-24 h-80 bg-obsidian-black flex flex-col items-center py-8 transition-all duration-300 animate-[float_6s_ease-in-out_infinite]",
-            "shadow-[0_0_40px_10px_hsl(var(--primary)/0.1)]"
+            "relative w-24 h-80 bg-obsidian-black flex flex-col items-center py-8 transition-all duration-300",
+            "shadow-[0_0_40px_10px_hsl(var(--primary)/0.1)]",
+            "animate-[var(--obelisk-animation)]"
           )}
           style={{
             transformStyle: 'preserve-3d',
@@ -66,18 +68,18 @@ export function Obelisk() {
             style={{ transform: 'translateZ(10px)' }} // Bring sigils forward
           >
             <div className="w-8 h-8 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse" data-ai-hint="ancient symbol">
-                <svg viewBox="0 0 100 100" fill="hsl(var(--primary))">
+                <svg viewBox="0 0 100 100" fill="hsl(var(--obelisk-color-1))">
                     <path d="M50 0 L61.8 38.2 L100 38.2 L69.1 61.8 L80.9 100 L50 76.4 L19.1 100 L30.9 61.8 L0 38.2 L38.2 38.2 Z" />
                 </svg>
             </div>
              <div className="w-6 h-6 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse [animation-delay:0.2s]" data-ai-hint="geometric pattern">
-                <svg viewBox="0 0 100 100" fill="hsl(var(--secondary))">
-                    <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" />
-                    <line x1="50" y1="10" x2="50" y2="90" stroke="currentColor" strokeWidth="8" />
+                <svg viewBox="0 0 100 100" stroke="hsl(var(--obelisk-color-2))" strokeWidth="8" fill="transparent" >
+                    <circle cx="50" cy="50" r="40" />
+                    <line x1="50" y1="10" x2="50" y2="90" />
                 </svg>
             </div>
              <div className="w-10 h-10 opacity-10 group-hover:opacity-40 transition-opacity duration-300 animate-pulse [animation-delay:0.4s]" data-ai-hint="arcane circle">
-                <svg viewBox="0 0 100 100" stroke="hsl(var(--accent))" strokeWidth="4" fill="transparent">
+                <svg viewBox="0 0 100 100" stroke="hsl(var(--obelisk-color-3))" strokeWidth="4" fill="transparent">
                     <circle cx="50" cy="50" r="45" />
                     <circle cx="50" cy="50" r="35" />
                     <path d="M 50,5 L 95,50 L 50,95 L 5,50 Z" />
