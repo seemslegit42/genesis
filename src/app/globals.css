@@ -69,7 +69,7 @@
     font-variation-settings: 'wght' var(--sigil-wght), 'slnt' var(--sigil-slnt);
     letter-spacing: var(--sigil-letterspacing);
     transform: var(--sigil-transform);
-    transition: font-variation-settings 0.4s ease, letter-spacing 0.4s ease, transform 0.4s ease;
+    transition: font-variation-settings 0.4s ease, letter-spacing: 0.4s ease, transform 0.4s ease;
   }
 }
 

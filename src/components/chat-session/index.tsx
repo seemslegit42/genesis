@@ -168,6 +168,8 @@ export function ChatSession() {
 
   /**
    * Resets the chat session to its initial state, clearing all messages.
+   * This action allows the Initiate to exit the "Focus Tunnel" and return to the calm
+   * of the Obelisk.
    * @returns {void}
    */
   const handleNewChat = () => {
@@ -177,6 +179,7 @@ export function ChatSession() {
 
   /**
    * Handles the click event on an initial prompt suggestion, sending it as a message.
+   * This is the first step in the Initiate's journey, transforming their intent into action.
    * @param {string} prompt The text of the clicked prompt.
    * @returns {void}
    */
@@ -194,6 +197,8 @@ export function ChatSession() {
     setShowShareModal(false);
   };
 
+  // Determines if the UI should be in its initial state (showing the Obelisk)
+  // or in the "Focus Tunnel" (showing the message list).
   const showInitialState = messages.length === 0 && !isAiResponding && !streamingMessage;
 
   return (

@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 /**
  * Renders the central Obelisk of Genesis, a core visual and interactive element.
  * It's a pseudo-3D object that reacts to mouse movement, creating an interactive
- * and mesmerizing centerpiece for the application's initial state.
+ * and mesmerizing centerpiece for the application's initial state. It is the primary
+ * action hub, inviting the user to begin their journey.
  * @returns {JSX.Element} The rendered Obelisk component.
  */
 export function Obelisk() {
