@@ -1,7 +1,6 @@
 import type { Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChatAvatar } from '@/components/chat/chat-avatar';
-import { Bot, User } from 'lucide-react';
 
 interface ChatMessageProps {
   message: Message;
@@ -20,10 +19,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={cn(
           'p-4 rounded-lg max-w-xs md:max-w-md lg:max-w-2xl break-words prose prose-invert prose-p:my-0',
-          'glassmorphism',
-          role === 'user'
-            ? 'rounded-br-none'
-            : 'rounded-bl-none'
+          'glassmorphism'
         )}
       >
         <p>{content}</p>

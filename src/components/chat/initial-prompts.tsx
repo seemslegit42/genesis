@@ -1,5 +1,4 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight } from 'lucide-react';
 
 interface InitialPromptsProps {
   prompts: string[];
@@ -37,7 +36,6 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
           >
             <CardContent className="p-4 flex items-center justify-between">
               <p className="text-foreground">{prompt}</p>
-              <ArrowRight className="size-5 text-muted-foreground group-hover:text-accent transition-colors" />
             </CardContent>
           </Card>
         ))}
