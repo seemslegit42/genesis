@@ -142,6 +142,18 @@ export function ChatSession() {
       setIsTranscribing(false);
     }
   }, [transcriptionUnlocked, handleSendMessage]);
+  
+  const handleVoiceRecording = () => {
+    if (!transcriptionUnlocked) {
+        setShowShareModal(true);
+        return;
+    }
+    if (status === 'recording') {
+        stopRecording();
+    } else {
+        startRecording();
+    }
+  };
 
   // Effect to handle transcription when a recording is finished.
   // This effect correctly includes all its dependencies.
@@ -213,8 +225,8 @@ export function ChatSession() {
         onSendMessage={handleSendMessage} 
         isLoading={isAiResponding || isTranscribing}
         isRecording={status === 'recording'}
-        startRecording={startRecording}
-        stopRecording={stopRecording}
+        startRecording={handleVoiceRecording}
+        stopRecording={handleVoiceRecording}
       />
       {/* The Psyche-Fuel Gauge: a subtle, persistent signal of the AI's cognitive state. */}
       <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
