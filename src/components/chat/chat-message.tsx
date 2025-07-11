@@ -35,7 +35,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           'glassmorphism'
         )}
       >
-        <p>{content}</p>
+        <p className="leading-relaxed">{content}</p>
       </div>
       {role === 'user' && <ChatAvatar role="user" />}
     </div>

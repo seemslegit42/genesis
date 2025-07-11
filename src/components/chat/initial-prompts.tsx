@@ -26,11 +26,11 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
   if (prompts.length === 0) {
     return (
         <div className="flex flex-col items-center justify-center h-full text-center">
-             <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]">
-                BEEP
+             <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
+                AWAITING COMMAND
             </h2>
-             <p className="text-muted-foreground mb-8 max-w-md">
-                Loading suggestions...
+             <p className="text-muted-foreground mb-8 max-w-md animate-pulse">
+                Calibrating protocols...
             </p>
         </div>
     )
@@ -38,21 +38,21 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
 
   return (
     <div className="flex flex-col items-center justify-center h-full text-center">
-      <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]">
-        BEEP
+      <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
+        AWAITING COMMAND
       </h2>
       <p className="text-muted-foreground mb-8 max-w-md">
-        This is your cognitive and operational sanctuary. How can I assist?
+        This is your cognitive and operational sanctuary. How may I assist?
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-3xl">
         {prompts.slice(0, 4).map((prompt, i) => (
           <Card
             key={i}
             onClick={() => onPromptClick(prompt)}
-            className="group cursor-pointer glassmorphism hover:border-accent/50 transition-all duration-300 text-left"
+            className="group cursor-pointer glassmorphism hover:border-primary/50 transition-all duration-300 text-left hover:-translate-y-1 hover:shadow-primary/20 hover:shadow-2xl"
           >
             <CardContent>
-              <p className="text-foreground">{prompt}</p>
+              <p className="text-foreground font-medium">{prompt}</p>
             </CardContent>
           </Card>
         ))}

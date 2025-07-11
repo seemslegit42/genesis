@@ -14,6 +14,10 @@ export function Obelisk() {
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
+      if (window.innerWidth < 768) { // Disable on mobile for performance
+        setTransform('perspective(1000px) rotateX(0deg) rotateY(0deg)');
+        return;
+      }
       const { clientX, clientY } = event;
       const { innerWidth, innerHeight } = window;
       const rotateY = (clientX / innerWidth - 0.5) * 20; // Max rotation 10deg
@@ -60,18 +64,18 @@ export function Obelisk() {
             className="space-y-8" 
             style={{ transform: 'translateZ(10px)' }} // Bring sigils forward
           >
-            <div className="w-8 h-8 opacity-20 group-hover:opacity-50 transition-opacity duration-300" data-ai-hint="ancient symbol">
+            <div className="w-8 h-8 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse" data-ai-hint="ancient symbol">
                 <svg viewBox="0 0 100 100" fill="hsl(var(--primary))">
                     <path d="M50 0 L61.8 38.2 L100 38.2 L69.1 61.8 L80.9 100 L50 76.4 L19.1 100 L30.9 61.8 L0 38.2 L38.2 38.2 Z" />
                 </svg>
             </div>
-             <div className="w-6 h-6 opacity-20 group-hover:opacity-50 transition-opacity duration-300 delay-100" data-ai-hint="geometric pattern">
+             <div className="w-6 h-6 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse [animation-delay:0.2s]" data-ai-hint="geometric pattern">
                 <svg viewBox="0 0 100 100" fill="hsl(var(--secondary))">
                     <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" />
                     <line x1="50" y1="10" x2="50" y2="90" stroke="currentColor" strokeWidth="8" />
                 </svg>
             </div>
-             <div className="w-10 h-10 opacity-10 group-hover:opacity-30 transition-opacity duration-300 delay-200" data-ai-hint="arcane circle">
+             <div className="w-10 h-10 opacity-10 group-hover:opacity-40 transition-opacity duration-300 animate-pulse [animation-delay:0.4s]" data-ai-hint="arcane circle">
                 <svg viewBox="0 0 100 100" stroke="hsl(var(--accent))" strokeWidth="4" fill="transparent">
                     <circle cx="50" cy="50" r="45" />
                     <circle cx="50" cy="50" r="35" />
