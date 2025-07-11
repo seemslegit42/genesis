@@ -11,8 +11,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['var(--font-lexend)', ...fontFamily.sans],
-        headline: ['var(--font-comfortaa)', ...fontFamily.sans],
+        body: ['var(--font-codex)', ...fontFamily.sans],
+        headline: ['var(--font-inscription)', ...fontFamily.sans],
+        mono: ['var(--font-geist-mono)', ...fontFamily.mono],
       },
       colors: {
         background: 'hsl(var(--background))',

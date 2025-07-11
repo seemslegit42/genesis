@@ -2,33 +2,55 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
-import { Comfortaa, Lexend } from 'next/font/google';
+import { Audiowide, Inter } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 
+/**
+ * Metadata for the BEEP: Genesis application.
+ * @type {Metadata}
+ */
 export const metadata: Metadata = {
   title: 'BEEP: Genesis',
   description: 'A cognitive and operational sanctuary.',
 };
 
-const comfortaa = Comfortaa({
+/**
+ * The font for headings, logos, and sacred names. It is sharp, futuristic,
+ * and carries an air of ancient authority.
+ * @type {NextFont}
+ */
+const fontInscription = Audiowide({
   subsets: ['latin'],
-  variable: '--font-comfortaa',
-  weight: ['400', '700'],
+  variable: '--font-inscription',
+  weight: ['400'],
 });
 
-const lexend = Lexend({
+/**
+ * The workhorse font for all UI text and body copy. It is exceptionally
+ * clear, legible, and minimalist, providing effortless clarity.
+ * @type {NextFont}
+ */
+const fontCodex = Inter({
   subsets: ['latin'],
-  variable: '--font-lexend',
+  variable: '--font-codex',
 });
 
-
+/**
+ * Defines the root layout for the application, wrapping all pages.
+ * It sets up the global fonts, theme, and Toaster component.
+ * This is the foundational structure of the "Digital Temple."
+ * @param {Readonly<{children: React.ReactNode;}>} props The props for the component.
+ * @returns {JSX.Element} The rendered root layout.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={cn("font-body antialiased", comfortaa.variable, lexend.variable, "min-h-screen")}>
+    <html lang="en" className={cn("dark", GeistSans.variable, GeistMono.variable)}>
+      <body className={cn("font-body antialiased", fontInscription.variable, fontCodex.variable, "min-h-screen")}>
         {children}
         <Toaster />
       </body>
