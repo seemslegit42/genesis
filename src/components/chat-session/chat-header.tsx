@@ -29,9 +29,10 @@ interface ChatHeaderProps {
 
 /**
  * Displays user status and session information.
- * This is a placeholder for a future, more robust sovereignty and identity system.
- * It currently shows a mock currency balance and session status to establish the
- * visual language of the eventual in-app economy.
+ * This is the Sovereignty Manifest, a real-time display of the Initiate's standing
+ * within the Genesis ecosystem. It currently shows a mock currency balance (Ξ) and
+ * session status to establish the visual language for a future in-app economy
+ * and robust identity system, key components for a profit-driven architecture.
  * @returns {JSX.Element} The rendered component.
  */
 const SovereigntyManifest = () => {
@@ -64,16 +65,16 @@ const SovereigntyManifest = () => {
 
 /**
  * The main header for the chat application, known as the "TopBar" or "Oracle's Edge."
- * It is the only persistent global UI element, holding the application logo and the
- * central BEEP™ Command Strip (MessageInput). Its primary interactive purpose is to provide a way to
+ * It is the only persistent global UI element, holding the application logo, the
+ * central BEEP™ Command Strip (MessageInput), and the Sovereignty Manifest. Its primary interactive purpose is to provide a way to
  * start a new chat session and send messages.
  * @param {ChatHeaderProps} props The props for the component.
  * @returns {JSX.Element} The rendered header component.
  */
 export function ChatHeader({ onNewChat, onSendMessage, isLoading, isRecording, startRecording, stopRecording }: ChatHeaderProps) {
   return (
-    <header className="fixed top-0 z-20 w-full glassmorphism h-[70px]">
-      <div className="flex items-center justify-between p-4 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 gap-4">
+    <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
+      <div className="flex items-center justify-between p-4 h-full w-full mx-auto px-4 sm:px-6 lg:px-8 gap-4">
         <div className="flex items-center gap-2 cursor-pointer font-headline shrink-0" onClick={onNewChat} title="Start New Chat">
            <Image 
               src="/icons/logo.svg"

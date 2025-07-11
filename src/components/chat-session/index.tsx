@@ -168,6 +168,7 @@ export function ChatSession() {
 
   /**
    * Resets the chat session to its initial state, clearing all messages.
+   * @returns {void}
    */
   const handleNewChat = () => {
     setMessages([]);
@@ -177,6 +178,7 @@ export function ChatSession() {
   /**
    * Handles the click event on an initial prompt suggestion, sending it as a message.
    * @param {string} prompt The text of the clicked prompt.
+   * @returns {void}
    */
   const onPromptClick = (prompt: string) => {
     handleSendMessage(prompt);
@@ -185,6 +187,7 @@ export function ChatSession() {
   /**
    * Handles unlocking the transcription feature after a successful share.
    * This is the reward mechanism for our viral loop.
+   * @returns {void}
    */
   const handleUnlock = () => {
     setTranscriptionUnlocked(true);
@@ -194,7 +197,7 @@ export function ChatSession() {
   const showInitialState = messages.length === 0 && !isAiResponding && !streamingMessage;
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-full">
        <ShareToUnlock 
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
@@ -209,9 +212,9 @@ export function ChatSession() {
         stopRecording={stopRecording}
       />
       {/* The Psyche-Fuel Gauge: a subtle, persistent signal of the AI's cognitive state. */}
-      <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent fixed top-[68px] z-20" />
+      <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
       
-      <main className="flex-1 flex flex-col overflow-hidden pt-[70px]">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto">
           {showInitialState ? (
              <div className="flex flex-col items-center justify-center h-full p-4">
@@ -228,7 +231,7 @@ export function ChatSession() {
             </div>
           )}
         </div>
-      </main>
+      </div>
       <audio ref={audioRef} className="hidden" />
     </div>
   );
