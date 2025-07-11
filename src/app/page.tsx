@@ -44,21 +44,7 @@ export default function ChatPage() {
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
   const [isAiResponding, setIsAiResponding] = useState(false);
-
-  /**
-   * State for storing the summary of the chat history, which is displayed by the
-   * Obelisk when it's activated as an Action Hub.
-   * @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]}
-   */
-  const [obeliskSummary, setObeliskSummary] = useState<string | null>(null);
-
-  /**
-   * State to track if the chat history is currently being summarized. This is used
-   * to show a loading state on the Obelisk.
-   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
-   */
-  const [isSummarizing, setIsSummarizing] = useState(false);
-
+  
   // Fetches initial prompt ideas when the component first mounts.
   useEffect(() => {
     const fetchPrompts = async () => {
@@ -86,7 +72,6 @@ export default function ChatPage() {
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setIsAiResponding(true);
-    setObeliskSummary(null); // Clear summary on new message
 
     // Processes the streaming response from the AI.
     const processStream = async () => {
@@ -147,7 +132,6 @@ export default function ChatPage() {
   const handleNewChat = () => {
     setMessages([]);
     setStreamingMessage(null);
-    setObeliskSummary(null);
   };
 
   /**
@@ -159,32 +143,6 @@ export default function ChatPage() {
     handleSendMessage(prompt);
   };
   
-  /**
-   * Handles a click on the Obelisk, turning it into an Action Hub. It toggles
-   * the display of the chat summary. If no summary exists, it calls the AI
-   * to generate one.
-   */
-  const handleObeliskClick = async () => {
-    if (isSummarizing || messages.length === 0) return;
-    
-    if (obeliskSummary) {
-        setObeliskSummary(null);
-        return;
-    }
-
-    setIsSummarizing(true);
-    try {
-        const chatHistory = messages.map(m => `${m.role}: ${m.content}`).join('\n');
-        const { summary } = await summarizeChatHistory({ chatHistory });
-        setObeliskSummary(summary);
-    } catch (error) {
-        console.error("Failed to summarize chat history:", error);
-        setObeliskSummary("Could not retrieve summary.");
-    } finally {
-        setIsSummarizing(false);
-    }
-  };
-
   /**
    * Determines whether to show the initial state (Obelisk and prompts)
    * or the active chat view.
@@ -200,7 +158,7 @@ export default function ChatPage() {
         <div className="flex-1 overflow-y-auto">
           {showInitialState ? (
              <div className="flex flex-col h-full">
-                <Obelisk onClick={handleObeliskClick} summary={obeliskSummary} isLoading={isSummarizing} isInteractive={messages.length > 0} />
+                <Obelisk />
                 <div className="pb-8 w-full">
                     <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
                 </div>
