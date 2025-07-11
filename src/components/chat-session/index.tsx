@@ -261,6 +261,11 @@ export function ChatSession() {
     setIsInitiated(true);
   }
 
+  const handleAcceptTask = (task: string) => {
+    handleSendMessage(task);
+    setPredictedTask('');
+  }
+
   if (authLoading || !historyLoaded) {
     return (
        <div className="flex flex-col h-screen">
@@ -323,14 +328,15 @@ export function ChatSession() {
                         </div>
                     </div>
                 ) : (
-                    <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-4xl w-full mx-auto px-2 sm:px-6 lg:px-8">
                       <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
                     </div>
                 )}
                 </div>
                 <Sidecar 
                     predictedTask={predictedTask} 
-                    onAcceptTask={(task) => handleSendMessage(task)}
+                    onAcceptTask={handleAcceptTask}
+                    onClose={() => setPredictedTask('')}
                 />
             </div>
             <audio ref={audioRef} className="hidden" />

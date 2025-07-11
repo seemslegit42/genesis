@@ -5,6 +5,16 @@ import { MessageInput } from '@/components/chat-session/message-input';
 import { Progress } from '../ui/progress';
 import { Message } from '@/lib/types';
 import { Logo } from '../logo';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from '../ui/button';
+import { Menu } from 'lucide-react';
 
 /**
  * Props for the ChatHeader component.
@@ -77,6 +87,51 @@ const SovereigntyManifest = ({ messages, transcriptionUnlocked }: { messages: Me
     );
 };
 
+const MobileMenu = ({ onNewChat, messages, transcriptionUnlocked }: { onNewChat: () => void, messages: Message[], transcriptionUnlocked: boolean }) => {
+    const [time, setTime] = useState('');
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        }, 1000);
+        setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        return () => clearInterval(timer);
+    }, []);
+    
+    const calculateRelationshipLevel = () => {
+        const basePoints = messages.length * 10;
+        const bonusPoints = transcriptionUnlocked ? 1000 : 0;
+        return basePoints + bonusPoints;
+    }
+    const level = calculateRelationshipLevel();
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                    <Menu />
+                    <span className="sr-only">Open Menu</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="glassmorphism">
+                <DropdownMenuLabel>Session Info</DropdownMenuLabel>
+                <div className="px-2 py-1.5 text-sm">
+                   <div className="flex justify-between items-center">
+                       <span>Time:</span>
+                       <span className="font-mono">{time}</span>
+                   </div>
+                    <div className="flex justify-between items-center">
+                       <span>Level:</span>
+                       <span>{Math.floor(level / 100)}</span>
+                   </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={onNewChat}>New Chat</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
+
 
 /**
  * The main header for the chat application, known as the "TopBar" or "Oracle's Edge."
@@ -89,7 +144,7 @@ const SovereigntyManifest = ({ messages, transcriptionUnlocked }: { messages: Me
 export function ChatHeader({ onNewChat, onSendMessage, isLoading, isRecording, startRecording, stopRecording, messages, transcriptionUnlocked }: ChatHeaderProps) {
   return (
     <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
-      <div className="flex items-center justify-between p-4 h-full w-full mx-auto px-4 sm:px-6 lg:px-8 gap-4">
+      <div className="flex items-center justify-between p-2 sm:p-4 h-full w-full mx-auto px-2 sm:px-6 lg:px-8 gap-2 sm:gap-4">
         <div className="flex items-center gap-2 cursor-pointer font-headline shrink-0" onClick={onNewChat} title="Start New Chat">
            <Logo className="h-6 w-auto" />
         </div>
@@ -104,6 +159,9 @@ export function ChatHeader({ onNewChat, onSendMessage, isLoading, isRecording, s
         </div>
         <div className="hidden md:flex items-center justify-end shrink-0">
           <SovereigntyManifest messages={messages} transcriptionUnlocked={transcriptionUnlocked} />
+        </div>
+        <div className="md:hidden">
+          <MobileMenu onNewChat={onNewChat} messages={messages} transcriptionUnlocked={transcriptionUnlocked} />
         </div>
       </div>
     </header>

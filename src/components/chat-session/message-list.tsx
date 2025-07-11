@@ -76,14 +76,14 @@ export function MessageList({ messages, streamingMessage, isAiResponding, isTran
   const showLoading = isAiResponding && !streamingMessage;
 
   return (
-    <div className="space-y-8 pt-8">
+    <div className="space-y-6 sm:space-y-8 pt-8">
       {messages.map((message) => (
         <ChatMessage key={message.id} message={message} />
       ))}
       {streamingMessage && <ChatMessage message={streamingMessage} />}
       {showLoading && <LoadingMessage />}
       {isTranscribing && <TranscribingMessage />}
-      <div ref={scrollRef} />
+      <div ref={scrollRef} className="pb-8" />
     </div>
   );
 }

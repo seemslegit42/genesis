@@ -91,10 +91,10 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
         onBlur={() => applyState('default')}
         placeholder={isRecording ? "Listening..." : "BEEP..."}
         rows={1}
-        className="w-full resize-none pr-24 py-3 pl-6 text-base bg-input backdrop-blur-sm border-border focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all duration-300 focus:shadow-[0_0_35px_hsl(var(--ring)/0.5)] max-h-48 rounded-full font-body"
+        className="w-full resize-none pr-20 sm:pr-24 py-3 pl-4 sm:pl-6 text-base bg-input backdrop-blur-sm border-border focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all duration-300 focus:shadow-[0_0_35px_hsl(var(--ring)/0.5)] max-h-48 rounded-full font-body"
         disabled={isLoading || isRecording}
       />
-      <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+      <div className="absolute right-1 sm:right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0 sm:gap-1">
         <Button
           type="button"
           size="icon"
