@@ -8,6 +8,7 @@ import { generateInitialPromptIdeas } from '@/lib/actions';
 import { getAiResponse } from '@/lib/actions';
 import type { Message } from '@/lib/types';
 import { Obelisk } from '@/components/obelisk';
+import { Progress } from '@/components/ui/progress';
 
 /**
  * The main chat page component for the BEEP: Genesis application.
@@ -153,8 +154,9 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-screen">
       <ChatHeader onNewChat={handleNewChat} onSendMessage={handleSendMessage} isLoading={isAiResponding} />
+      <Progress value={isAiResponding ? 100 : 0} className="h-[2px] w-full bg-transparent transition-all duration-1000 fixed top-[68px] z-20" />
       
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden pt-[70px]">
         <div className="flex-1 overflow-y-auto">
           {showInitialState ? (
              <div className="flex flex-col items-center justify-center h-full p-4">
