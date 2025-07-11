@@ -4,18 +4,23 @@ import Image from 'next/image';
 
 /**
  * Props for the ChatHeader component.
- * @interface
+ * @interface ChatHeaderProps
  */
 interface ChatHeaderProps {
-  /** Callback function to be invoked when the user initiates a new chat. */
+  /** 
+   * A callback function to be invoked when the user initiates a new chat.
+   * This typically happens when the user clicks the logo.
+   */
   onNewChat: () => void;
 }
 
 /**
- * The main header for the chat application. It's the "TopBar" or "Oracle's Edge".
- * It displays the logo and provides a way to start a new chat.
- * @param {ChatHeaderProps} props - The props for the component.
- * @returns {JSX.Element} The rendered header.
+ * The main header for the chat application, known as the "TopBar" or "Oracle's Edge."
+ * It is the only persistent global UI element, holding the application logo and a
+ * subtle divider line. Its primary interactive purpose is to provide a way to
+ * start a new chat session.
+ * @param {ChatHeaderProps} props The props for the component.
+ * @returns {JSX.Element} The rendered header component.
  */
 export function ChatHeader({ onNewChat }: ChatHeaderProps) {
   return (

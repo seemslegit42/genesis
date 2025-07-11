@@ -15,57 +15,62 @@ import { Sidecar } from '@/components/sidecar';
  * The main chat page component for the BEEP: Genesis application.
  * It orchestrates the entire chat experience, managing message state,
  * AI interactions, and the display of core UI elements like the Obelisk and Sidecar.
- * @returns {JSX.Element} The rendered chat page.
+ * This component serves as the "Canvas" where the user's dialogue with BEEP unfolds.
+ * @returns {JSX.Element} The rendered chat page, the user's cognitive sanctuary.
  */
 export default function ChatPage() {
   /**
    * State for storing the list of messages in the current chat session.
+   * This represents the ongoing dialogue between the user and BEEP.
    * @type {[Message[], React.Dispatch<React.SetStateAction<Message[]>>]}
    */
   const [messages, setMessages] = useState<Message[]>([]);
 
   /**
    * State for storing the message currently being streamed from the AI.
+   * This allows for a real-time, "typing" effect as BEEP formulates a response.
    * @type {[Message | null, React.Dispatch<React.SetStateAction<Message | null>>]}
    */
   const [streamingMessage, setStreamingMessage] = useState<Message | null>(null);
 
   /**
-   * State for storing the initial prompt suggestions for the user.
+   * State for storing the initial prompt suggestions, which help guide the user
+   * when they first enter the sanctuary.
    * @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]}
    */
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
 
   /**
-   * State to track whether the AI is currently generating a response.
+   * State to track whether the AI is currently generating a response. This is used
+   * to disable the input field and show loading indicators.
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
   const [isAiResponding, setIsAiResponding] = useState(false);
 
   /**
-   * State for the content to be displayed in the Sidecar component.
-   * Null if the sidecar should be hidden.
+   * State for the content to be displayed in the Sidecar component. The Sidecar
+   * acts as a "true north," holding the immediate next step of a guided task.
+   * Null if no task is active.
    * @type {[React.ReactNode | null, React.Dispatch<React.SetStateAction<React.ReactNode | null>>]}
    */
   const [sidecarContent, setSidecarContent] = useState<React.ReactNode | null>(null);
-  
+
   /**
-   * State for storing the summary of the chat history, displayed by the Obelisk.
+   * State for storing the summary of the chat history, which is displayed by the
+   * Obelisk when it's activated as an Action Hub.
    * @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]}
    */
   const [obeliskSummary, setObeliskSummary] = useState<string | null>(null);
-  
+
   /**
-   * State to track if the chat history is currently being summarized.
+   * State to track if the chat history is currently being summarized. This is used
+   * to show a loading state on the Obelisk.
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
   const [isSummarizing, setIsSummarizing] = useState(false);
 
-
+  // Fetches initial prompt ideas when the component first mounts.
   useEffect(() => {
-    /**
-     * Fetches the initial prompt ideas when the component mounts.
-     */
     const fetchPrompts = async () => {
       try {
         const {prompts} = await generateInitialPromptIdeas();
@@ -78,8 +83,8 @@ export default function ChatPage() {
   }, []);
 
   /**
-   * Handles sending a new message from the user.
-   * It adds the user's message to the state and triggers the AI response stream.
+   * Sends a new message from the user to the chat, adding it to the message
+   * list and triggering the AI response stream.
    * @param {string} content The text content of the message to send.
    */
   const handleSendMessage = (content: string) => {
@@ -93,7 +98,9 @@ export default function ChatPage() {
     setIsAiResponding(true);
     setObeliskSummary(null); // Clear summary on new message
 
-    // MOCK: Trigger Sidecar for onboarding task
+    // MOCK: This simulates BEEP acting as a Task Architect. If the user's
+    // command includes "onboard", BEEP initiates a guided workflow and populates
+    // the Sidecar with the first step.
     if (content.toLowerCase().includes('onboard')) {
       setSidecarContent(
         <div>
@@ -106,9 +113,7 @@ export default function ChatPage() {
         setSidecarContent(null);
     }
 
-    /**
-     * Processes the streaming response from the AI.
-     */
+    // Processes the streaming response from the AI.
     const processStream = async () => {
       try {
         const stream = await getAiResponse(newMessages);
@@ -123,7 +128,6 @@ export default function ChatPage() {
             setIsAiResponding(false);
             return;
         }
-
 
         const assistantMessage: Message = {
           id: String(Date.now() + 1),
@@ -163,7 +167,7 @@ export default function ChatPage() {
   };
   
   /**
-   * Resets the chat state to start a new conversation.
+   * Resets the chat state to start a new conversation, clearing the Canvas.
    */
   const handleNewChat = () => {
     setMessages([]);
@@ -173,7 +177,8 @@ export default function ChatPage() {
   };
 
   /**
-   * Handles the click event on an initial prompt suggestion.
+   * Handles the click event on an initial prompt suggestion, sending the
+   * prompt as a new message.
    * @param {string} prompt The text of the clicked prompt.
    */
   const onPromptClick = (prompt: string) => {
@@ -181,9 +186,9 @@ export default function ChatPage() {
   };
   
   /**
-   * Handles the click event on the Obelisk.
-   * Toggles the display of the chat summary. If no summary is present,
-   * it calls the summarization flow to generate one.
+   * Handles a click on the Obelisk, turning it into an Action Hub. It toggles
+   * the display of the chat summary. If no summary exists, it calls the AI
+   * to generate one.
    */
   const handleObeliskClick = async () => {
     if (isSummarizing || messages.length === 0) return;
@@ -207,11 +212,11 @@ export default function ChatPage() {
   };
 
   /**
-   * Determines whether to show the Obelisk and initial prompts.
-   * This is true only when the chat is empty.
+   * Determines whether to show the initial state (Obelisk and prompts)
+   * or the active chat view.
    * @type {boolean}
    */
-  const showObelisk = messages.length === 0 && !isAiResponding && !streamingMessage;
+  const showInitialState = messages.length === 0 && !isAiResponding && !streamingMessage;
 
   return (
     <div className="flex flex-col h-screen">
@@ -226,13 +231,13 @@ export default function ChatPage() {
       <main className="flex-1 flex overflow-hidden px-4 sm:px-6 lg:px-8 pb-4">
         <div className="flex-1 flex flex-col items-center">
             <div className="max-w-4xl w-full mx-auto flex-1 overflow-y-auto">
-              {showObelisk ? (
+              {showInitialState ? (
                  <Obelisk onClick={handleObeliskClick} summary={obeliskSummary} isLoading={isSummarizing} isInteractive={messages.length > 0} />
               ) : (
                 <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding}/>
               )}
             </div>
-            {showObelisk && (
+            {showInitialState && (
               <div className="pb-8 w-full">
                 <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
               </div>

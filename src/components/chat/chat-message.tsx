@@ -4,7 +4,7 @@ import { ChatAvatar } from '@/components/chat/chat-avatar';
 
 /**
  * Props for the ChatMessage component.
- * @interface
+ * @interface ChatMessageProps
  */
 interface ChatMessageProps {
   /** The message object to display. */
@@ -13,8 +13,10 @@ interface ChatMessageProps {
 
 /**
  * Renders a single chat message, including the avatar and the message content bubble.
- * It adapts its layout based on whether the message is from the 'user' or 'assistant'.
- * @param {ChatMessageProps} props - The props for the component.
+ * It adapts its layout based on whether the message is from the 'user' or 'assistant',
+ * creating the classic conversational flow. The message bubble uses the 'glassmorphism'
+ * style to appear as a floating, translucent panel.
+ * @param {ChatMessageProps} props The props for the component.
  * @returns {JSX.Element} The rendered chat message.
  */
 export function ChatMessage({ message }: ChatMessageProps) {
@@ -43,7 +45,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
 /**
  * Displays a loading indicator to show that the AI assistant is "thinking".
  * This is shown after a user sends a message but before the AI response stream begins.
- * @returns {JSX.Element} The rendered loading indicator.
+ * It provides crucial feedback that the system has received the input and is working.
+ * @returns {JSX.Element} The rendered loading indicator component.
  */
 export function LoadingMessage() {
   return (

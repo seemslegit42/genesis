@@ -2,19 +2,24 @@ import { Card, CardContent } from '@/components/ui/card';
 
 /**
  * Props for the InitialPrompts component.
- * @interface
+ * @interface InitialPromptsProps
  */
 interface InitialPromptsProps {
-  /** An array of suggested prompt strings. */
+  /** An array of suggested prompt strings to display. */
   prompts: string[];
-  /** Callback function invoked when a prompt is clicked. */
+  /** 
+   * A callback function invoked when a user clicks on one of the prompts.
+   * This sends the prompt text to the main chat handler.
+   */
   onPromptClick: (prompt: string) => void;
 }
 
 /**
  * Displays a list of suggested prompts to help the user get started.
- * This component is shown on the initial empty state of the chat.
- * @param {InitialPromptsProps} props - The props for the component.
+ * This component is shown on the initial empty state of the chat, below the Obelisk.
+ * It serves to guide the user and showcase the AI's capabilities, reducing the
+ * friction of starting a new conversation.
+ * @param {InitialPromptsProps} props The props for the component.
  * @returns {JSX.Element} The rendered list of initial prompts.
  */
 export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) {

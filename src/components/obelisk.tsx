@@ -2,24 +2,26 @@ import { cn } from "@/lib/utils";
 
 /**
  * Props for the Obelisk component.
- * @interface
+ * @interface ObeliskProps
  */
 interface ObeliskProps {
-  /** Callback function invoked when the Obelisk is clicked. */
+  /** A callback function invoked when the Obelisk is clicked. */
   onClick: () => void;
   /** The summary text to display, or null if no summary is active. */
   summary: string | null;
-  /** Boolean indicating if a summary is currently being loaded. */
+  /** A boolean indicating if a summary is currently being loaded. */
   isLoading: boolean;
-  /** Boolean indicating if the Obelisk should be interactive (i.e., if a chat has started). */
+  /** A boolean indicating if the Obelisk should be interactive (i.e., if a chat has started). */
   isInteractive: boolean;
 }
 
 /**
  * Renders the central Obelisk of Genesis, a core visual and interactive element.
- * It serves as a visual anchor and an "Action Hub" to summarize the current task.
- * @param {ObeliskProps} props - The props for the component.
- * @returns {JSX.Element} The rendered Obelisk.
+ * In the initial state, it serves as a visual anchor on the empty Canvas. During a
+ * conversation, it becomes an "Action Hub" that can be clicked to display a summary
+ * of the current task. Its design is meant to evoke an ancient, powerful monolith.
+ * @param {ObeliskProps} props The props for the component.
+ * @returns {JSX.Element} The rendered Obelisk component.
  */
 export function Obelisk({ onClick, summary, isLoading, isInteractive }: ObeliskProps) {
   return (
@@ -31,13 +33,13 @@ export function Obelisk({ onClick, summary, isLoading, isInteractive }: ObeliskP
       onClick={isInteractive ? onClick : undefined}
     >
       <div className="relative w-full h-full flex items-center justify-center">
-        {/* Glow effect */}
+        {/* The glow effect behind the Obelisk, which intensifies on hover. */}
         <div className={cn(
             "absolute w-32 h-full bg-primary/20 blur-[100px] -translate-y-1/2 top-1/2 transition-all duration-500",
             isInteractive && "group-hover:bg-primary/30"
         )}></div>
         
-        {/* Obelisk */}
+        {/* The Obelisk structure itself. */}
         <div 
           className={cn(
             "relative w-24 h-[60%] bg-obsidian-black flex flex-col items-center py-8 transition-all duration-300",
@@ -48,11 +50,11 @@ export function Obelisk({ onClick, summary, isLoading, isInteractive }: ObeliskP
             boxShadow: '0 0 30px 5px hsl(var(--primary) / 0.1)',
           }}
         >
-          {/* Surface texture using gradients */}
+          {/* Surface textures to give the Obelisk a more complex, ancient feel. */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30"></div>
           
-          {/* Luminous Sigils */}
+          {/* Luminous Sigils representing user achievements, "carved" into the surface. */}
           <div className="space-y-8">
             <div className="w-8 h-8 opacity-20 group-hover:opacity-40 transition-opacity" data-ai-hint="ancient symbol">
                 <svg viewBox="0 0 100 100" fill="hsl(var(--primary))">
@@ -68,7 +70,7 @@ export function Obelisk({ onClick, summary, isLoading, isInteractive }: ObeliskP
           </div>
         </div>
         
-        {/* Summary Overlay */}
+        {/* The summary overlay, which appears when the Obelisk is active. */}
         {summary && (
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center p-4">
                 <div className="glassmorphism max-w-md w-full p-4 text-center text-foreground text-sm">

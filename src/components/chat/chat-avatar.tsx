@@ -2,18 +2,25 @@ import { cn } from '@/lib/utils';
 
 /**
  * Props for the ChatAvatar component.
- * @interface
+ * @interface ChatAvatarProps
  */
 interface ChatAvatarProps {
-  /** The role of the entity this avatar represents, either 'user' or 'assistant'. */
+  /** 
+   * The role of the entity this avatar represents. This determines the
+   * styling and text of the avatar.
+   * 'user' represents the human user.
+   * 'assistant' represents the AI, BEEP.
+   * @type {'user' | 'assistant'}
+   */
   role: 'user' | 'assistant';
 }
 
 /**
- * Displays a text-based avatar for a chat participant (USER or BEEP).
- * Conforms to the "NO ICONS" rule of the design blueprint.
- * @param {ChatAvatarProps} props - The props for the component.
- * @returns {JSX.Element} The rendered avatar.
+ * Displays a minimalist, text-based avatar for a chat participant (USER or BEEP).
+ * This component strictly adheres to the "NO ICONS" design principle, using only
+ * typography to identify the speaker.
+ * @param {ChatAvatarProps} props The props for the component.
+ * @returns {JSX.Element} The rendered avatar component.
  */
 export function ChatAvatar({ role }: ChatAvatarProps) {
   return (

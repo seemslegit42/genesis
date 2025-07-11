@@ -1,6 +1,7 @@
 /**
  * Represents a single message in a chat conversation.
- * This is the fundamental unit of communication between the user and the AI.
+ * This is the fundamental unit of communication between the user and the AI,
+ * forming the building blocks of the dialogue on the Canvas.
  * @interface Message
  */
 export interface Message {
@@ -25,7 +26,9 @@ export interface Message {
 
 /**
  * Represents a full chat session or conversation history.
- * While not actively used in the current implementation, it defines the structure for potentially storing and retrieving past conversations.
+ * While not actively used for session management in the current implementation,
+ * it defines the structure for potentially storing and retrieving past conversations
+ * in future versions.
  * @interface Chat
  */
 export interface Chat {
@@ -35,7 +38,8 @@ export interface Chat {
    */
   id: string;
   /** 
-   * The title of the chat session, which could be user-defined or auto-generated.
+   * The title of the chat session, which could be user-defined or auto-generated
+   * from a summary of the conversation.
    * @type {string}
    */
   title: string;

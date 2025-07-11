@@ -7,19 +7,21 @@ import { cn } from '@/lib/utils';
 
 /**
  * Props for the MessageInput component.
- * @interface
+ * @interface MessageInputProps
  */
 interface MessageInputProps {
-  /** Callback function invoked when the user sends a message. */
+  /** A callback function invoked when the user sends a message. */
   onSendMessage: (content: string) => void;
-  /** Boolean indicating if the AI is currently processing a message. */
+  /** A boolean indicating if the AI is currently processing a message, which disables the input. */
   isLoading: boolean;
 }
 
 /**
  * A controlled component for the user to type and send chat messages.
- * It serves as the "Central BEEP™ Command Strip".
- * @param {MessageInputProps} props - The props for the component.
+ * It serves as the "Central BEEP™ Command Strip," the primary interactive element
+ * for communicating with the AI. It features a subtle pulsating glow when active
+ * and supports send-on-enter functionality.
+ * @param {MessageInputProps} props The props for the component.
  * @returns {JSX.Element} The rendered message input form.
  */
 export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
@@ -28,7 +30,7 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
 
   /**
    * Handles the form submission event.
-   * @param {React.FormEvent} e - The form event.
+   * @param {React.FormEvent} e The form event.
    */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
 
   /**
    * Handles keydown events on the textarea for send-on-enter functionality.
-   * @param {React.KeyboardEvent<HTMLTextAreaElement>} e - The keyboard event.
+   * @param {React.KeyboardEvent<HTMLTextAreaElement>} e The keyboard event.
    */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -57,7 +59,6 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   }, [content]);
-
 
   return (
     <form
