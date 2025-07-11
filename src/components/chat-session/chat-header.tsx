@@ -11,7 +11,8 @@ import { MessageInput } from '@/components/chat-session/message-input';
 interface ChatHeaderProps {
   /** 
    * A callback function to be invoked when the user initiates a new chat.
-   * This typically happens when the user clicks the logo.
+   * This typically happens when the user clicks the logo. Provides a clear
+   * reset mechanism for the user's workflow.
    */
   onNewChat: () => void;
   /** A callback function invoked when the user sends a message. */
@@ -26,6 +27,13 @@ interface ChatHeaderProps {
   stopRecording: () => void;
 }
 
+/**
+ * Displays user status and session information.
+ * This is a placeholder for a future, more robust sovereignty and identity system.
+ * It currently shows a mock currency balance and session status to establish the
+ * visual language of the eventual in-app economy.
+ * @returns {JSX.Element} The rendered component.
+ */
 const SovereigntyManifest = () => {
     const [time, setTime] = useState('');
 
@@ -57,7 +65,7 @@ const SovereigntyManifest = () => {
 /**
  * The main header for the chat application, known as the "TopBar" or "Oracle's Edge."
  * It is the only persistent global UI element, holding the application logo and the
- * central BEEP™ Command Strip. Its primary interactive purpose is to provide a way to
+ * central BEEP™ Command Strip (MessageInput). Its primary interactive purpose is to provide a way to
  * start a new chat session and send messages.
  * @param {ChatHeaderProps} props The props for the component.
  * @returns {JSX.Element} The rendered header component.

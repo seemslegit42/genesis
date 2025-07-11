@@ -20,6 +20,12 @@ interface MessageListProps {
   isTranscribing: boolean;
 }
 
+/**
+ * A component that visually represents the transcription process is active.
+ * It provides immediate feedback to the user that their voice input is being processed,
+ * which is crucial for a good user experience in voice-driven interfaces.
+ * @returns {JSX.Element} The rendered transcribing message indicator.
+ */
 const TranscribingMessage = () => {
     return (
       <div className="flex items-center gap-3 md:gap-4 justify-end">
@@ -40,9 +46,9 @@ const TranscribingMessage = () => {
 
 /**
  * Renders the list of chat messages, including completed messages,
- * the currently streaming message, and a loading indicator.
+ * the currently streaming message, and loading/transcribing indicators.
  * It also handles auto-scrolling to the latest message to keep the
- * conversation in view.
+ * conversation in view, a critical feature for a seamless chat experience.
  * @param {MessageListProps} props The props for the component.
  * @returns {JSX.Element} The rendered list of messages.
  */
@@ -60,7 +66,7 @@ export function MessageList({ messages, streamingMessage, isAiResponding, isTran
    * Determines if the loading indicator should be shown.
    * This is true if the AI is responding but has not yet started streaming content.
    */
-  const showLoading = isAiResponding && !streamingMessage && !isTranscribing;
+  const showLoading = isAiResponding && !streamingMessage;
 
   return (
     <div className="space-y-8 pt-8">

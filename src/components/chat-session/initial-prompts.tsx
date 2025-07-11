@@ -10,7 +10,8 @@ interface InitialPromptsProps {
   prompts: string[];
   /** 
    * A callback function invoked when a user clicks on one of the prompts.
-   * This sends the prompt text to the main chat handler.
+   * This is a key part of the onboarding funnel, reducing friction and
+   * immediately demonstrating the AI's value.
    */
   onPromptClick: (prompt: string) => void;
 }
@@ -19,7 +20,8 @@ interface InitialPromptsProps {
  * Displays a list of suggested prompts to help the user get started.
  * This component is shown on the initial empty state of the chat, below the Obelisk.
  * It serves to guide the user and showcase the AI's capabilities, reducing the
- * friction of starting a new conversation.
+ * "blank page" problem and accelerating their first "aha!" moment. A faster time-to-value
+ * is critical for long-term retention and future monetization.
  * @param {InitialPromptsProps} props The props for the component.
  * @returns {JSX.Element} The rendered list of initial prompts.
  */

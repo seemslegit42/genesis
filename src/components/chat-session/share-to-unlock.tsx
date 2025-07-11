@@ -24,16 +24,20 @@ interface ShareToUnlockProps {
 
 /**
  * A modal dialog that prompts the user to share the application on social media
- * in order to unlock a feature. This is a powerful viral marketing tactic.
+ * in order to unlock a feature. This is a powerful viral marketing tactic and
+ * a core component of our growth engine. It transforms users into marketers
+ * by offering a clear, immediate reward (feature access) for a simple action (sharing).
  * @param {ShareToUnlockProps} props The props for the component.
  * @returns {JSX.Element} The rendered dialog component.
  */
 export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps) {
-  // This is the ADHD-friendly dopamine trigger. A simple, one-time action for a permanent reward.
+  /**
+   * Handles the share action. In a production environment, this would integrate
+   * with social media APIs. For now, it instantly grants the reward to complete
+   * the UI loop, providing immediate gratification which is key for user satisfaction
+   * and habit formation.
+   */
   const handleShare = () => {
-    // In a real app, this would trigger the respective share APIs.
-    // For now, we instantly grant the reward to complete the UI loop.
-    // This makes the user feel powerful and smart for "gaming" the system.
     onUnlock();
   };
 
@@ -49,7 +53,6 @@ export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps)
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col space-y-4 py-6">
-          {/* Tactic: Social Proof & Viral Loop. We turn users into marketers. */}
           <Button
             size="lg"
             className="w-full font-bold text-lg"

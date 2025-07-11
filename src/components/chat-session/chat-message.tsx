@@ -14,8 +14,8 @@ interface ChatMessageProps {
 /**
  * Renders a single chat message, including the avatar and the message content bubble.
  * It adapts its layout based on whether the message is from the 'user' or 'assistant',
- * creating the classic conversational flow. The message bubble uses the 'glassmorphism'
- * style to appear as a floating, translucent panel.
+ * creating the classic conversational flow. The 'glassmorphism' style reinforces the
+ * app's premium, modern aesthetic, increasing perceived value.
  * @param {ChatMessageProps} props The props for the component.
  * @returns {JSX.Element} The rendered chat message.
  */
@@ -47,7 +47,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
 /**
  * Displays a loading indicator to show that the AI assistant is "thinking".
  * This is shown after a user sends a message but before the AI response stream begins.
- * It provides crucial feedback that the system has received the input and is working.
+ * It provides crucial feedback that the system has received the input and is working,
+ * which manages user expectation and reduces perceived latency.
  * @returns {JSX.Element} The rendered loading indicator component.
  */
 export function LoadingMessage() {

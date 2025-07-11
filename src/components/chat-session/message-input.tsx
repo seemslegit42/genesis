@@ -25,10 +25,10 @@ interface MessageInputProps {
 }
 
 /**
- * A controlled component for the user to type and send chat messages.
+ * A controlled component for the user to type and send chat messages, or to initiate voice input.
  * It serves as the "Central BEEP™ Command Strip," the primary interactive element
  * for communicating with the AI. It features a subtle pulsating glow when active
- * and supports send-on-enter functionality.
+ * and supports send-on-enter functionality, creating a fluid and responsive user experience.
  * @param {MessageInputProps} props The props for the component.
  * @returns {JSX.Element} The rendered message input form.
  */
@@ -38,7 +38,7 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
   const { applyState } = useTypographicState();
 
   /**
-   * Handles the form submission event.
+   * Handles the form submission event, sending the message content.
    * @param {React.FormEvent} e The form event.
    */
   const handleSubmit = (e: React.FormEvent) => {
@@ -50,7 +50,8 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
   };
 
   /**
-   * Handles keydown events on the textarea for send-on-enter functionality.
+   * Handles keydown events on the textarea for send-on-enter functionality,
+   * a common UX pattern that improves chat efficiency.
    * @param {React.KeyboardEvent<HTMLTextAreaElement>} e The keyboard event.
    */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -60,11 +61,11 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
     }
   };
   
-  // Effect to auto-resize the textarea based on its content.
+  // Effect to auto-resize the textarea based on its content, preventing scrollbars
+  // in a single-line input and gracefully expanding for multi-line messages.
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      // A little extra height to prevent scrollbar from flashing
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   }, [content]);

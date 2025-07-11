@@ -14,8 +14,9 @@ import { ShareToUnlock } from './share-to-unlock';
 /**
  * The main component that orchestrates the entire chat session.
  * It manages message state, handles user input (text and voice),
- * interacts with AI services, and controls the UI state (loading, recording, etc.).
- * This component is the heart of the user-facing application.
+ * interacts with AI services via Server Actions, and controls the UI state 
+ * (loading, recording, etc.). This component is the heart of the user-facing 
+ * application and the central hub for all user interactions.
  * @returns {JSX.Element} The rendered chat session interface.
  */
 export function ChatSession() {
@@ -29,9 +30,9 @@ export function ChatSession() {
   const [isAiResponding, setIsAiResponding] = useState(false);
   // State to track if audio is currently being transcribed.
   const [isTranscribing, setIsTranscribing] = useState(false);
-  // State to control the visibility of the "Share to Unlock" modal.
+  // State to control the visibility of the "Share to Unlock" modal, a key viral loop.
   const [showShareModal, setShowShareModal] = useState(false);
-  // State to track if the transcription feature has been unlocked.
+  // State to track if the transcription feature has been unlocked by the user.
   const [transcriptionUnlocked, setTranscriptionUnlocked] = useState(false);
   // Ref to the audio element for playing back TTS audio.
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -42,8 +43,10 @@ export function ChatSession() {
   });
 
   /**
-   * Handles sending a message to the AI and processing the response.
-   * This function is memoized with `useCallback` to prevent unnecessary re-renders.
+   * Handles sending a message to the AI and processing the streaming response.
+   * This function is memoized with `useCallback` to prevent unnecessary re-renders,
+   * which is critical for performance in a real-time chat application.
+   * @param {string} content The text content of the user's message.
    */
   const handleSendMessage = useCallback(async (content: string) => {
     if (!content.trim()) return;
@@ -60,15 +63,7 @@ export function ChatSession() {
     try {
       const stream = await getAiResponse(newMessages);
       if (!stream) {
-        const errorMessage: Message = {
-          id: String(Date.now() + 1),
-          role: 'assistant',
-          content: "Sorry, I couldn't get a response. Please check the connection and try again.",
-        };
-        setMessages(prev => [...prev, errorMessage]);
-        setStreamingMessage(null);
-        setIsAiResponding(false);
-        return;
+        throw new Error("Failed to get a response from the AI. The stream is null.");
       }
 
       const assistantMessage: Message = {
@@ -93,7 +88,7 @@ export function ChatSession() {
       const finalMessage = { ...assistantMessage, content: accumulatedContent };
       setMessages(prev => [...prev, finalMessage]);
       
-      // Once text is fully received, generate and play audio
+      // Once text is fully received, generate and play audio for a full voice modality experience.
       const { audioDataUri } = await textToSpeech({ text: accumulatedContent });
       if (audioRef.current) {
         audioRef.current.src = audioDataUri;
@@ -117,6 +112,8 @@ export function ChatSession() {
   /**
    * Transcribes recorded audio and sends the resulting text as a message.
    * This function is memoized with `useCallback` for performance optimization.
+   * It also contains the logic for the share-to-unlock viral loop.
+   * @param {string} blobUrl The URL of the recorded audio blob.
    */
   const transcribeRecording = useCallback(async (blobUrl: string) => {
     if (!transcriptionUnlocked) {
@@ -147,6 +144,7 @@ export function ChatSession() {
   }, [transcriptionUnlocked, handleSendMessage]);
 
   // Effect to handle transcription when a recording is finished.
+  // This effect correctly includes all its dependencies.
   useEffect(() => {
     if (mediaBlobUrl) {
       transcribeRecording(mediaBlobUrl);
@@ -154,7 +152,8 @@ export function ChatSession() {
   }, [mediaBlobUrl, transcribeRecording]);
 
 
-  // Effect to fetch initial prompt ideas on component mount.
+  // Effect to fetch initial prompt ideas on component mount. This improves the
+  // onboarding experience by providing immediate, actionable suggestions.
   useEffect(() => {
     const fetchPrompts = async () => {
       try {
@@ -168,7 +167,7 @@ export function ChatSession() {
   }, []);
 
   /**
-   * Resets the chat session to its initial state.
+   * Resets the chat session to its initial state, clearing all messages.
    */
   const handleNewChat = () => {
     setMessages([]);
@@ -176,7 +175,7 @@ export function ChatSession() {
   };
 
   /**
-   * Handles the click event on an initial prompt suggestion.
+   * Handles the click event on an initial prompt suggestion, sending it as a message.
    * @param {string} prompt The text of the clicked prompt.
    */
   const onPromptClick = (prompt: string) => {
@@ -185,6 +184,7 @@ export function ChatSession() {
   
   /**
    * Handles unlocking the transcription feature after a successful share.
+   * This is the reward mechanism for our viral loop.
    */
   const handleUnlock = () => {
     setTranscriptionUnlocked(true);
