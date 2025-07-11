@@ -10,7 +10,7 @@
     --card: 0 0% 100% / 0.05;
     --card-foreground: 0 0% 95%;
 
-    --popover: 275 10% 2%; 
+    --popover: 275 10% 2%;
     --popover-foreground: 0 0% 95%;
 
     --primary: 173 66% 47%; /* Roman Aqua: #20B2AA */
@@ -80,9 +80,7 @@
 
 @layer components {
   .glassmorphism {
-    /* DO NOT REMOVE THE SEMICOLON. I SWEAR TO GOD. */
     @apply bg-card/70 backdrop-blur-xl border border-border shadow-lg shadow-black/20;
-    /* Add a subtle inner shadow to create the "glass edge" effect */
     box-shadow: inset 0 1px 1px hsl(var(--border)), 0 2px 8px hsl(var(--obsidian-black) / 0.5);
   }
 }
