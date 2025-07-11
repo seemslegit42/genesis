@@ -46,7 +46,7 @@ export const TypographicStateProvider = ({ children }: { children: ReactNode }) 
   );
 };
 
-export const useTypographicState = (): TypographicStateContextType => {
+export const useTypographicState = () => {
   const context = useContext(TypographicStateContext);
   if (context === undefined) {
     throw new Error('useTypographicState must be used within a TypographicStateProvider');
