@@ -62,7 +62,6 @@ const SovereigntyManifest = ({ messages, transcriptionUnlocked }: { messages: Me
     }
 
     const level = calculateRelationshipLevel();
-    const pointsForNextLevel = Math.floor(level / 100 + 1) * 100;
     const progress = (level % 100);
 
     return (
