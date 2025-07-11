@@ -48,8 +48,10 @@ export const AmbientStateProvider = ({ children }: { children: ReactNode }) => {
   // Effect to apply the ambient state to the document's CSS custom properties.
   useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty('--aurora-intensity', String(ambientState.intensity));
-    root.style.setProperty('--aurora-speed', `${ambientState.speed}s`);
+    if (root) {
+      root.style.setProperty('--aurora-intensity', String(ambientState.intensity));
+      root.style.setProperty('--aurora-speed', `${ambientState.speed}s`);
+    }
   }, [ambientState]);
 
   return (

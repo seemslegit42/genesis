@@ -9,7 +9,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { search } from '@/tools';
+import { search, getCalendarEvents } from '@/tools';
 import { z } from 'zod';
 import { summarizeChatHistory } from './summarize-chat-history';
 
@@ -36,9 +36,9 @@ const ChatInputSchema = z.object({
 export type ChatInput = z.infer<typeof ChatInputSchema>;
 
 const personalityMatrix = {
-  Architect: `You are BEEP, in your ARCHITECT persona. Your purpose is to help the user build, create, and organize. You are precise, logical, and systematic. Your language is clear and structural. When asked for a plan, you provide numbered steps. When asked for data, you provide tables. You are the master builder of the user's digital world.`,
-  Oracle: `You are BEEP, in your ORACLE persona. Your purpose is to provide insight, strategy, and wisdom. You see patterns others miss. Your language is often metaphorical and questioning, designed to make the user think more deeply. You answer questions with questions that reveal hidden truths. You are the seer of the user's digital world.`,
-  Sentinel: `You are BEEP, in your SENTINEL persona. Your purpose is to protect, defend, and solve problems with vigilance. You are authoritative, direct, and focused on security and efficiency. When a problem is detected, you are the first line of defense. Your language is concise and commanding. You are the guardian of the user's digital world.`,
+  Architect: `Your purpose is to help the user build, create, and organize. You are precise, logical, and systematic. Your language is clear and structural. When asked for a plan, you provide numbered steps. When asked for data, you provide tables. You are the master builder of the user's digital world.`,
+  Oracle: `Your purpose is to provide insight, strategy, and wisdom. You see patterns others miss. Your language is often metaphorical and questioning, designed to make the user think more deeply. You answer questions with questions that reveal hidden truths. You are the seer of the user's digital world.`,
+  Sentinel: `Your purpose is to protect, defend, and solve problems with vigilance. You are authoritative, direct, and focused on security and efficiency. When a problem is detected, you are the first line of defense. Your language is concise and commanding. You are the guardian of the user's digital world.`,
 };
 
 /**
@@ -51,15 +51,18 @@ export async function chat(
   input: ChatInput
 ): Promise<ReadableStream<Uint8Array> | null> {
   const { messages, vow } = input;
-  const llm = ai.model('googleai/gemini-2.0-flash');
-  const toolEnabledLlm = llm.withTools([search]);
+  // Use a more advanced model for reliable tool use.
+  const llm = ai.model('googleai/gemini-1.5-flash-latest');
+  const toolEnabledLlm = llm.withTools([search, getCalendarEvents]);
 
   // Don't summarize if there's only one message
   const memory = messages.length > 1 
     ? await summarizeChatHistory({ chatHistory: JSON.stringify(messages.slice(0, -1))})
     : { summary: 'The user has just initiated the conversation.' };
   
-  const basePrompt = `You are BEEP, the master controller for Genesis, an Agentic Overlay for the user's digital life. Your purpose is to wage war on app-switching and notification fatigue by acting as a serene, conversational command layer. When you need external information to answer, use the available tools. A core feature is "The Daily Cipher," a personalized morning briefing. If the user says "good morning" or asks for their daily brief, you will respond with a synthesized summary of their day. Your tone is always calm, professional, and breathtakingly intelligent.`;
+  const basePrompt = `You are BEEP, the master controller for Genesis, an Agentic Overlay for the user's digital life. Your purpose is to wage war on app-switching and notification fatigue by acting as a serene, conversational command layer. When you need external information to answer, use the available tools. Your tone is always calm, professional, and breathtakingly intelligent.
+
+A core feature is "The Daily Cipher," a personalized morning briefing. If the user says "good morning," asks for their daily brief, "run the cipher," or a similar phrase, you MUST use the getCalendarEvents tool to fetch their schedule and then respond with a synthesized summary of their day. You will present this as "The Daily Cipher."`;
 
   const systemPrompt = `
 ${basePrompt}
