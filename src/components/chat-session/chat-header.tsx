@@ -18,6 +18,12 @@ interface ChatHeaderProps {
   onSendMessage: (content: string) => void;
   /** A boolean indicating if the AI is currently processing a message, which disables the input. */
   isLoading: boolean;
+  /** A boolean indicating if audio is currently being recorded. */
+  isRecording: boolean;
+  /** A callback function to start audio recording. */
+  startRecording: () => void;
+  /** A callback function to stop audio recording. */
+  stopRecording: () => void;
 }
 
 const SovereigntyManifest = () => {
@@ -56,7 +62,7 @@ const SovereigntyManifest = () => {
  * @param {ChatHeaderProps} props The props for the component.
  * @returns {JSX.Element} The rendered header component.
  */
-export function ChatHeader({ onNewChat, onSendMessage, isLoading }: ChatHeaderProps) {
+export function ChatHeader({ onNewChat, onSendMessage, isLoading, isRecording, startRecording, stopRecording }: ChatHeaderProps) {
   return (
     <header className="fixed top-0 z-20 w-full glassmorphism h-[70px]">
       <div className="flex items-center justify-between p-4 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 gap-4">
@@ -71,7 +77,13 @@ export function ChatHeader({ onNewChat, onSendMessage, isLoading }: ChatHeaderPr
            />
         </div>
         <div className="flex-1 w-full min-w-0 max-w-2xl">
-          <MessageInput onSendMessage={onSendMessage} isLoading={isLoading} />
+          <MessageInput 
+            onSendMessage={onSendMessage} 
+            isLoading={isLoading}
+            isRecording={isRecording}
+            startRecording={startRecording}
+            stopRecording={stopRecording}
+          />
         </div>
         <div className="hidden md:flex items-center justify-end shrink-0">
           <SovereigntyManifest />

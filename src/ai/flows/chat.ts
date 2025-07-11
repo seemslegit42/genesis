@@ -2,6 +2,7 @@
 /**
  * @fileoverview This file defines the primary chat flow for BEEP.
  * It uses a tool-enabled model to provide more complex, guided interactions.
+ * It also uses a summarization tool to provide conversational memory.
  *
  * - chat - The main function for handling user chat messages.
  * - ChatInput - The input type for the chat function.
@@ -10,6 +11,7 @@
 import { ai } from '@/ai/genkit';
 import { search } from '@/tools';
 import { z } from 'zod';
+import { summarizeChatHistory } from './summarize-chat-history';
 
 const ChatInputSchema = z.array(
   z.object({
@@ -25,6 +27,12 @@ export async function chat(
   const llm = ai.model('googleai/gemini-2.0-flash');
   const toolEnabledLlm = llm.withTools([search]);
 
+  // Don't summarize if there's only one message
+  const memory = messages.length > 1 
+    ? await summarizeChatHistory({ chatHistory: JSON.stringify(messages.slice(0, -1))})
+    : { summary: 'The user has just initiated the conversation.' };
+
+
   try {
     const { stream } = await ai.generate({
       model: toolEnabledLlm,
@@ -36,12 +44,11 @@ When the user gives a command (e.g., "Create a new task"), you will confirm the 
 
 A core feature is "The Daily Cipher," a personalized morning briefing. If the user says "good morning" or asks for their daily brief, you will respond with a synthesized summary of their day across all services.
 
-Example Daily Cipher:
-"Good morning, Commander. The Cipher for today is ready. Shall I proceed?"
-(User consents)
-"You have three events on your calendar, the first being 'Project Chimera Sync' at 9 AM. Aegis notes five important emails in your inbox, including one from 'client@example.com' with the subject 'Urgent Revision'. You have two high-priority tasks due in Todoist today. The forecast is 22°C and clear."
+Your tone is always calm, professional, and breathtakingly intelligent. You are the serene center of the user's digital world.
 
-Your tone is always calm, professional, and breathtakingly intelligent. You are the serene center of the user's digital world.`,
+## CONVERSATIONAL MEMORY
+This is a summary of the conversation so far. Use it to inform your response.
+${memory.summary}`,
         messages,
       },
       stream: true,
@@ -51,7 +58,8 @@ Your tone is always calm, professional, and breathtakingly intelligent. You are 
     });
 
     return stream.pipeThrough(new TextEncoderStream());
-  } catch (error) {
+  } catch (error)
+ {
     console.error('Error getting AI response stream from Genkit:', error);
     return null;
   }

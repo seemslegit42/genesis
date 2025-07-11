@@ -1,11 +1,18 @@
-// Summarizes a chat history to extract key information and topics discussed.
 'use server';
+/**
+ * @fileOverview Summarizes a chat history to extract key information and topics discussed.
+ * This is used to provide "memory" to the main chat flow.
+ *
+ * - summarizeChatHistory - The main function to summarize history.
+ * - SummarizeChatHistoryInput - The input type for the function.
+ * - SummarizeChatHistoryOutput - The output type for the function.
+ */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SummarizeChatHistoryInputSchema = z.object({
-  chatHistory: z.string().describe('The complete chat history to summarize.'),
+  chatHistory: z.string().describe('The complete chat history to summarize, as a JSON string of messages.'),
 });
 export type SummarizeChatHistoryInput = z.infer<typeof SummarizeChatHistoryInputSchema>;
 

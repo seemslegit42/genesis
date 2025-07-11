@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ArrowUp } from 'lucide-react';
-import { useTypographicState } from '@/hooks/use-typographic-state.tsx';
+import { ArrowUp, Mic, Square } from 'lucide-react';
+import { useTypographicState } from '@/hooks/use-typographic-state';
 
 /**
  * Props for the MessageInput component.
@@ -16,6 +16,12 @@ interface MessageInputProps {
   onSendMessage: (content: string) => void;
   /** A boolean indicating if the AI is currently processing a message, which disables the input. */
   isLoading: boolean;
+  /** A boolean indicating if audio is currently being recorded. */
+  isRecording: boolean;
+  /** A callback function to start audio recording. */
+  startRecording: () => void;
+  /** A callback function to stop audio recording. */
+  stopRecording: () => void;
 }
 
 /**
@@ -26,7 +32,7 @@ interface MessageInputProps {
  * @param {MessageInputProps} props The props for the component.
  * @returns {JSX.Element} The rendered message input form.
  */
-export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
+export function MessageInput({ onSendMessage, isLoading, isRecording, startRecording, stopRecording }: MessageInputProps) {
   const [content, setContent] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { applyState } = useTypographicState();
@@ -71,7 +77,7 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
       <div 
         className={cn(
           "absolute inset-x-0 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-accent/50 via-primary/50 to-accent/50 blur-2xl transition-opacity duration-1000",
-          !isLoading && content ? "opacity-50 animate-pulse" : "opacity-0"
+          (!isLoading && content) || isRecording ? "opacity-50 animate-pulse" : "opacity-0"
         )}
       ></div>
       <Textarea
@@ -81,21 +87,37 @@ export function MessageInput({ onSendMessage, isLoading }: MessageInputProps) {
         onKeyDown={handleKeyDown}
         onFocus={() => applyState('active')}
         onBlur={() => applyState('default')}
-        placeholder="BEEP..."
+        placeholder={isRecording ? "Listening..." : "BEEP..."}
         rows={1}
-        className="w-full resize-none pr-12 py-3 pl-6 text-base bg-input backdrop-blur-sm border-border focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all duration-300 focus:shadow-[0_0_35px_hsl(var(--ring)/0.5)] max-h-48 rounded-full font-body"
-        disabled={isLoading}
+        className="w-full resize-none pr-24 py-3 pl-6 text-base bg-input backdrop-blur-sm border-border focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all duration-300 focus:shadow-[0_0_35px_hsl(var(--ring)/0.5)] max-h-48 rounded-full font-body"
+        disabled={isLoading || isRecording}
       />
-       <Button
-        type="submit"
-        size="icon"
-        variant="ghost"
-        className="absolute right-1.5 top-1/2 -translate-y-1/2 text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-9 w-9"
-        disabled={isLoading || !content.trim()}
-      >
-        <ArrowUp className="size-5" />
-        <span className="sr-only">Send</span>
-      </Button>
+      <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          onClick={isRecording ? stopRecording : startRecording}
+          className={cn(
+            "text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-9 w-9",
+            isRecording && "text-red-500 animate-pulse"
+          )}
+          disabled={isLoading}
+        >
+          {isRecording ? <Square className="size-5"/> : <Mic className="size-5" />}
+          <span className="sr-only">{isRecording ? "Stop Recording" : "Start Recording"}</span>
+        </Button>
+        <Button
+          type="submit"
+          size="icon"
+          variant="ghost"
+          className="text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-9 w-9"
+          disabled={isLoading || !content.trim() || isRecording}
+        >
+          <ArrowUp className="size-5" />
+          <span className="sr-only">Send</span>
+        </Button>
+      </div>
     </form>
   );
 }

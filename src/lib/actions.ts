@@ -3,6 +3,8 @@
 import { generateInitialPromptIdeas as genkitGenerateInitialPromptIdeas } from '@/ai/flows/generate-initial-prompt-ideas';
 import { summarizeChatHistory as genkitSummarizeChatHistory, type SummarizeChatHistoryInput } from '@/ai/flows/summarize-chat-history';
 import { chat } from '@/ai/flows/chat';
+import { textToSpeech as genkitTextToSpeech, type TextToSpeechInput } from '@/ai/flows/text-to-speech';
+import { speechToText as genkitSpeechToText, type SpeechToTextInput } from '@/ai/flows/speech-to-text';
 import type { Message } from '@/lib/types';
 
 /**
@@ -56,4 +58,22 @@ export async function getAiResponse(
   // to create a new array with just that data.
   const history = messages.map(({ id, ...rest }) => rest);
   return chat(history);
+}
+
+/**
+ * Server action to convert text to speech.
+ * @param {TextToSpeechInput} input - The text to be converted.
+ * @returns {Promise<{audioDataUri: string}>} A promise that resolves to the audio data URI.
+ */
+export async function textToSpeech(input: TextToSpeechInput) {
+  return genkitTextToSpeech(input);
+}
+
+/**
+ * Server action to convert speech to text.
+ * @param {SpeechToTextInput} input - The audio data URI to be transcribed.
+ * @returns {Promise<{text: string}>} A promise that resolves to the transcribed text.
+ */
+export async function speechToText(input: SpeechToTextInput) {
+  return genkitSpeechToText(input);
 }
