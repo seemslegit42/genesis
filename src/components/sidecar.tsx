@@ -48,7 +48,7 @@ export function Sidecar({ predictedTask, onAcceptTask, onClose }: SidecarProps) 
   if (isMobile) {
     return (
         <Sheet open={!!predictedTask} onOpenChange={(isOpen) => !isOpen && onClose()}>
-            <SheetContent side="bottom" className="glassmorphism h-2/5 rounded-t-lg">
+            <SheetContent side="bottom" className="glassmorphism h-[45%] rounded-t-lg">
                 <SidecarContent predictedTask={predictedTask} onAcceptTask={onAcceptTask} />
             </SheetContent>
         </Sheet>

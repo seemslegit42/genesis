@@ -320,7 +320,7 @@ export function ChatSession() {
             <ChatHeader 
                 onNewChat={handleNewChat}
             >
-                {!isMobile && messageInput}
+                {messageInput}
             </ChatHeader>
             <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
