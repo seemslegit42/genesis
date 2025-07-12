@@ -42,10 +42,10 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
                 Generating suggestions...
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full not-prose">
-                <Skeleton className="h-16 rounded-lg" />
-                <Skeleton className="h-16 rounded-lg" />
-                <Skeleton className="h-16 rounded-lg" />
-                <Skeleton className="h-16 rounded-lg" />
+                <Skeleton className="h-20 rounded-lg" />
+                <Skeleton className="h-20 rounded-lg" />
+                <Skeleton className="h-20 rounded-lg" />
+                <Skeleton className="h-20 rounded-lg" />
             </div>
         </div>
     )
@@ -66,7 +66,7 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
             onClick={() => onPromptClick(prompt)}
             className="group cursor-pointer glassmorphism hover:border-primary/50 transition-all duration-300 text-left hover:-translate-y-1 hover:shadow-primary/20 hover:shadow-2xl"
           >
-            <CardContent className="p-4">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <p className="text-foreground font-medium">{prompt}</p>
                 <ArrowUpRight />

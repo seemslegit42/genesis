@@ -31,7 +31,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
       {role === 'assistant' && <ChatAvatar role="assistant" />}
       <div
         className={cn(
-          'p-4 rounded-lg max-w-xs md:max-w-md lg:max-w-2xl break-words',
+          'p-4 rounded-lg max-w-sm md:max-w-lg lg:max-w-3xl break-words',
           'glassmorphism'
         )}
       >

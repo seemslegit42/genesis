@@ -85,8 +85,8 @@
 @layer utilities {
   .glassmorphism {
     background-color: hsl(var(--card) / 0.5);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     border: 1px solid hsl(var(--border) / 0.2);
     box-shadow: 0 8px 32px 0 hsl(var(--background) / 0.37);
   }

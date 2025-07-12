@@ -16,8 +16,10 @@ export function InvocationCard({ title, description, onClick, sigil }: Invocatio
       <div className="w-16 h-16 mb-6 text-primary transition-all duration-300 group-hover:text-primary group-hover:drop-shadow-[0_0_10px_hsl(var(--primary))] not-prose">
         {sigil}
       </div>
-      <h3>{title}</h3>
-      <p className="text-muted-foreground flex-grow">{description}</p>
+      <div className="flex flex-col flex-grow justify-center">
+        <h3>{title}</h3>
+        <p className="text-muted-foreground">{description}</p>
+      </div>
        <div className="absolute bottom-4 right-4 text-xs font-bold text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 not-prose">
         SELECT
       </div>
