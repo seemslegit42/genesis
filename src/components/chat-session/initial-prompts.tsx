@@ -52,14 +52,14 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
   }
 
   return (
-    <div className="flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
-      <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
-        INVOKE YOUR GENESIS
+    <div className="prose prose-invert flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
+      <h2 className="text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
+        Invoke Your Genesis
       </h2>
       <p className="text-muted-foreground mb-8 max-w-md">
         Your intent is the key. Select an incantation below to begin the ritual.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-3xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-3xl not-prose">
         {prompts.slice(0, 4).map((prompt, i) => (
           <Card
             key={i}

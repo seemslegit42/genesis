@@ -10,8 +10,8 @@ interface RiteOfInvocationProps {
 export function RiteOfInvocation({ onComplete }: RiteOfInvocationProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 animate-float-in">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-headline text-primary drop-shadow-[0_0_10px_hsl(var(--primary))] mb-2">
+      <div className="text-center mb-12 prose prose-invert">
+        <h1 className="text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
           Choose Your Vow
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

@@ -16,6 +16,51 @@ export default {
         headline: ['var(--font-inscription)', ...fontFamily.sans],
         mono: ['var(--font-geist-mono)', ...fontFamily.mono],
       },
+      typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            'h1, h2, h3, h4, h5, h6': {
+              fontFamily: theme('fontFamily.headline').join(', '),
+            },
+            h1: {
+              fontSize: theme('fontSize.4xl'),
+              marginBottom: theme('spacing.4'),
+            },
+            h2: {
+              fontSize: theme('fontSize.3xl'),
+              marginBottom: theme('spacing.4'),
+            },
+            h3: {
+              fontSize: theme('fontSize.2xl'),
+              marginBottom: theme('spacing.3'),
+            },
+            h4: {
+              fontSize: theme('fontSize.xl'),
+              marginBottom: theme('spacing.2'),
+            },
+          },
+        },
+        invert: {
+          css: {
+            '--tw-prose-body': theme('colors.foreground / 80%'),
+            '--tw-prose-headings': theme('colors.foreground'),
+            '--tw-prose-lead': theme('colors.foreground / 90%'),
+            '--tw-prose-links': theme('colors.primary'),
+            '--tw-prose-bold': theme('colors.foreground'),
+            '--tw-prose-counters': theme('colors.muted-foreground'),
+            '--tw-prose-bullets': theme('colors.primary'),
+            '--tw-prose-hr': theme('colors.border'),
+            '--tw-prose-quotes': theme('colors.foreground'),
+            '--tw-prose-quote-borders': theme('colors.border'),
+            '--tw-prose-captions': theme('colors.muted-foreground'),
+            '--tw-prose-code': theme('colors.foreground'),
+            '--tw-prose-pre-code': theme('colors.foreground'),
+            '--tw-prose-pre-bg': 'hsl(var(--muted) / 50%)',
+            '--tw-prose-th-borders': theme('colors.border'),
+            '--tw-prose-td-borders': theme('colors.border'),
+          },
+        },
+      }),
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
