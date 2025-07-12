@@ -66,7 +66,7 @@ export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps)
             Share BEEP: Genesis once to permanently unlock voice-to-text.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col space-y-4 py-6">
+        <div className="flex flex-col space-y-4 py-4">
           <Button
             size="lg"
             variant="outline"

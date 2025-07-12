@@ -58,7 +58,7 @@ export function Sidecar({ predictedTask, onAcceptTask, onClose }: SidecarProps) 
   return (
     <aside
       className={cn(
-        'relative hidden md:flex flex-col items-center justify-center p-4 w-64 glassmorphism border-l-2 border-primary/20 m-4 rounded-lg animate-in fade-in-50 slide-in-from-right-10 duration-500'
+        'relative hidden md:flex flex-col items-center justify-center p-6 w-64 glassmorphism border-l-2 border-primary/20 m-4 rounded-lg animate-in fade-in-50 slide-in-from-right-10 duration-500'
       )}
     >
       <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={onClose}>

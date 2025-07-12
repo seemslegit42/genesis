@@ -118,7 +118,7 @@ export function ChatHeader({ onNewChat, children }: ChatHeaderProps) {
   const isMobile = useIsMobile();
   return (
     <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
-      <div className="flex items-center justify-between p-2 sm:p-4 h-full w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 gap-2 sm:gap-4">
+      <div className="flex items-center justify-between h-full w-full max-w-7xl mx-auto px-4 gap-4">
         <div className="flex items-center gap-2 cursor-pointer font-headline shrink-0" onClick={onNewChat} title="Start New Chat">
            <Logo className="h-6 w-auto" />
         </div>

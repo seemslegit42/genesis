@@ -35,7 +35,7 @@ interface MessageListProps {
  */
 const TranscribingMessage = () => {
     return (
-      <div className="flex items-center gap-3 md:gap-4 justify-end">
+      <div className="flex items-center gap-4 justify-end">
          <div className="p-4 rounded-lg glassmorphism">
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
                 <Mic />
@@ -76,7 +76,7 @@ export function MessageList({ messages, streamingMessage, isAiResponding, isTran
   const showLoading = isAiResponding && !streamingMessage;
 
   return (
-    <div className="space-y-6 sm:space-y-8 pt-8 pb-24 md:pb-8">
+    <div className="space-y-8 pt-8 pb-24 md:pb-8">
       {messages.map((message) => (
         <ChatMessage key={message.id} message={message} />
       ))}

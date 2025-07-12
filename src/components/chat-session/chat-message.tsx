@@ -24,7 +24,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div
       className={cn(
-        'flex items-start gap-3 md:gap-4',
+        'flex items-start gap-4',
         role === 'user' && 'justify-end'
       )}
     >
@@ -53,10 +53,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
  */
 export function LoadingMessage() {
   return (
-    <div className="flex items-center gap-3 md:gap-4">
+    <div className="flex items-center gap-4">
       <ChatAvatar role="assistant" />
       <div className="p-4 rounded-lg glassmorphism">
-        <div className="flex items-center justify-center gap-1.5">
+        <div className="flex items-center justify-center gap-2">
           <span className="size-2 rounded-full bg-primary/70 animate-pulse [animation-delay:-0.3s]" />
           <span className="size-2 rounded-full bg-primary/70 animate-pulse [animation-delay:-0.15s]" />
           <span className="size-2 rounded-full bg-primary/70 animate-pulse" />
