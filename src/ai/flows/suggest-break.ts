@@ -14,7 +14,7 @@ import { VowSchema } from '@/lib/types';
 /**
  * The Zod schema for the input of the break suggestion flow.
  */
-export const SuggestBreakInputSchema = z.object({
+const SuggestBreakInputSchema = z.object({
   vow: VowSchema.describe("The user's current persona vow."),
 });
 export type SuggestBreakInput = z.infer<typeof SuggestBreakInputSchema>;
@@ -22,7 +22,7 @@ export type SuggestBreakInput = z.infer<typeof SuggestBreakInputSchema>;
 /**
  * The Zod schema for the output of the break suggestion flow.
  */
-export const SuggestBreakOutputSchema = z.object({
+const SuggestBreakOutputSchema = z.object({
   suggestion: z.string().describe('A short, gentle suggestion for a mental break, tailored to the user\'s vow. It should be phrased as if coming from an AI assistant.'),
 });
 export type SuggestBreakOutput = z.infer<typeof SuggestBreakOutputSchema>;
