@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react';
 import { Progress } from '../ui/progress';
-import { Message } from '@/lib/types';
 import { Logo } from '../logo';
 import {
   DropdownMenu,
@@ -55,14 +54,14 @@ const SovereigntyManifest = () => {
     }, []);
 
     return (
-        <div className="flex items-center gap-4 text-xs text-right text-muted-foreground w-48">
+        <div className="flex items-center gap-4 text-xs w-48">
             <div className="flex-grow">
                  <div className="font-bold text-foreground text-right text-lg" style={{ textShadow: '0 0 8px hsl(var(--primary)/0.7)' }}>
                     FOCUS
                 </div>
                 <Progress value={80} className="h-1" />
             </div>
-            <div className="font-mono text-lg text-foreground">{time}</div>
+            <div className="font-mono text-lg text-muted-foreground">{time}</div>
         </div>
     );
 };
