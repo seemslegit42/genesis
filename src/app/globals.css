@@ -5,25 +5,34 @@
 
 @layer base {
   :root {
-    --background: 240 10% 2%; /* Obsidian Black */
+    --background: 240 10% 3.9%; /* Dark Gray */
     --foreground: 0 0% 98%; /* Vitreous White */
-    --card: 271 76% 20%; /* Dark Imperial Purple variant */
+
+    --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
-    --popover: 271 76% 15%;
+
+    --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 158 51% 55%; /* Patina Green */
-    --primary-foreground: 240 10% 2%;
-    --secondary: 177 68% 40%; /* Roman Aqua */
-    --secondary-foreground: 240 10% 2%;
-    --muted: 240 5% 25%; /* Conchoidal Gray */
+
+    --primary: 183 100% 74%; /* Electric Blue */
+    --primary-foreground: 183 100% 10%;
+
+    --secondary: 322 100% 70%; /* Bright Pink */
+    --secondary-foreground: 322 100% 10%;
+
+    --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 271 76% 53%; /* Imperial Purple */
+
+    --accent: 322 100% 70%; /* Bright Pink */
     --accent-foreground: 0 0% 98%;
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
+
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 158 51% 55%; /* Patina Green */
+    --ring: 183 100% 74%; /* Electric Blue */
+
     --radius: 0.75rem;
     --obsidian-black: 240 10% 2%;
 
@@ -75,11 +84,11 @@
 
 @layer utilities {
   .glassmorphism {
-    background-color: hsl(var(--card) / 0.6);
-    backdrop-filter: blur(12px);
+    background-color: hsl(var(--card) / 0.5);
     -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     border: 1px solid hsl(var(--border) / 0.2);
-    box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.1);
+    box-shadow: 0 8px 32px 0 hsl(var(--background) / 0.37);
   }
 }
 

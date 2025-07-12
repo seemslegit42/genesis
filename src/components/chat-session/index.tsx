@@ -237,8 +237,10 @@ export function ChatSession() {
         console.error("Failed to fetch initial prompts:", error);
       }
     };
-    fetchPrompts();
-  }, []);
+    if (isInitiated && messages.length === 0) {
+        fetchPrompts();
+    }
+  }, [isInitiated, messages.length]);
 
   const handleNewChat = () => {
     setMessages([]);
@@ -262,8 +264,9 @@ export function ChatSession() {
 
   const handleInitiation = (chosenVow: Vow) => {
     setVow(chosenVow);
-    handleSendMessage(`I have chosen the path of the ${chosenVow}. Guide me.`);
     setIsInitiated(true);
+    const firstMessage = `I have chosen the path of the ${chosenVow}. Guide me.`;
+    handleSendMessage(firstMessage);
   }
 
   const handleAcceptTask = (task: string) => {
@@ -292,7 +295,7 @@ export function ChatSession() {
     )
   }
 
-  const showInitialPrompts = messages.length === 0 && !isAiResponding && !streamingMessage;
+  const showInitialPrompts = messages.length <= 1 && !isAiResponding && !streamingMessage;
   
   const messageInput = (
     <MessageInput
@@ -320,7 +323,6 @@ export function ChatSession() {
                 onNewChat={handleNewChat}
                 messages={messages}
                 transcriptionUnlocked={transcriptionUnlocked}
-                isMobile={isMobile}
             >
                 {!isMobile && messageInput}
             </ChatHeader>

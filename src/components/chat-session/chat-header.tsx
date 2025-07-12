@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from '../ui/button';
 import { Menu } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 /**
  * Props for the ChatHeader component.
@@ -32,8 +33,6 @@ interface ChatHeaderProps {
   transcriptionUnlocked: boolean;
   /** The content to be rendered in the center of the header (e.g., the message input on desktop). */
   children?: React.ReactNode;
-  /** A boolean indicating if the current view is mobile. */
-  isMobile: boolean;
 }
 
 /**
@@ -134,7 +133,8 @@ const MobileMenu = ({ onNewChat, messages, transcriptionUnlocked }: { onNewChat:
  * @param {ChatHeaderProps} props The props for the component.
  * @returns {JSX.Element} The rendered header component.
  */
-export function ChatHeader({ onNewChat, messages, transcriptionUnlocked, children, isMobile }: ChatHeaderProps) {
+export function ChatHeader({ onNewChat, messages, transcriptionUnlocked, children }: ChatHeaderProps) {
+  const isMobile = useIsMobile();
   return (
     <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
       <div className="flex items-center justify-between p-2 sm:p-4 h-full w-full mx-auto px-2 sm:px-6 lg:px-8 gap-2 sm:gap-4">
