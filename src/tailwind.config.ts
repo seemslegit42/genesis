@@ -14,33 +14,11 @@ export default {
         sans: ['var(--font-codex)', ...fontFamily.sans],
         body: ['var(--font-codex)', ...fontFamily.sans],
         headline: ['var(--font-inscription)', ...fontFamily.sans],
+        display: ['var(--font-display)', ...fontFamily.sans], // New display font
         mono: ['var(--font-geist-mono)', ...fontFamily.mono],
       },
       typography: (theme) => ({
         DEFAULT: {
-          css: {
-            'h1, h2, h3, h4, h5, h6': {
-              fontFamily: theme('fontFamily.headline').join(', '),
-            },
-            h1: {
-              fontSize: theme('fontSize.4xl'),
-              marginBottom: theme('spacing.4'),
-            },
-            h2: {
-              fontSize: theme('fontSize.3xl'),
-              marginBottom: theme('spacing.4'),
-            },
-            h3: {
-              fontSize: theme('fontSize.2xl'),
-              marginBottom: theme('spacing.3'),
-            },
-            h4: {
-              fontSize: theme('fontSize.xl'),
-              marginBottom: theme('spacing.2'),
-            },
-          },
-        },
-        invert: {
           css: {
             '--tw-prose-body': theme('colors.foreground / 80%'),
             '--tw-prose-headings': theme('colors.foreground'),
@@ -58,6 +36,42 @@ export default {
             '--tw-prose-pre-bg': 'hsl(var(--muted) / 50%)',
             '--tw-prose-th-borders': theme('colors.border'),
             '--tw-prose-td-borders': theme('colors.border'),
+            h1: {
+              fontFamily: theme('fontFamily.display').join(', '),
+              fontWeight: '600',
+              fontSize: theme('fontSize.4xl'),
+              letterSpacing: '-0.02em',
+              lineHeight: '1.1',
+              marginTop: theme('spacing.8'),
+              marginBottom: theme('spacing.6'),
+            },
+            h2: {
+              fontFamily: theme('fontFamily.display').join(', '),
+              fontWeight: '600',
+              fontSize: theme('fontSize.3xl'),
+              letterSpacing: '-0.02em',
+              lineHeight: '1.2',
+              marginTop: theme('spacing.8'),
+              marginBottom: theme('spacing.4'),
+            },
+            h3: {
+              fontFamily: theme('fontFamily.headline').join(', '),
+              fontWeight: '500',
+              fontSize: theme('fontSize.2xl'),
+              letterSpacing: '0em',
+              lineHeight: '1.3',
+              marginTop: theme('spacing.6'),
+              marginBottom: theme('spacing.2'),
+            },
+            h4: {
+              fontFamily: theme('fontFamily.headline').join(', '),
+              fontWeight: '500',
+              fontSize: theme('fontSize.xl'),
+              letterSpacing: '0em',
+              lineHeight: '1.4',
+              marginTop: theme('spacing.4'),
+              marginBottom: theme('spacing.2'),
+            },
           },
         },
       }),

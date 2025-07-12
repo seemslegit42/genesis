@@ -34,14 +34,14 @@ const ArrowUpRight = () => (
 export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) {
   if (prompts.length === 0) {
     return (
-        <div className="flex flex-col items-center justify-center text-center animate-float-in w-full max-w-3xl" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
-             <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
+        <div className="flex flex-col items-center justify-center text-center animate-float-in w-full max-w-3xl prose prose-invert" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
+             <h2 className="text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
                 AWAITING INVOCATION
             </h2>
              <p className="text-muted-foreground mb-8 max-w-md">
                 Generating suggestions...
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full not-prose">
                 <Skeleton className="h-16 rounded-lg" />
                 <Skeleton className="h-16 rounded-lg" />
                 <Skeleton className="h-16 rounded-lg" />
@@ -52,7 +52,7 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
   }
 
   return (
-    <div className="prose prose-invert flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
+    <div className="flex flex-col items-center justify-center text-center animate-float-in prose prose-invert" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
       <h2 className="text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
         Invoke Your Genesis
       </h2>

@@ -21,7 +21,7 @@ export function RiteOfInvocation({ onComplete }: RiteOfInvocationProps) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
         <InvocationCard
           title="The Architect"
-          description="For those who build. Choose this path to focus on creation, system design, and bringing ideas to life with precision and structure."
+          description="For those who build. This path focuses on creation, system design, and bringing ideas to life with precision and structure."
           onClick={() => onComplete('Architect')}
           sigil={
             <svg viewBox="0 0 100 100" stroke="currentColor" strokeWidth="4" fill="none">
@@ -47,7 +47,7 @@ export function RiteOfInvocation({ onComplete }: RiteOfInvocationProps) {
         />
         <InvocationCard
           title="The Sentinel"
-          description="For those who protect. This path prioritizes security, problem-solving, and defending your digital sovereignty with vigilance."
+          description="For those who protect. This path prioritizes security, problem-solving, and defending digital sovereignty with vigilance."
           onClick={() => onComplete('Sentinel')}
           sigil={
             <svg viewBox="0 0 100 100" stroke="currentColor" strokeWidth="4" fill="none">

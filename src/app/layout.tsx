@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { Comfortaa, Lexend } from 'next/font/google';
+import { Comfortaa, Lexend, Antonio } from 'next/font/google';
 import { AppProvider } from '@/components/app-provider';
 
 /**
@@ -15,9 +15,19 @@ export const metadata: Metadata = {
 };
 
 /**
- * The Inscription: The font for headings, logos, and sacred names.
- * It is sharp, futuristic, and carries an air of ancient authority.
- * This is the Obelisk Tier of our Typographic Sigil System.
+ * The Display: The font for primary headings (H1, H2).
+ * Sharp, condensed, and impactful, embodying "mythic brutalism."
+ * @type {NextFont}
+ */
+const fontDisplay = Antonio({
+  subsets: ['latin'],
+  variable: '--font-display',
+  weight: ['400', '600'],
+});
+
+/**
+ * The Inscription: The font for subheadings (H3, H4) and logos.
+ * Geometric and futuristic, it carries an air of ancient authority.
  * @type {NextFont}
  */
 const fontInscription = Comfortaa({
@@ -27,8 +37,7 @@ const fontInscription = Comfortaa({
 
 /**
  * The Codex: The font for body text, UI elements, and detailed content.
- * It is chosen for its clarity, legibility, and calming presence.
- * This is the Scribe Tier of our Typographic Sigil System.
+ * Chosen for its clarity, legibility, and calming presence.
  * @type {NextFont}
  */
 const fontCodex = Lexend({
@@ -49,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("dark", fontInscription.variable, fontCodex.variable)}>
+    <html lang="en" className={cn("dark", fontDisplay.variable, fontInscription.variable, fontCodex.variable)}>
       <body className={cn("antialiased", "min-h-screen", "font-body")}>
         <AppProvider>
             {children}
