@@ -1,6 +1,6 @@
 'use server';
 
-import { chat } from '@/ai/flows/chat';
+import { chat as chatFlow } from '@/ai/flows/chat';
 import { generateInitialPromptIdeas as generateInitialPromptIdeasFlow } from '@/ai/flows/generate-initial-prompt-ideas';
 import { speechToText as speechToTextFlow } from '@/ai/flows/speech-to-text';
 import { textToSpeech as textToSpeechFlow } from '@/ai/flows/text-to-speech';
@@ -25,7 +25,7 @@ export async function getAiResponse(messages: Message[], vow: Vow): Promise<Read
   // We only need the role and content for the AI, so we'll map over the messages
   // to create a new array with just that data.
   const history = messages.map(({ id, ...rest }) => rest);
-  return chat({ messages: history, vow });
+  return chatFlow({ messages: history, vow });
 }
 
 /**
