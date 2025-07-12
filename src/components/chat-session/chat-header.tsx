@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -27,10 +28,6 @@ interface ChatHeaderProps {
    * reset mechanism for the user's workflow.
    */
   onNewChat: () => void;
-  /** The array of messages in the current chat. */
-  messages: Message[];
-  /** A boolean indicating if transcription is unlocked. */
-  transcriptionUnlocked: boolean;
   /** The content to be rendered in the center of the header (e.g., the message input on desktop). */
   children?: React.ReactNode;
 }
@@ -43,7 +40,7 @@ interface ChatHeaderProps {
  * and robust identity system, key components for a profit-driven architecture.
  * @returns {JSX.Element} The rendered component.
  */
-const SovereigntyManifest = ({ messages, transcriptionUnlocked }: { messages: Message[], transcriptionUnlocked: boolean }) => {
+const SovereigntyManifest = () => {
     const [time, setTime] = useState('');
 
     useEffect(() => {
@@ -57,29 +54,20 @@ const SovereigntyManifest = ({ messages, transcriptionUnlocked }: { messages: Me
         return () => clearInterval(timer);
     }, []);
 
-    const calculateRelationshipLevel = () => {
-        const basePoints = messages.length * 10;
-        const bonusPoints = transcriptionUnlocked ? 1000 : 0;
-        return basePoints + bonusPoints;
-    }
-
-    const level = calculateRelationshipLevel();
-    const progress = (level % 100);
-
     return (
         <div className="flex items-center gap-4 text-xs text-right text-muted-foreground w-48">
             <div className="flex-grow">
                  <div className="font-bold text-foreground text-right text-lg" style={{ textShadow: '0 0 8px hsl(var(--primary)/0.7)' }}>
-                    {Math.floor(level / 100)}
+                    FOCUS
                 </div>
-                <Progress value={progress} className="h-1" />
+                <Progress value={80} className="h-1" />
             </div>
             <div className="font-mono text-lg text-foreground">{time}</div>
         </div>
     );
 };
 
-const MobileMenu = ({ onNewChat, messages, transcriptionUnlocked }: { onNewChat: () => void, messages: Message[], transcriptionUnlocked: boolean }) => {
+const MobileMenu = ({ onNewChat }: { onNewChat: () => void }) => {
     const [time, setTime] = useState('');
 
     useEffect(() => {
@@ -89,13 +77,6 @@ const MobileMenu = ({ onNewChat, messages, transcriptionUnlocked }: { onNewChat:
         setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
         return () => clearInterval(timer);
     }, []);
-    
-    const calculateRelationshipLevel = () => {
-        const basePoints = messages.length * 10;
-        const bonusPoints = transcriptionUnlocked ? 1000 : 0;
-        return basePoints + bonusPoints;
-    }
-    const level = calculateRelationshipLevel();
 
     return (
         <DropdownMenu>
@@ -113,8 +94,8 @@ const MobileMenu = ({ onNewChat, messages, transcriptionUnlocked }: { onNewChat:
                        <span className="font-mono">{time}</span>
                    </div>
                     <div className="flex justify-between items-center">
-                       <span>Relationship Lvl:</span>
-                       <span>{Math.floor(level / 100)}</span>
+                       <span>Status:</span>
+                       <span>Connected</span>
                    </div>
                 </div>
                 <DropdownMenuSeparator />
@@ -133,7 +114,7 @@ const MobileMenu = ({ onNewChat, messages, transcriptionUnlocked }: { onNewChat:
  * @param {ChatHeaderProps} props The props for the component.
  * @returns {JSX.Element} The rendered header component.
  */
-export function ChatHeader({ onNewChat, messages, transcriptionUnlocked, children }: ChatHeaderProps) {
+export function ChatHeader({ onNewChat, children }: ChatHeaderProps) {
   const isMobile = useIsMobile();
   return (
     <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
@@ -147,12 +128,12 @@ export function ChatHeader({ onNewChat, messages, transcriptionUnlocked, childre
         </div>
 
         <div className="hidden md:flex items-center justify-end shrink-0">
-          <SovereigntyManifest messages={messages} transcriptionUnlocked={transcriptionUnlocked} />
+          <SovereigntyManifest />
         </div>
 
         {isMobile && (
            <div className="md:hidden">
-                <MobileMenu onNewChat={onNewChat} messages={messages} transcriptionUnlocked={transcriptionUnlocked} />
+                <MobileMenu onNewChat={onNewChat} />
             </div>
         )}
       </div>

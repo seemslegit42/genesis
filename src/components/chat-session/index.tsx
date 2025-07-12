@@ -319,8 +319,6 @@ export function ChatSession() {
             />
             <ChatHeader 
                 onNewChat={handleNewChat}
-                messages={messages}
-                transcriptionUnlocked={transcriptionUnlocked}
             >
                 {!isMobile && messageInput}
             </ChatHeader>

@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
@@ -6,9 +7,6 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
 } from "@/components/ui/sheet";
 
 interface SidecarProps {
@@ -18,7 +16,7 @@ interface SidecarProps {
 }
 
 const SidecarContent = ({ predictedTask, onAcceptTask }: { predictedTask: string; onAcceptTask: (task: string) => void; }) => (
-    <div className="text-center flex flex-col items-center justify-center h-full">
+    <div className="text-center flex flex-col items-center justify-center h-full p-4">
         <Zap className="mx-auto h-8 w-8 text-primary/80 mb-4" />
         <h3 className="font-headline text-lg text-primary mb-2">Next Step</h3>
         <p className="text-muted-foreground mb-6 text-sm">BEEP has predicted your next action.</p>

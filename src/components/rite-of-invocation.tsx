@@ -1,3 +1,4 @@
+
 'use client';
 import { Vow } from '@/lib/types';
 import { InvocationCard } from './invocation-card';
@@ -14,7 +15,7 @@ export function RiteOfInvocation({ onComplete }: RiteOfInvocationProps) {
           Choose Your Vow
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Your first choice defines your path. This Vow attunes BEEP: Genesis to your primary intent. It can be changed later, but your origin is eternal.
+          This choice attunes BEEP to your primary intent. It can be changed later, but your origin is eternal.
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
