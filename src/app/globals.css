@@ -14,24 +14,24 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 183 100% 74%; /* Electric Blue */
-    --primary-foreground: 183 100% 10%;
+    --primary: 270 50% 60%; /* Imperial Purple */
+    --primary-foreground: 270 50% 10%;
 
-    --secondary: 322 100% 70%; /* Bright Pink */
-    --secondary-foreground: 322 100% 10%;
+    --secondary: 150 40% 50%; /* Patina Green */
+    --secondary-foreground: 150 40% 95%;
 
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
 
-    --accent: 322 100% 70%; /* Bright Pink */
+    --accent: 322 100% 70%; /* Bright Pink - Kept for secondary accents */
     --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 70% 55%; /* Gilded Red */
     --destructive-foreground: 0 0% 98%;
 
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 183 100% 74%; /* Electric Blue */
+    --ring: 270 50% 60%; /* Imperial Purple */
 
     --radius: 0.75rem;
     --obsidian-black: 240 10% 2%;
@@ -98,5 +98,14 @@
   }
   100% {
     background-position: 100% 50%;
+  }
+}
+
+@keyframes gilded-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsl(var(--destructive) / 0.7);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px hsl(var(--destructive) / 0.3);
   }
 }

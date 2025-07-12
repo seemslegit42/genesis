@@ -69,6 +69,7 @@ export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps)
         <div className="flex flex-col space-y-4 py-6">
           <Button
             size="lg"
+            variant="outline"
             className="w-full font-bold text-lg"
             onClick={handleShare}
           >
@@ -77,6 +78,7 @@ export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps)
           </Button>
           <Button
             size="lg"
+            variant="outline"
             className="w-full font-bold text-lg"
             onClick={handleShare}
           >
