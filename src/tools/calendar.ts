@@ -11,7 +11,7 @@ import { z } from 'zod';
 /**
  * Defines a tool that fetches calendar events for the current day.
  * In a real application, this would connect to Google Calendar, Outlook, etc.
- * For now, it returns a mock list of events to demonstrate the functionality.
+ * For now, it returns an empty list to indicate it's a placeholder.
  */
 export const getCalendarEvents = ai.defineTool(
   {
@@ -22,13 +22,8 @@ export const getCalendarEvents = ai.defineTool(
   },
   async () => {
     console.log(`[Calendar Tool] Fetching today's events.`);
-    // Mock data representing a typical day for a creative professional.
-    const mockEvents = [
-      { time: '09:00', title: 'Project Phoenix: Daily Standup' },
-      { time: '11:00', title: 'Client Deep-Dive: Acme Corp Rebranding' },
-      { time: '14:30', title: '1-on-1: Design Sync with Sarah' },
-      { time: '16:00', title: 'Focus Block: Q3 Strategy Document' },
-    ];
-    return JSON.stringify(mockEvents);
+    // In a real application, this would call a calendar API.
+    // Returning an empty array for now.
+    return JSON.stringify([]);
   }
 );

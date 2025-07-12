@@ -17,7 +17,6 @@ import { ShareToUnlock } from './share-to-unlock';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RiteOfInvocation } from '@/components/rite-of-invocation';
 import { useTypographicState } from '@/hooks/use-typographic-state';
-import { useCollectiveState } from '@/hooks/use-collective-state';
 import { Sidecar } from '../sidecar';
 import { useAppStore } from '@/hooks/use-app-store';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -45,7 +44,6 @@ export function ChatSession() {
   const [isInitiated, setIsInitiated] = useState(false);
   const [vow, setVow] = useState<Vow | null>(null);
   const { currentState } = useTypographicState();
-  const { totalUsers, totalEngagement } = useCollectiveState();
   const setAmbientState = useAppStore((state) => state.setAmbientState);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
@@ -335,8 +333,6 @@ export function ChatSession() {
                         <div className="flex-1 flex items-center justify-center w-full">
                           <Obelisk 
                             typographicState={currentState}
-                            totalUsers={totalUsers}
-                            totalEngagement={totalEngagement}
                           />
                         </div>
                         <div className="pb-8 w-full max-w-4xl mx-auto">

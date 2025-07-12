@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '../ui/skeleton';
 
 /**
  * Props for the InitialPrompts component.
@@ -33,13 +34,19 @@ const ArrowUpRight = () => (
 export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) {
   if (prompts.length === 0) {
     return (
-        <div className="flex flex-col items-center justify-center text-center animate-float-in" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
+        <div className="flex flex-col items-center justify-center text-center animate-float-in w-full max-w-3xl" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
              <h2 className="text-xl font-headline mb-2 text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
                 AWAITING INVOCATION
             </h2>
-             <p className="text-muted-foreground mb-8 max-w-md animate-pulse">
-                Calibrating protocols...
+             <p className="text-muted-foreground mb-8 max-w-md">
+                Generating suggestions...
             </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <Skeleton className="h-16 rounded-lg" />
+                <Skeleton className="h-16 rounded-lg" />
+                <Skeleton className="h-16 rounded-lg" />
+                <Skeleton className="h-16 rounded-lg" />
+            </div>
         </div>
     )
   }

@@ -25,20 +25,9 @@ export const search = ai.defineTool(
   async input => {
     console.log(`[Search Tool] Searching for: ${input.query}`);
     // In a real application, this would call a search API (e.g., Google Search).
-    // For now, we'll return a mock result to demonstrate the tool-use functionality.
+    // For now, we'll return an empty result to indicate it is a placeholder.
     return JSON.stringify({
-      results: [
-        {
-          title: `How to onboard a new client: A 5-step guide`,
-          snippet: `This guide provides a comprehensive 5-step process for successfully onboarding new clients, ensuring a smooth transition and a strong working relationship.`,
-          link: '#',
-        },
-        {
-          title: 'Client Onboarding Checklist',
-          snippet: `A complete checklist covering all the essential steps for client onboarding, from initial contract to project kickoff.`,
-          link: '#',
-        },
-      ],
+      results: [],
     });
   }
 );
