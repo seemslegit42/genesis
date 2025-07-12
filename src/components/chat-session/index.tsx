@@ -21,6 +21,7 @@ import { Sidecar } from '../sidecar';
 import { useAppStore } from '@/hooks/use-app-store';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BottomBar } from './bottom-bar';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 /**
@@ -325,7 +326,7 @@ export function ChatSession() {
             <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
             <div className="flex-1 flex overflow-hidden">
-                <div className="flex-1 overflow-y-auto">
+                <ScrollArea className="flex-1">
                 {showInitialPrompts ? (
                     <div className="flex flex-col items-center justify-center h-full p-4">
                         <div className="flex-1 flex items-center justify-center w-full">
@@ -342,7 +343,7 @@ export function ChatSession() {
                       <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
                     </div>
                 )}
-                </div>
+                </ScrollArea>
                 <Sidecar 
                     predictedTask={predictedTask} 
                     onAcceptTask={handleAcceptTask}
