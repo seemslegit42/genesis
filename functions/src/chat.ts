@@ -4,16 +4,7 @@ import * as admin from "firebase-admin";
 import * as logger from "firebase-functions/logger";
 
 if (admin.apps.length === 0) {
-  // For deployed functions, the projectId is automatically available.
-  // For local development (e.g., using Genkit's dev server),
-  // we need to provide it explicitly.
-  if (!process.env.GOOGLE_CLOUD_PROJECT) {
-    admin.initializeApp({
-      projectId: 'von-os-juooq',
-    });
-  } else {
-    admin.initializeApp();
-  }
+  admin.initializeApp();
 }
 
 const db = admin.firestore();
