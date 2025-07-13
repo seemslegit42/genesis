@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { TypographicState } from '@/hooks/use-typographic-state';
+import { ArchitectSigil, OracleSigil, SentinelSigil } from './sigils';
 
 interface ObeliskProps {
   typographicState: TypographicState;
@@ -71,24 +72,18 @@ export function Obelisk({ typographicState }: ObeliskProps) {
             className="space-y-8 relative z-10" 
             style={{ transform: 'translateZ(10px)' }} // Bring sigils forward
           >
-            <div className="w-8 h-8 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse">
-                <svg viewBox="0 0 100 100" fill={obeliskColor1}>
-                    <path d="M50 0 L61.8 38.2 L100 38.2 L69.1 61.8 L80.9 100 L50 76.4 L19.1 100 L30.9 61.8 L0 38.2 L38.2 38.2 Z" />
-                </svg>
-            </div>
-             <div className="w-6 h-6 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse [animation-delay:0.2s]">
-                <svg viewBox="0 0 100 100" stroke={obeliskColor2} strokeWidth="8" fill="transparent" >
-                    <circle cx="50" cy="50" r="40" />
-                    <line x1="50" y1="10" x2="50" y2="90" />
-                </svg>
-            </div>
-             <div className="w-10 h-10 opacity-10 group-hover:opacity-40 transition-opacity duration-300 animate-pulse [animation-delay:0.4s]">
-                <svg viewBox="0 0 100 100" stroke={obeliskColor3} strokeWidth="4" fill="transparent">
-                    <circle cx="50" cy="50" r="45" />
-                    <circle cx="50" cy="50" r="35" />
-                    <path d="M 50,5 L 95,50 L 50,95 L 5,50 Z" />
-                </svg>
-            </div>
+            <ArchitectSigil
+              className="w-8 h-8 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse"
+              style={{ color: `hsl(${obeliskColor1})` }}
+            />
+            <OracleSigil
+              className="w-6 h-6 opacity-20 group-hover:opacity-60 transition-opacity duration-300 animate-pulse [animation-delay:0.2s]"
+              style={{ color: `hsl(${obeliskColor2})` }}
+            />
+            <SentinelSigil
+               className="w-10 h-10 opacity-10 group-hover:opacity-40 transition-opacity duration-300 animate-pulse [animation-delay:0.4s]"
+               style={{ color: `hsl(${obeliskColor3})` }}
+            />
           </div>
         </div>
       </div>

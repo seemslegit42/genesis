@@ -2,6 +2,7 @@
 'use client';
 import { Vow } from '@/lib/types';
 import { InvocationCard } from './invocation-card';
+import { ArchitectSigil, OracleSigil, SentinelSigil } from './sigils';
 
 interface RiteOfInvocationProps {
   onComplete: (vow: Vow) => void;
@@ -23,38 +24,19 @@ export function RiteOfInvocation({ onComplete }: RiteOfInvocationProps) {
           title="The Architect"
           description="For those who build. This path focuses on creation, system design, and bringing ideas to life with precision and structure."
           onClick={() => onComplete('Architect')}
-          sigil={
-            <svg viewBox="0 0 100 100" stroke="currentColor" strokeWidth="4" fill="none">
-              <rect x="20" y="20" width="60" height="60" />
-              <line x1="20" y1="20" x2="80" y2="80" />
-              <line x1="80" y1="20" x2="20" y2="80" />
-              <circle cx="50" cy="50" r="15" />
-            </svg>
-          }
+          sigil={ <ArchitectSigil /> }
         />
         <InvocationCard
           title="The Oracle"
           description="For those who seek wisdom. This path enhances strategic insight, pattern recognition, and uncovering hidden opportunities."
           onClick={() => onComplete('Oracle')}
-          sigil={
-            <svg viewBox="0 0 100 100" stroke="currentColor" strokeWidth="4" fill="none">
-                <circle cx="50" cy="50" r="40" />
-                <path d="M 50 30 A 20 20 0 0 1 50 70" />
-                <path d="M 50 30 A 20 20 0 0 0 50 70" />
-                <circle cx="50" cy="50" r="8" fill="currentColor"/>
-            </svg>
-          }
+          sigil={ <OracleSigil /> }
         />
         <InvocationCard
           title="The Sentinel"
           description="For those who protect. This path prioritizes security, problem-solving, and defending digital sovereignty with vigilance."
           onClick={() => onComplete('Sentinel')}
-          sigil={
-            <svg viewBox="0 0 100 100" stroke="currentColor" strokeWidth="4" fill="none">
-                <path d="M10 50 L50 10 L90 50 L50 90 Z" />
-                <path d="M30 50 L50 30 L70 50 L50 70 Z" />
-            </svg>
-          }
+          sigil={ <SentinelSigil /> }
         />
       </div>
     </div>
