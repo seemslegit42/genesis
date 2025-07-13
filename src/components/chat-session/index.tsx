@@ -274,24 +274,7 @@ export function ChatSession() {
   }
 
   if (authLoading || !historyLoaded) {
-    return (
-       <div className="flex flex-col h-screen">
-        <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
-          <div className="flex items-center justify-between p-4 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 gap-4">
-            <Skeleton className="h-6 w-24" />
-            <Skeleton className="h-12 w-full max-w-2xl rounded-full" />
-            <Skeleton className="h-8 w-40 hidden md:block" />
-          </div>
-        </header>
-        <main className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex flex-col items-center justify-center h-full p-4">
-            <div className="flex-1 flex items-center justify-center w-full">
-              <Skeleton className="w-24 h-80" />
-            </div>
-          </div>
-        </main>
-      </div>
-    )
+    return null; // Return null because the page itself provides the skeleton
   }
 
   const showInitialPrompts = messages.length <= 1 && !isAiResponding && !streamingMessage;
@@ -321,30 +304,30 @@ export function ChatSession() {
             <ChatHeader 
                 onNewChat={handleNewChat}
             >
-                {messageInput}
+                {!isMobile && messageInput}
             </ChatHeader>
             <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
             <div className="flex-1 flex overflow-hidden">
                 <main className="flex-1 flex flex-col">
-                {showInitialPrompts ? (
-                    <div className="flex-1 flex flex-col items-center justify-center p-4">
-                        <div className="flex-1 flex items-center justify-center w-full">
-                          <Obelisk 
-                            typographicState={currentState}
-                          />
-                        </div>
-                        <div className="w-full max-w-4xl mx-auto pb-8">
-                            <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
-                        </div>
-                    </div>
-                ) : (
-                    <ScrollArea className="flex-1">
-                        <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-                            <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
-                        </div>
-                    </ScrollArea>
-                )}
+                  {showInitialPrompts ? (
+                      <div className="flex-1 flex flex-col items-center justify-center p-4 overflow-hidden">
+                          <div className="flex-1 flex items-center justify-center w-full">
+                            <Obelisk 
+                              typographicState={currentState}
+                            />
+                          </div>
+                          <div className="w-full max-w-4xl mx-auto pb-8">
+                              <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+                          </div>
+                      </div>
+                  ) : (
+                      <ScrollArea className="flex-1">
+                          <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+                              <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
+                          </div>
+                      </ScrollArea>
+                  )}
                 </main>
                 <Sidecar 
                     predictedTask={predictedTask} 
