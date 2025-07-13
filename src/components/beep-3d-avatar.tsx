@@ -92,7 +92,6 @@ function BeepParticles({ count = 2000 }) {
         size={0.015}
         sizeAttenuation={true}
         depthWrite={false}
-        opacity={0.7}
       />
     </Points>
   );
