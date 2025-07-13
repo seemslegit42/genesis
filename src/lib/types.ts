@@ -1,5 +1,3 @@
-
-
 /**
  * @fileoverview This file centralizes all core type definitions for the application,
  * creating a single source of truth for our data structures.
@@ -74,3 +72,32 @@ export const SignInPayloadSchema = z.object({
   password: z.string(),
 });
 export type SignInPayload = z.infer<typeof SignInPayloadSchema>;
+
+
+// Search Result Types
+export const SearchResultItemSchema = z.object({
+  title: z.string().describe('The title of the search result.'),
+  link: z.string().url().describe('A plausible, fictional URL for the result.'),
+  snippet: z.string().describe('A short, descriptive snippet of the content.'),
+});
+export const SearchResultsSchema = z.object({
+  type: z.literal('searchResults'),
+  results: z.array(SearchResultItemSchema).describe('A list of mock search results.'),
+});
+export type SearchResults = z.infer<typeof SearchResultsSchema>;
+
+
+// Calendar Result Types
+export const CalendarEventSchema = z.object({
+  summary: z.string().describe('The title or summary of the calendar event.'),
+  start: z.string().describe('The start time of the event (e.g., "09:00 AM").'),
+  end: z.string().describe('The end time of the event (e.g., "09:30 AM").'),
+  description: z.string().optional().describe('A brief description of the event.'),
+  attendees: z.array(z.string().email()).optional().describe('A list of attendee email addresses.'),
+});
+
+export const CalendarResultSchema = z.object({
+    type: z.literal('calendarResults'),
+    events: z.array(CalendarEventSchema).describe("A list of today's calendar events.")
+})
+export type CalendarResult = z.infer<typeof CalendarResultSchema>;

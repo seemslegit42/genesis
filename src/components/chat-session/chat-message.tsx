@@ -1,9 +1,11 @@
+
 import type { Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChatAvatar } from '@/components/chat-session/chat-avatar';
 import { useAppStore } from '@/hooks/use-app-store';
 import { SearchResult } from '../search-result';
-import { SearchResultsSchema, type SearchResults } from '@/lib/search-types';
+import { CalendarResult } from '../calendar-result';
+import type { SearchResults, CalendarResult as CalendarResultType } from '@/lib/types';
 
 /**
  * Props for the ChatMessage component.
@@ -19,20 +21,26 @@ interface ChatMessageProps {
 }
 
 /**
- * Checks if the content is a valid JSON string representing search results.
+ * Parses the message content to see if it's a known rich component type.
  * @param {string} content - The content of the message.
- * @returns {SearchResults | null} The parsed search results or null.
+ * @returns {any | null} The parsed object or null.
  */
-function parseSearchResults(content: string): SearchResults | null {
+function parseRichContent(content: string): any | null {
   try {
+    // This is a special case. If the content is just a plain string with no JSON structure,
+    // we can't parse it. Return null immediately.
+    if (!content.trim().startsWith('{')) {
+      return null;
+    }
+    
     const json = JSON.parse(content);
-    const validation = SearchResultsSchema.safeParse(json);
-    if (validation.success) {
-      // Ensure there are actually results to display
-      return validation.data.results.length > 0 ? validation.data : null;
+    // Check for a 'type' property to identify rich content
+    if (json && json.type) {
+      return json;
     }
     return null;
   } catch (error) {
+    // It's common for regular chat messages to not be valid JSON, so we just return null.
     return null;
   }
 }
@@ -49,11 +57,35 @@ function parseSearchResults(content: string): SearchResults | null {
 export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) {
   const { role, content, id } = message;
   const { setFocusedMessageId } = useAppStore();
-  const searchResults = parseSearchResults(content);
+  const richContent = parseRichContent(content);
 
   const handleFocus = () => {
     // Toggle focus: if it's already focused, unfocus it. Otherwise, focus it.
     setFocusedMessageId(isFocused ? null : id);
+  };
+  
+  const renderContent = () => {
+    if (richContent) {
+      switch (richContent.type) {
+        case 'searchResults':
+          return <SearchResult results={(richContent as SearchResults).results} />;
+        case 'calendarResults':
+          return <CalendarResult events={(richContent as CalendarResultType).events} />;
+        default:
+          // Fallback for unknown rich content types
+          return (
+            <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90">
+              {content}
+            </div>
+          );
+      }
+    }
+    // Default to plain text rendering
+    return (
+      <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90">
+        {content}
+      </div>
+    );
   };
 
   return (
@@ -72,16 +104,10 @@ export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) 
           'p-4 rounded-lg max-w-sm md:max-w-lg lg:max-w-3xl break-words cursor-pointer',
           'glassmorphism',
            isFocused && 'ring-2 ring-primary ring-offset-2 ring-offset-background',
-           searchResults && 'p-0' // Remove padding if it's a search result card
+           richContent && 'p-0' // Remove padding if it's a rich component card
         )}
       >
-        {searchResults ? (
-          <SearchResult results={searchResults.results} />
-        ) : (
-          <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90">
-            {content}
-          </div>
-        )}
+        {renderContent()}
       </div>
       {role === 'user' && <ChatAvatar role="user" />}
     </div>

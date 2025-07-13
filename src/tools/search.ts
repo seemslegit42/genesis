@@ -48,6 +48,7 @@ export const search = ai.defineTool(
     // The scrape tool returns a plain summary string. We'll wrap it
     // in a structure that looks like a single search result.
     const searchResultPayload = {
+        type: 'searchResults',
         results: [
             {
                 title: `Summary of ${url}`,
