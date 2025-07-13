@@ -16,6 +16,7 @@ import { Button } from '../ui/button';
 import { Menu, LogOut } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAuth } from '@/hooks/use-auth';
+import { useAppStore } from '@/hooks/use-app-store';
 
 /**
  * Props for the ChatHeader component.
@@ -42,6 +43,7 @@ interface ChatHeaderProps {
  */
 const SovereigntyManifest = () => {
     const [time, setTime] = useState('');
+    const focusLevel = useAppStore((state) => state.focusLevel);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -60,7 +62,7 @@ const SovereigntyManifest = () => {
                  <div className="font-bold text-foreground text-right text-lg" style={{ textShadow: '0 0 8px hsl(var(--primary)/0.7)' }}>
                     FOCUS
                 </div>
-                <Progress value={80} className="h-1" />
+                <Progress value={focusLevel} className="h-1" />
             </div>
             <div className="font-mono text-lg text-muted-foreground">{time}</div>
         </div>

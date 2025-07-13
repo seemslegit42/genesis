@@ -45,7 +45,7 @@ export function ChatSession() {
   const [isInitiated, setIsInitiated] = useState(false);
   const [vow, setVow] = useState<Vow | null>(null);
   const { currentState } = useTypographicState();
-  const setAmbientState = useAppStore((state) => state.setAmbientState);
+  const { setAmbientState, setFocusLevel } = useAppStore();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
   const isMobile = useIsMobile();
@@ -56,6 +56,15 @@ export function ChatSession() {
     audio: true,
   });
   
+  // Effect to manage focus decay
+  useEffect(() => {
+    const decayInterval = setInterval(() => {
+      setFocusLevel(prev => prev - 0.5); // Decay focus slowly over time
+    }, 1000);
+    return () => clearInterval(decayInterval);
+  }, [setFocusLevel]);
+
+
   // Effect to load chat history once the user is authenticated.
   useEffect(() => {
     if (user && !historyLoaded) {
@@ -100,6 +109,7 @@ export function ChatSession() {
       return;
     }
     
+    setFocusLevel(100); // Replenish focus on user action
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages);
     setIsAiResponding(true);
@@ -172,7 +182,7 @@ export function ChatSession() {
       setIsAiResponding(false);
       setAmbientState('calm');
     }
-  }, [messages, vow, setAmbientState]);
+  }, [messages, vow, setAmbientState, setFocusLevel]);
 
   const transcribeRecording = useCallback(async (blobUrl: string) => {
     if (!transcriptionUnlocked) {
@@ -250,6 +260,7 @@ export function ChatSession() {
     setIsInitiated(false);
     setVow(null);
     setPredictedTask('');
+    setFocusLevel(80); // Reset focus for new session
   };
 
   const onPromptClick = (prompt: string) => {
