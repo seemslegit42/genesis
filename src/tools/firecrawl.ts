@@ -42,7 +42,7 @@ export const scrapeAndSummarizeWebsite = ai.defineTool(
         },
       });
       
-      if (!scrapeResult || !scrapeResult.markdown) {
+      if (!scrapeResult || !scrapeResult.data.markdown) {
         return `Could not retrieve content from ${url}.`;
       }
       
@@ -56,7 +56,7 @@ export const scrapeAndSummarizeWebsite = ai.defineTool(
         
         Content to summarize:
         ---
-        ${scrapeResult.markdown.substring(0, 15000)}
+        ${scrapeResult.data.markdown.substring(0, 15000)}
         ---
         Summary:`,
         config: {
