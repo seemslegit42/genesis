@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, extend } from '@react-three/fiber';
-import { shaderMaterial } from '@react-three/drei';
+import { shaderMaterial, Torus } from '@react-three/drei';
 
 // Custom Fresnel shader for the glowing edge effect on the shells
 const FresnelMaterial = shaderMaterial(
@@ -63,7 +63,8 @@ function BeepOrb() {
   const group = useRef<THREE.Group>(null!);
   const coreRef = useRef<THREE.Mesh>(null!);
   const shellsRef = useRef<THREE.ShaderMaterial[]>([]);
-  const eyesRef = useRef<THREE.Mesh[]>([]);
+  const eyeArcLeft = useRef<THREE.Mesh>(null!);
+  const eyeArcRight = useRef<THREE.Mesh>(null!);
 
   useFrame(({ clock }) => {
     const elapsedTime = clock.getElapsedTime();
@@ -72,25 +73,24 @@ function BeepOrb() {
       group.current.position.y = 0.1 * Math.sin(elapsedTime * 0.8); // Softer, slower bob
     }
     
-    // Pulse the core orb's emissive intensity
     if (coreRef.current && coreRef.current.material instanceof THREE.MeshPhysicalMaterial) {
         coreRef.current.material.emissiveIntensity = 0.3 + 0.2 * Math.sin(elapsedTime * 0.5);
     }
 
-    // Update the Fresnel shader time uniform for the shells
     shellsRef.current?.forEach((shell) => {
       if (shell) {
         shell.uniforms.uTime.value = elapsedTime;
       }
     });
-
-    // Slower, more deliberate blink
-    const blink = Math.sin(elapsedTime * 0.5) > 0.98 ? 0.05 : 1;
-    eyesRef.current.forEach((eye) => {
-      if (eye && eye.material) {
-        (eye.material as THREE.MeshStandardMaterial).opacity = blink;
-      }
-    });
+    
+    // Animate eye arc intensity for a "living" feel
+    const eyeIntensity = 1.5 + Math.sin(elapsedTime * 2.5) * 0.5;
+    if (eyeArcLeft.current && eyeArcLeft.current.material instanceof THREE.MeshStandardMaterial) {
+        eyeArcLeft.current.material.emissiveIntensity = eyeIntensity;
+    }
+     if (eyeArcRight.current && eyeArcRight.current.material instanceof THREE.MeshStandardMaterial) {
+        eyeArcRight.current.material.emissiveIntensity = eyeIntensity;
+    }
   });
 
   const shells = [1.15, 1.3, 1.45].map((scale, idx) => (
@@ -129,21 +129,23 @@ function BeepOrb() {
       {/* Bioluminescent shells with Fresnel effect */}
       {shells}
 
-      {/* Minimal glowing eyes */}
-      <mesh
-        ref={(el) => (eyesRef.current[0] = el!)}
-        position={[-0.4, 0.2, 0.9]}
+      {/* Non-human, glowing arc-eyes */}
+      <Torus 
+        ref={eyeArcLeft}
+        args={[0.5, 0.03, 16, 100, Math.PI / 1.5]}
+        position={[-0.2, 0.15, 0.85]}
+        rotation={[0.5, -0.5, 0]}
       >
-        <sphereGeometry args={[0.1, 32, 32]} />
-        <meshStandardMaterial color="#00CED1" emissive="#40E0D0" emissiveIntensity={2} transparent opacity={1} toneMapped={false} />
-      </mesh>
-      <mesh
-        ref={(el) => (eyesRef.current[1] = el!)}
-        position={[0.4, 0.2, 0.9]}
+        <meshStandardMaterial color="#00CED1" emissive="#40E0D0" emissiveIntensity={2} toneMapped={false} />
+      </Torus>
+      <Torus 
+        ref={eyeArcRight}
+        args={[0.5, 0.03, 16, 100, Math.PI / 1.5]}
+        position={[0.2, 0.15, 0.85]}
+        rotation={[0.5, 0.5, 0]}
       >
-        <sphereGeometry args={[0.1, 32, 32]} />
-        <meshStandardMaterial color="#00CED1" emissive="#40E0D0" emissiveIntensity={2} transparent opacity={1} toneMapped={false} />
-      </mesh>
+        <meshStandardMaterial color="#00CED1" emissive="#40E0D0" emissiveIntensity={2} toneMapped={false} />
+      </Torus>
     </group>
   );
 }
