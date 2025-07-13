@@ -45,7 +45,7 @@ export function ChatSession() {
   const [isInitiated, setIsInitiated] = useState(false);
   const [vow, setVow] = useState<Vow | null>(null);
   const { currentState } = useTypographicState();
-  const { setAmbientState, setFocusLevel } = useAppStore();
+  const { setAmbientState, setFocusLevel, focusedMessageId, setFocusedMessageId } = useAppStore();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
   const isMobile = useIsMobile();
@@ -260,6 +260,7 @@ export function ChatSession() {
     setIsInitiated(false);
     setVow(null);
     setPredictedTask('');
+    setFocusedMessageId(null);
     setFocusLevel(80); // Reset focus for new session
   };
 
@@ -283,6 +284,12 @@ export function ChatSession() {
     handleSendMessage(task);
     setPredictedTask('');
   }
+
+  const handleObeliskClick = () => {
+    if (focusedMessageId) {
+      setFocusedMessageId(null);
+    }
+  };
 
   if (authLoading || !historyLoaded) {
     return (
@@ -347,9 +354,10 @@ export function ChatSession() {
                 <main className="flex-1 flex flex-col">
                   {showInitialPrompts ? (
                       <div className="flex-1 flex flex-col items-center justify-center p-4 overflow-hidden">
-                          <div className="flex-1 flex items-center justify-center w-full">
+                          <div className="flex-1 flex items-center justify-center w-full" onClick={handleObeliskClick}>
                             <Obelisk 
                               typographicState={currentState}
+                              isInteractive={!!focusedMessageId}
                             />
                           </div>
                           <div className="w-full max-w-4xl mx-auto pb-8">

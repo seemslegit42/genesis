@@ -1,6 +1,7 @@
 import type { Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChatAvatar } from '@/components/chat-session/chat-avatar';
+import { useAppStore } from '@/hooks/use-app-store';
 
 /**
  * Props for the ChatMessage component.
@@ -9,6 +10,10 @@ import { ChatAvatar } from '@/components/chat-session/chat-avatar';
 interface ChatMessageProps {
   /** The message object to display. */
   message: Message;
+  /** A boolean indicating if this message is part of a "focus tunnel". */
+  isFocused: boolean;
+  /** A boolean indicating if another message is currently focused. */
+  isDimmed: boolean;
 }
 
 /**
@@ -19,20 +24,31 @@ interface ChatMessageProps {
  * @param {ChatMessageProps} props The props for the component.
  * @returns {JSX.Element} The rendered chat message.
  */
-export function ChatMessage({ message }: ChatMessageProps) {
-  const { role, content } = message;
+export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) {
+  const { role, content, id } = message;
+  const { setFocusedMessageId } = useAppStore();
+
+  const handleFocus = () => {
+    // Toggle focus: if it's already focused, unfocus it. Otherwise, focus it.
+    setFocusedMessageId(isFocused ? null : id);
+  };
+
   return (
     <div
       className={cn(
-        'flex items-start gap-4',
-        role === 'user' && 'justify-end'
+        'flex items-start gap-4 transition-opacity duration-300',
+        role === 'user' && 'justify-end',
+        isDimmed && 'opacity-30 hover:opacity-100',
+        isFocused && 'opacity-100'
       )}
+      onClick={handleFocus}
     >
       {role === 'assistant' && <ChatAvatar role="assistant" />}
       <div
         className={cn(
-          'p-4 rounded-lg max-w-sm md:max-w-lg lg:max-w-3xl break-words',
-          'glassmorphism'
+          'p-4 rounded-lg max-w-sm md:max-w-lg lg:max-w-3xl break-words cursor-pointer',
+          'glassmorphism',
+           isFocused && 'ring-2 ring-primary ring-offset-2 ring-offset-background'
         )}
       >
         <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90">

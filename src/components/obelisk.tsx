@@ -8,6 +8,7 @@ import { ArchitectSigil, OracleSigil, SentinelSigil } from './sigils';
 
 interface ObeliskProps {
   typographicState: TypographicState;
+  isInteractive?: boolean;
 }
 
 /**
@@ -17,7 +18,7 @@ interface ObeliskProps {
  * Its appearance is now driven solely by direct user interaction state.
  * @returns {JSX.Element} The rendered Obelisk component.
  */
-export function Obelisk({ typographicState }: ObeliskProps) {
+export function Obelisk({ typographicState, isInteractive = false }: ObeliskProps) {
   const [transform, setTransform] = useState('rotateX(0deg) rotateY(0deg)');
 
   useEffect(() => {
@@ -43,20 +44,29 @@ export function Obelisk({ typographicState }: ObeliskProps) {
   const { obeliskColor1, obeliskColor2, obeliskColor3, obeliskGlow, obeliskAnimation } = typographicState;
   
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full relative group animate-float-in" style={{animationFillMode: 'backwards'}}>
+    <div className={cn(
+        "flex flex-col items-center justify-center h-full w-full relative group animate-float-in",
+        isInteractive && "cursor-pointer"
+        )} style={{animationFillMode: 'backwards'}}>
       <div 
         className="relative transition-transform duration-200 ease-out" 
         style={{ transform, transformStyle: 'preserve-3d' }}
       >
         {/* The glow effect behind the Obelisk */}
         <div 
-            className="absolute w-48 h-48 bg-primary/20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 transition-all duration-500 group-hover:bg-primary/30"
+            className={cn(
+                "absolute w-48 h-48 bg-primary/20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 transition-all duration-500 group-hover:bg-primary/30",
+                 isInteractive && "bg-accent/40 group-hover:bg-accent/50 animate-pulse"
+                )}
             style={{ opacity: obeliskGlow }}
         ></div>
         
         {/* The Obelisk structure itself */}
         <div 
-          className="relative w-24 h-80 bg-obsidian-black flex flex-col items-center py-8 transition-all duration-300 shadow-[0_0_40px_10px_hsl(var(--primary)/0.1)]"
+          className={cn(
+            "relative w-24 h-80 bg-obsidian-black flex flex-col items-center py-8 transition-all duration-300 shadow-[0_0_40px_10px_hsl(var(--primary)/0.1)]",
+            isInteractive && "shadow-[0_0_50px_15px_hsl(var(--accent)/0.2)]"
+          )}
           style={{
             transformStyle: 'preserve-3d',
             clipPath: 'polygon(20% 0, 80% 0, 100% 100%, 0% 100%)',
@@ -87,6 +97,11 @@ export function Obelisk({ typographicState }: ObeliskProps) {
           </div>
         </div>
       </div>
+       {isInteractive && (
+        <div className="absolute bottom-[-20px] text-xs font-bold tracking-widest text-accent/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          CLICK TO EXIT FOCUS
+        </div>
+      )}
     </div>
   );
 }

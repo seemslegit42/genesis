@@ -15,8 +15,10 @@ export type AmbientState = 'calm' | 'focus' | 'recording';
 interface AppState {
   ambientState: AmbientState;
   focusLevel: number; // Represents focus from 0 to 100
+  focusedMessageId: string | null; // ID of the message currently in focus
   setAmbientState: (newState: AmbientState) => void;
   setFocusLevel: (level: number | ((prev: number) => number)) => void;
+  setFocusedMessageId: (id: string | null) => void;
 }
 
 /**
@@ -30,8 +32,10 @@ interface AppState {
 export const useAppStore = create<AppState>((set) => ({
   ambientState: 'calm',
   focusLevel: 80, // Start with a default high focus
+  focusedMessageId: null,
   setAmbientState: (newState) => set({ ambientState: newState }),
   setFocusLevel: (level) => set((state) => ({
     focusLevel: typeof level === 'function' ? Math.max(0, Math.min(100, level(state.focusLevel))) : Math.max(0, Math.min(100, level)),
   })),
+  setFocusedMessageId: (id) => set({ focusedMessageId: id }),
 }));

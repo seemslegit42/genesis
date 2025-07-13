@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import type { Message } from '@/lib/types';
 import { ChatMessage, LoadingMessage } from './chat-message';
 import { Mic } from 'lucide-react';
+import { useAppStore } from '@/hooks/use-app-store';
 
 /**
  * Props for the MessageList component.
@@ -55,6 +56,7 @@ const TranscribingMessage = () => {
  */
 export function MessageList({ messages, streamingMessage, isAiResponding, isTranscribing }: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { focusedMessageId } = useAppStore();
 
   // Effect to scroll to the bottom of the message list as new messages are added.
   useEffect(() => {
@@ -68,13 +70,19 @@ export function MessageList({ messages, streamingMessage, isAiResponding, isTran
    * This is true if the AI is responding but has not yet started streaming content.
    */
   const showLoading = isAiResponding && !streamingMessage;
+  const isAnyMessageFocused = !!focusedMessageId;
 
   return (
     <div className="space-y-8 py-8 md:pb-8">
       {messages.map((message) => (
-        <ChatMessage key={message.id} message={message} />
+        <ChatMessage 
+            key={message.id} 
+            message={message} 
+            isFocused={message.id === focusedMessageId}
+            isDimmed={isAnyMessageFocused && message.id !== focusedMessageId}
+        />
       ))}
-      {streamingMessage && <ChatMessage message={streamingMessage} />}
+      {streamingMessage && <ChatMessage message={streamingMessage} isFocused={false} isDimmed={isAnyMessageFocused} />}
       {showLoading && <LoadingMessage />}
       {isTranscribing && <TranscribingMessage />}
       <div ref={scrollRef} />
