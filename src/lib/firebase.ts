@@ -24,7 +24,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAy-rGaNnGg79pvWaHxDUpz7_ZAw-jXux8",
   authDomain: "von-os-juooq.firebaseapp.com",
   projectId: "von-os-juooq",
-  storageBucket: "von-os-juooq.appspot.com",
+  storageBucket: "von-os-juooq.firebasestorage.app",
   messagingSenderId: "366247376303",
   appId: "1:366247376303:web:8ea58a9e3e93e9f981eb5a",
   measurementId: "G-4KHLM1KLRB"
@@ -42,7 +42,7 @@ const signUp = (payload: SignUpPayload) => {
     return createUserWithEmailAndPassword(auth, payload.email, payload.password);
 }
 
-const signIn = (payload: SignInPayload) => {
+const signIn = (payload: SignIn.SignInPayload) => {
     return signInWithEmailAndPassword(auth, payload.email, payload.password);
 }
 
