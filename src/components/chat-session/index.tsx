@@ -326,9 +326,9 @@ export function ChatSession() {
             <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
             <div className="flex-1 flex overflow-hidden">
-                <ScrollArea className="flex-1">
+                <main className="flex-1 flex flex-col">
                 {showInitialPrompts ? (
-                    <div className="flex flex-col items-center justify-center h-full p-4">
+                    <div className="flex-1 flex flex-col items-center justify-center p-4">
                         <div className="flex-1 flex items-center justify-center w-full">
                           <Obelisk 
                             typographicState={currentState}
@@ -339,11 +339,13 @@ export function ChatSession() {
                         </div>
                     </div>
                 ) : (
-                    <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-                      <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
-                    </div>
+                    <ScrollArea className="flex-1">
+                        <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+                            <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
+                        </div>
+                    </ScrollArea>
                 )}
-                </ScrollArea>
+                </main>
                 <Sidecar 
                     predictedTask={predictedTask} 
                     onAcceptTask={handleAcceptTask}
