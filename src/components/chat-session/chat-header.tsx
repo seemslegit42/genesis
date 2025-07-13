@@ -13,10 +13,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from '../ui/button';
-import { Menu, LogOut } from 'lucide-react';
+import { Menu, LogOut, Shield } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAuth } from '@/hooks/use-auth';
 import { useAppStore } from '@/hooks/use-app-store';
+import Link from 'next/link';
 
 /**
  * Props for the ChatHeader component.
@@ -103,6 +104,13 @@ const MobileMenu = ({ onNewChat }: { onNewChat: () => void }) => {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onNewChat}>New Chat</DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                    <Link href="/admin">
+                        <Shield className="mr-2 h-4 w-4" />
+                        <span>Admin</span>
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={signOut}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign Out</span>

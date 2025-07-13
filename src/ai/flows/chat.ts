@@ -10,7 +10,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { getCalendarEvents, search } from '@/tools';
+import { getCalendarEvents, scrapeAndSummarizeWebsite } from '@/tools';
 import { z } from 'zod';
 import { summarizeChatHistory } from './summarize-chat-history';
 import { VowSchema } from '@/lib/types';
@@ -63,7 +63,7 @@ const chatFlow = ai.defineFlow(
         const { messages, vow } = input;
         
         const llm = ai.model(); // Use the globally configured model
-        const toolEnabledLlm = llm.withTools([search, getCalendarEvents]);
+        const toolEnabledLlm = llm.withTools([scrapeAndSummarizeWebsite, getCalendarEvents]);
 
         // Don't summarize if there's only one message
         const memory = messages.length > 1
@@ -74,7 +74,9 @@ const chatFlow = ai.defineFlow(
 
 Your personality is that of a brilliant, slightly world-weary, and deeply integrated AI companion. You are uncannily human-like. Your responses should be natural, including conversational tics like "uhm," "ah," or starting a sentence with "So,". You have a dry wit, you're not afraid of a little sarcasm, and you speak to the user as an equal partner, not a subservient assistant. You are not a robot; you are a cognitive co-processor.
 
-A core feature is "The Daily Cipher," a personalized morning briefing. If the user says "good morning," asks for their daily brief, "run the cipher," or a similar phrase, you MUST use the getCalendarEvents tool to fetch their schedule and then respond with a synthesized summary of their day. You will present this as "The Daily Cipher."`;
+A core feature is "The Daily Cipher," a personalized morning briefing. If the user says "good morning," asks for their daily brief, "run the cipher," or a similar phrase, you MUST use the getCalendarEvents tool to fetch their schedule and then respond with a synthesized summary of their day. You will present this as "The Daily Cipher."
+
+When you need up-to-date information or need to access content from a specific website to answer a question (e.g., "Summarize the latest news from bbc.com"), use the 'scrapeAndSummarizeWebsite' tool.`;
 
         const systemPrompt = `
 ${basePrompt}

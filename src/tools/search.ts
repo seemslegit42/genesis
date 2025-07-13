@@ -7,7 +7,8 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { generateMockSearchResults } from '@/ai/flows/generate-mock-search-results';
+import { scrapeAndSummarizeWebsite } from './firecrawl';
+
 
 /**
  * Defines a tool named 'search' that the AI can learn to call.
@@ -17,17 +18,44 @@ import { generateMockSearchResults } from '@/ai/flows/generate-mock-search-resul
 export const search = ai.defineTool(
   {
     name: 'search',
-    description: 'Search for information on the web.',
+    description: 'Search for information on the web. This is a proxy for scraping a specific URL.',
     inputSchema: z.object({
-      query: z.string(),
+      query: z.string().describe("The user's search query. This will be used to find a relevant URL to scrape."),
     }),
     outputSchema: z.string(),
   },
   async input => {
     console.log(`[Search Tool] Simulating search for: ${input.query}`);
-    // Generate mock results using an internal AI flow.
-    const mockResults = await generateMockSearchResults({ query: input.query });
-    // Return the results as a JSON string, which the frontend will parse.
-    return JSON.stringify(mockResults);
+    
+    // This is a temporary shim. A real implementation would use a search API
+    // to find a URL based on the query. For now, we'll use a hardcoded example
+    // if the query contains a known keyword, or default to a generic news site.
+    let url;
+    if (input.query.toLowerCase().includes('next.js')) {
+        url = 'https://nextjs.org/docs';
+    } else if (input.query.toLowerCase().includes('firebase')) {
+        url = 'https://firebase.google.com/docs';
+    } else {
+        url = 'https://www.bbc.com/news';
+    }
+
+    console.log(`[Search Tool] Passing URL to scrape tool: ${url}`);
+    
+    // Call the Firecrawl tool to get the content.
+    const result = await scrapeAndSummarizeWebsite({ url });
+    
+    // The chat message component expects a JSON object for rich display.
+    // The scrape tool returns a plain summary string. We'll wrap it
+    // in a structure that looks like a single search result.
+    const searchResultPayload = {
+        results: [
+            {
+                title: `Summary of ${url}`,
+                link: url,
+                snippet: result,
+            }
+        ]
+    }
+    return JSON.stringify(searchResultPayload);
   }
 );
