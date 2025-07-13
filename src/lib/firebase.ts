@@ -1,3 +1,4 @@
+
 // IMPORTANT: You must create a .env.local file in the root of your project
 // and add your Firebase project's configuration details there.
 //
@@ -9,8 +10,14 @@
 // NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword,
+    signOut as firebaseSignOut
+} from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import type { SignUpPayload, SignInPayload } from './types';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAy-rGaNnGg79pvWaHxDUpz7_ZAw-jXux8",
@@ -28,4 +35,17 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-export { app, auth, db };
+// Auth functions
+const signUp = (payload: SignUpPayload) => {
+    return createUserWithEmailAndPassword(auth, payload.email, payload.password);
+}
+
+const signIn = (payload: SignInPayload) => {
+    return signInWithEmailAndPassword(auth, payload.email, payload.password);
+}
+
+const signOut = () => {
+    return firebaseSignOut(auth);
+}
+
+export { app, auth, db, signUp, signIn, signOut };

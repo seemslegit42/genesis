@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
-import { onAuthStateChanged, signInAnonymously, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+
+import { useEffect, useState, useCallback } from 'react';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth, signIn, signUp, signOut } from '@/lib/firebase';
+import type { SignUpPayload, SignInPayload } from '@/lib/types';
+
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -8,19 +11,53 @@ export function useAuth() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        setLoading(false);
-      } else {
-        signInAnonymously(auth).catch((error) => {
-          console.error("Anonymous sign-in failed:", error);
-          setLoading(false);
-        });
-      }
+      setUser(currentUser);
+      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  return { user, loading };
+  const handleSignUp = useCallback(async (payload: SignUpPayload) => {
+    setLoading(true);
+    try {
+      const userCredential = await signUp(payload);
+      setUser(userCredential.user);
+      return { success: true, user: userCredential.user };
+    } catch (error: any) {
+      console.error("Sign up failed:", error);
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleSignIn = useCallback(async (payload: SignInPayload) => {
+    setLoading(true);
+    try {
+      const userCredential = await signIn(payload);
+      setUser(userCredential.user);
+      return { success: true, user: userCredential.user };
+    } catch (error: any) {
+      console.error("Sign in failed:", error);
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  
+  const handleSignOut = useCallback(async () => {
+    setLoading(true);
+    try {
+      await signOut();
+      setUser(null);
+    } catch (error) {
+       console.error("Sign out failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+
+  return { user, loading, signUp: handleSignUp, signIn: handleSignIn, signOut: handleSignOut };
 }

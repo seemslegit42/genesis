@@ -1,4 +1,5 @@
 
+
 /**
  * @fileoverview This file centralizes all core type definitions for the application,
  * creating a single source of truth for our data structures.
@@ -52,3 +53,24 @@ export type PredictNextTaskOutput = z.infer<typeof PredictNextTaskOutputSchema>;
 
 export type SuggestBreakInput = z.infer<typeof SuggestBreakInputSchema>;
 export type SuggestBreakOutput = z.infer<typeof SuggestBreakOutputSchema>;
+
+
+/**
+ * Defines the shape of the data required for user sign-up.
+ * @interface SignUpPayload
+ */
+export const SignUpPayloadSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+export type SignUpPayload = z.infer<typeof SignUpPayloadSchema>;
+
+/**
+ * Defines the shape of the data required for user sign-in.
+ * @interface SignInPayload
+ */
+export const SignInPayloadSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
+export type SignInPayload = z.infer<typeof SignInPayloadSchema>;

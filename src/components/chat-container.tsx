@@ -1,15 +1,25 @@
 
 'use client';
 
-import dynamic from 'next/dynamic';
+import { AuthGate } from '@/components/auth-gate';
+import { ChatSession } from '@/components/chat-session';
+import { useAuth } from '@/hooks/use-auth';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const ChatContainer = dynamic(
-  () => import('@/components/chat-container').then((mod) => mod.ChatContainer),
-  { 
-    ssr: false,
-    loading: () => (
-       <div className="flex flex-col h-screen">
+
+/**
+ * A client-side component that wraps the core application logic.
+ * It handles the authentication state and conditionally renders either the
+ * AuthGate (for login/signup) or the main ChatSession. This component
+ * is dynamically imported to prevent server-side rendering of client-only code.
+ * @returns {JSX.Element} The rendered component.
+ */
+export function ChatContainer() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex flex-col h-screen">
         <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
           <div className="flex items-center justify-between h-full w-full max-w-7xl mx-auto px-4 gap-4">
             <Skeleton className="h-6 w-24" />
@@ -32,17 +42,14 @@ const ChatContainer = dynamic(
           </div>
         </main>
       </div>
-    )
+    );
   }
-);
 
-
-/**
- * The main entry point for BEEP: Genesis.
- * It dynamically loads the ChatContainer to ensure that components relying on
- * browser-specific APIs are only rendered on the client side.
- * @returns {JSX.Element} The rendered page.
- */
-export default function ChatPage() {
-  return <ChatContainer />;
+  return (
+    <div className="flex flex-col min-h-screen">
+      <AuthGate user={user}>
+        <ChatSession />
+      </AuthGate>
+    </div>
+  );
 }

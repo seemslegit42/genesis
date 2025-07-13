@@ -13,8 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from '../ui/button';
-import { Menu } from 'lucide-react';
+import { Menu, LogOut } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/hooks/use-auth';
 
 /**
  * Props for the ChatHeader component.
@@ -67,6 +68,7 @@ const SovereigntyManifest = () => {
 };
 
 const MobileMenu = ({ onNewChat }: { onNewChat: () => void }) => {
+    const { signOut } = useAuth();
     const [time, setTime] = useState('');
 
     useEffect(() => {
@@ -99,6 +101,10 @@ const MobileMenu = ({ onNewChat }: { onNewChat: () => void }) => {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onNewChat}>New Chat</DropdownMenuItem>
+                <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign Out</span>
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     )
