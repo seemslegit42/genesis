@@ -32,6 +32,8 @@ const prompt = ai.definePrompt({
 
 Query: {{{query}}}
 
+The type property must be set to 'searchResults'.
+
 Provide plausible titles, snippets, and fictional .com URLs for each result. The content should look like a real search engine results page.`,
 });
 

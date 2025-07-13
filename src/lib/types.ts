@@ -5,6 +5,8 @@
 import { z } from 'zod';
 import { PredictNextTaskInputSchema, PredictNextTaskOutputSchema } from '@/ai/flows/predict-next-task';
 import { SuggestBreakInputSchema, SuggestBreakOutputSchema } from '@/ai/flows/suggest-break';
+import { SearchResultsSchema as AppSearchResultsSchema, SearchResultItemSchema as AppSearchResultItemSchema } from './search-types';
+
 
 /**
  * Represents a single message in a chat conversation.
@@ -75,15 +77,8 @@ export type SignInPayload = z.infer<typeof SignInPayloadSchema>;
 
 
 // Search Result Types
-export const SearchResultItemSchema = z.object({
-  title: z.string().describe('The title of the search result.'),
-  link: z.string().url().describe('A plausible, fictional URL for the result.'),
-  snippet: z.string().describe('A short, descriptive snippet of the content.'),
-});
-export const SearchResultsSchema = z.object({
-  type: z.literal('searchResults'),
-  results: z.array(SearchResultItemSchema).describe('A list of mock search results.'),
-});
+export const SearchResultItemSchema = AppSearchResultItemSchema;
+export const SearchResultsSchema = AppSearchResultsSchema;
 export type SearchResults = z.infer<typeof SearchResultsSchema>;
 
 

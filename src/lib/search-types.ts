@@ -11,6 +11,7 @@ export const SearchResultItemSchema = z.object({
 });
 
 export const SearchResultsSchema = z.object({
+  type: z.literal('searchResults'),
   results: z.array(SearchResultItemSchema).describe('A list of 3-5 mock search results.'),
 });
 export type SearchResults = z.infer<typeof SearchResultsSchema>;

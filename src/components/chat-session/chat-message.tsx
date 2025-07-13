@@ -74,17 +74,13 @@ export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) 
         default:
           // Fallback for unknown rich content types
           return (
-            <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90">
-              {content}
-            </div>
+            <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90" dangerouslySetInnerHTML={{ __html: content }} />
           );
       }
     }
     // Default to plain text rendering
     return (
-      <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90">
-        {content}
-      </div>
+       <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90" dangerouslySetInnerHTML={{ __html: content }} />
     );
   };
 
