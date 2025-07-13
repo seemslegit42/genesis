@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { AetherisAvatar } from '../aetheris-avatar';
 
 /**
  * Props for the ChatAvatar component.
@@ -26,7 +27,7 @@ interface ChatAvatarProps {
 /**
  * Displays an avatar for a chat participant.
  * It can render a custom SVG icon if provided, otherwise it defaults to a
- * minimalist, text-based identifier (USER or BEEP).
+ * minimalist, text-based identifier (USER) or the dynamic AetherisAvatar for the AI.
  * @param {ChatAvatarProps} props The props for the component.
  * @returns {JSX.Element} The rendered avatar component.
  */
@@ -34,19 +35,21 @@ export function ChatAvatar({ role, icon }: ChatAvatarProps) {
   return (
     <div
       className={cn(
-        'flex items-center justify-center size-10 shrink-0 rounded-full'
+        'flex items-center justify-center size-10 shrink-0'
       )}
     >
-      {icon ? (
+      {role === 'assistant' ? (
+        <AetherisAvatar />
+      ) : icon ? (
         <Image src={icon} alt={`${role} avatar`} width={24} height={24} className="opacity-80" />
       ) : (
         <div
           className={cn(
             'text-xs font-bold tracking-widest',
-            role === 'user' ? 'text-accent' : 'text-primary'
+            'text-accent'
           )}
         >
-          {role === 'user' ? 'USER' : 'BEEP'}
+          USER
         </div>
       )}
     </div>
