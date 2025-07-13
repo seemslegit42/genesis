@@ -1,9 +1,9 @@
 
 'use client';
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, extend } from '@react-three/fiber';
-import { shaderMaterial, Torus } from '@react-three/drei';
+import { shaderMaterial, Torus, Points, PointMaterial } from '@react-three/drei';
 
 // Custom Fresnel shader for the glowing edge effect on the shells
 const FresnelMaterial = shaderMaterial(
@@ -56,6 +56,46 @@ declare global {
             fresnelMaterial: any
         }
     }
+}
+
+function BeepParticles({ count = 2000 }) {
+  const pointsRef = useRef<THREE.Points>(null!);
+  const { positions } = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const theta = THREE.MathUtils.randFloat(0, Math.PI * 2);
+      const phi = Math.acos(THREE.MathUtils.randFloat(-1, 1));
+      const r = THREE.MathUtils.randFloat(2.5, 5);
+      
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta);
+      const z = r * Math.cos(phi);
+
+      positions.set([x, y, z], i * 3);
+    }
+    return { positions };
+  }, [count]);
+
+  useFrame((state) => {
+    const { clock } = state;
+    if (pointsRef.current) {
+        pointsRef.current.rotation.y = clock.getElapsedTime() * 0.05;
+        pointsRef.current.rotation.x = clock.getElapsedTime() * 0.02;
+    }
+  });
+
+  return (
+    <Points ref={pointsRef} positions={positions} stride={3}>
+      <PointMaterial
+        transparent
+        color="#20B2AA"
+        size={0.015}
+        sizeAttenuation={true}
+        depthWrite={false}
+        opacity={0.7}
+      />
+    </Points>
+  );
 }
 
 
@@ -156,6 +196,7 @@ export function Beep3DAvatar() {
       <ambientLight intensity={0.2} />
       <directionalLight position={[2, 5, 2]} intensity={0.5} />
       <BeepOrb />
+      <BeepParticles />
     </Canvas>
   );
 }
