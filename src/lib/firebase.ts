@@ -17,6 +17,7 @@ import {
     signOut as firebaseSignOut
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getFunctions } from 'firebase/functions';
 import type { SignUpPayload, SignInPayload } from './types';
 
 const firebaseConfig = {
@@ -34,6 +35,7 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
+const functions = getFunctions(app);
 
 // Auth functions
 const signUp = (payload: SignUpPayload) => {
@@ -48,4 +50,4 @@ const signOut = () => {
     return firebaseSignOut(auth);
 }
 
-export { app, auth, db, signUp, signIn, signOut };
+export { app, auth, db, functions, signUp, signIn, signOut };

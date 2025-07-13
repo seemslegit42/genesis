@@ -1,12 +1,19 @@
-import { collection, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import type { Message } from '@/lib/types';
 
-const chatsCollection = collection(db, 'chats');
+const functions = getFunctions();
+
+// Note: In a production app, you might want to connect to the emulator
+// during development.
+// import { connectFunctionsEmulator } from 'firebase/functions';
+// connectFunctionsEmulator(functions, "localhost", 5001);
+
+const saveHistoryCallable = httpsCallable<{ messages: Message[] }, { success: boolean }>(functions, 'saveChatHistory');
+const getHistoryCallable = httpsCallable<void, { messages: Message[] }>(functions, 'getChatHistory');
 
 /**
- * Saves the chat history for a specific user to Firestore.
- * @param {string} userId The ID of the user.
+ * Saves the chat history for the currently authenticated user by calling a Cloud Function.
+ * @param {string} userId The ID of the user (Note: this is for API consistency, the function uses the authenticated user's context).
  * @param {Message[]} messages The array of messages to save.
  */
 export async function saveChatHistory(userId: string, messages: Message[]): Promise<void> {
@@ -15,19 +22,18 @@ export async function saveChatHistory(userId: string, messages: Message[]): Prom
     return;
   }
   try {
-    const chatDocRef = doc(chatsCollection, userId);
-    await setDoc(chatDocRef, {
-      messages: messages,
-      updatedAt: serverTimestamp(),
-    });
+    const result = await saveHistoryCallable({ messages });
+    if (!result.data.success) {
+        throw new Error("Failed to save chat history on the server.");
+    }
   } catch (error) {
-    console.error("Error saving chat history:", error);
+    console.error("Error calling saveChatHistory Cloud Function:", error);
   }
 }
 
 /**
- * Retrieves the chat history for a specific user from Firestore.
- * @param {string} userId The ID of the user.
+ * Retrieves the chat history for the currently authenticated user by calling a Cloud Function.
+ * @param {string} userId The ID of the user (Note: this is for API consistency, the function uses the authenticated user's context).
  * @returns {Promise<Message[]>} A promise that resolves to the user's message history.
  */
 export async function getChatHistory(userId: string): Promise<Message[]> {
@@ -36,16 +42,10 @@ export async function getChatHistory(userId: string): Promise<Message[]> {
     return [];
   }
   try {
-    const chatDocRef = doc(chatsCollection, userId);
-    const chatDocSnap = await getDoc(chatDocRef);
-
-    if (chatDocSnap.exists()) {
-      return chatDocSnap.data().messages || [];
-    } else {
-      return [];
-    }
+    const result = await getHistoryCallable();
+    return result.data.messages || [];
   } catch (error) {
-    console.error("Error getting chat history:", error);
+    console.error("Error calling getChatHistory Cloud Function:", error);
     return [];
   }
 }
