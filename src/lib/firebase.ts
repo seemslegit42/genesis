@@ -18,6 +18,7 @@ import {
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getFunctions } from 'firebase/functions';
+import { getAnalytics } from "firebase/analytics";
 import type { SignUpPayload, SignInPayload } from './types';
 
 const firebaseConfig = {
@@ -33,6 +34,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+if (typeof window !== 'undefined') {
+  getAnalytics(app);
+}
 const auth = getAuth(app);
 const db = getFirestore(app);
 const functions = getFunctions(app);
@@ -42,7 +46,7 @@ const signUp = (payload: SignUpPayload) => {
     return createUserWithEmailAndPassword(auth, payload.email, payload.password);
 }
 
-const signIn = (payload: SignIn.SignInPayload) => {
+const signIn = (payload: SignInPayload) => {
     return signInWithEmailAndPassword(auth, payload.email, payload.password);
 }
 
