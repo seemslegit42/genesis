@@ -21,7 +21,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
  * @interface ChatHeaderProps
  */
 interface ChatHeaderProps {
-  /** 
+  /**
    * A callback function to be invoked when the user initiates a new chat.
    * This typically happens when the user clicks the logo. Provides a clear
    * reset mechanism for the user's workflow.
@@ -121,7 +121,7 @@ export function ChatHeader({ onNewChat, children }: ChatHeaderProps) {
         <div className="flex items-center gap-2 cursor-pointer font-headline shrink-0" onClick={onNewChat} title="Start New Chat">
            <Logo className="h-6 w-auto" />
         </div>
-        
+
         <div className="flex-1 w-full min-w-0 hidden md:block max-w-2xl">
           {children}
         </div>
