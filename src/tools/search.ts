@@ -7,11 +7,12 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
+import { generateMockSearchResults } from '@/ai/flows/generate-mock-search-results';
 
 /**
  * Defines a tool named 'search' that the AI can learn to call.
- * This allows the AI to search for information on the web. In a real application,
- * this would be wired up to a proper search API.
+ * This tool now uses an AI-powered flow to generate dynamic, realistic mock
+ * search results, making it fully interactive for demonstration purposes.
  */
 export const search = ai.defineTool(
   {
@@ -23,11 +24,9 @@ export const search = ai.defineTool(
     outputSchema: z.string(),
   },
   async input => {
-    console.log(`[Search Tool] Searching for: ${input.query}`);
-    // In a real application, this would call a search API (e.g., Google Search).
-    // For now, we'll return an empty result to indicate it is a placeholder.
-    return JSON.stringify({
-      results: [],
-    });
+    console.log(`[Search Tool] Simulating search for: ${input.query}`);
+    // Generate mock results using an internal AI flow.
+    const mockResults = await generateMockSearchResults({ query: input.query });
+    return JSON.stringify(mockResults);
   }
 );
