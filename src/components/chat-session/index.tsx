@@ -58,11 +58,14 @@ export function ChatSession() {
   
   // Effect to manage focus decay
   useEffect(() => {
-    const decayInterval = setInterval(() => {
-      setFocusLevel(prev => prev - 0.5); // Decay focus slowly over time
-    }, 1000);
+    let decayInterval: NodeJS.Timeout;
+    if (!focusedMessageId) { // Only decay focus if not in focus mode
+      decayInterval = setInterval(() => {
+        setFocusLevel(prev => prev - 0.5); // Decay focus slowly over time
+      }, 1000);
+    }
     return () => clearInterval(decayInterval);
-  }, [setFocusLevel]);
+  }, [setFocusLevel, focusedMessageId]);
 
 
   // Effect to load chat history once the user is authenticated.
