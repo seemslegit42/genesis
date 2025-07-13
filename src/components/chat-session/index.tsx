@@ -334,12 +334,12 @@ export function ChatSession() {
                             typographicState={currentState}
                           />
                         </div>
-                        <div className="pb-8 w-full max-w-4xl mx-auto">
+                        <div className="w-full max-w-4xl mx-auto pb-8">
                             <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
                         </div>
                     </div>
                 ) : (
-                    <div className="max-w-4xl w-full mx-auto px-2 sm:px-6 lg:px-8">
+                    <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
                       <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
                     </div>
                 )}

@@ -1,3 +1,4 @@
+
 'use client';
 
 import dynamic from 'next/dynamic';
@@ -21,7 +22,7 @@ const ChatSession = dynamic(
             <div className="flex-1 flex items-center justify-center w-full">
               <Skeleton className="w-24 h-80" />
             </div>
-            <div className="pb-8 w-full max-w-4xl mx-auto">
+            <div className="w-full max-w-4xl mx-auto pb-8">
               <div className="flex flex-col items-center justify-center text-center">
                 <Skeleton className="h-8 w-64 mb-4" />
                 <Skeleton className="h-4 w-96 mb-8" />

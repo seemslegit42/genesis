@@ -1,3 +1,4 @@
+
 import {
   Dialog,
   DialogContent,
@@ -44,7 +45,7 @@ export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps)
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md glassmorphism p-8">
+      <DialogContent className="sm:max-w-md glassmorphism p-6">
         <DialogHeader>
           <DialogTitle className="text-2xl font-headline text-center text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]">
             Unlock Unlimited Transcription
@@ -73,7 +74,7 @@ export function ShareToUnlock({ isOpen, onClose, onUnlock }: ShareToUnlockProps)
             Share on LinkedIn
           </Button>
         </div>
-        <DialogFooter className="sm:justify-center">
+        <DialogFooter className="sm:justify-center pt-2">
             <Button type="button" variant="link" onClick={onClose}>
                 Maybe later
             </Button>
