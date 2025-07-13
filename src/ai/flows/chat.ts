@@ -61,8 +61,8 @@ const chatFlow = ai.defineFlow(
     },
     async (input) => {
         const { messages, vow } = input;
-        // Use a more advanced model for reliable tool use.
-        const llm = ai.model('googleai/gemini-1.5-flash-latest');
+        
+        const llm = ai.model(); // Use the globally configured model
         const toolEnabledLlm = llm.withTools([search, getCalendarEvents]);
 
         // Don't summarize if there's only one message
