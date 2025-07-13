@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { AetherisAvatar } from '../aetheris-avatar';
+import { Beep3DAvatar } from '../beep-3d-avatar';
 
 /**
  * Props for the ChatAvatar component.
@@ -27,7 +27,7 @@ interface ChatAvatarProps {
 /**
  * Displays an avatar for a chat participant.
  * It can render a custom SVG icon if provided, otherwise it defaults to a
- * minimalist, text-based identifier (USER) or the dynamic AetherisAvatar for the AI.
+ * minimalist, text-based identifier (USER) or the dynamic Beep3DAvatar for the AI.
  * @param {ChatAvatarProps} props The props for the component.
  * @returns {JSX.Element} The rendered avatar component.
  */
@@ -39,7 +39,7 @@ export function ChatAvatar({ role, icon }: ChatAvatarProps) {
       )}
     >
       {role === 'assistant' ? (
-        <AetherisAvatar />
+        <Beep3DAvatar />
       ) : icon ? (
         <Image src={icon} alt={`${role} avatar`} width={24} height={24} className="opacity-80" />
       ) : (
