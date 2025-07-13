@@ -11,6 +11,8 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
+import { SearchResultsSchema, type SearchResults } from '@/lib/search-types';
+
 
 const GenerateMockSearchResultsInputSchema = z.object({
   query: z.string().describe('The search query from the user.'),
@@ -18,26 +20,14 @@ const GenerateMockSearchResultsInputSchema = z.object({
 export type GenerateMockSearchResultsInput = z.infer<typeof GenerateMockSearchResultsInputSchema>;
 
 
-const SearchResultItemSchema = z.object({
-    title: z.string().describe("The title of the search result."),
-    link: z.string().url().describe("A plausible, fictional URL for the result."),
-    snippet: z.string().describe("A short, descriptive snippet of the content.")
-});
-
-const GenerateMockSearchResultsOutputSchema = z.object({
-  results: z.array(SearchResultItemSchema).describe('A list of 3-5 mock search results.'),
-});
-export type GenerateMockSearchResultsOutput = z.infer<typeof GenerateMockSearchResultsOutputSchema>;
-
-
-export async function generateMockSearchResults(input: GenerateMockSearchResultsInput): Promise<GenerateMockSearchResultsOutput> {
+export async function generateMockSearchResults(input: GenerateMockSearchResultsInput): Promise<SearchResults> {
   return generateMockSearchResultsFlow(input);
 }
 
 const prompt = ai.definePrompt({
   name: 'generateMockSearchResultsPrompt',
   input: { schema: GenerateMockSearchResultsInputSchema },
-  output: { schema: GenerateMockSearchResultsOutputSchema },
+  output: { schema: SearchResultsSchema },
   prompt: `You are a search result simulator. Based on the user's query, generate a list of 3-5 realistic but entirely fictional search results.
 
 Query: {{{query}}}
@@ -49,7 +39,7 @@ const generateMockSearchResultsFlow = ai.defineFlow(
   {
     name: 'generateMockSearchResultsFlow',
     inputSchema: GenerateMockSearchResultsInputSchema,
-    outputSchema: GenerateMockSearchResultsOutputSchema,
+    outputSchema: SearchResultsSchema,
   },
   async (input) => {
     const { output } = await prompt(input);

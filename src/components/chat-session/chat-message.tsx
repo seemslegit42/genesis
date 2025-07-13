@@ -2,6 +2,8 @@ import type { Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChatAvatar } from '@/components/chat-session/chat-avatar';
 import { useAppStore } from '@/hooks/use-app-store';
+import { SearchResult } from '../search-result';
+import { SearchResultsSchema, type SearchResults } from '@/lib/search-types';
 
 /**
  * Props for the ChatMessage component.
@@ -17,6 +19,26 @@ interface ChatMessageProps {
 }
 
 /**
+ * Checks if the content is a valid JSON string representing search results.
+ * @param {string} content - The content of the message.
+ * @returns {SearchResults | null} The parsed search results or null.
+ */
+function parseSearchResults(content: string): SearchResults | null {
+  try {
+    const json = JSON.parse(content);
+    const validation = SearchResultsSchema.safeParse(json);
+    if (validation.success) {
+      // Ensure there are actually results to display
+      return validation.data.results.length > 0 ? validation.data : null;
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+}
+
+
+/**
  * Renders a single chat message, including the avatar and the message content bubble.
  * It adapts its layout based on whether the message is from the 'user' or 'assistant',
  * creating the classic conversational flow. The 'glassmorphism' style reinforces the
@@ -27,6 +49,7 @@ interface ChatMessageProps {
 export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) {
   const { role, content, id } = message;
   const { setFocusedMessageId } = useAppStore();
+  const searchResults = parseSearchResults(content);
 
   const handleFocus = () => {
     // Toggle focus: if it's already focused, unfocus it. Otherwise, focus it.
@@ -48,12 +71,17 @@ export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) 
         className={cn(
           'p-4 rounded-lg max-w-sm md:max-w-lg lg:max-w-3xl break-words cursor-pointer',
           'glassmorphism',
-           isFocused && 'ring-2 ring-primary ring-offset-2 ring-offset-background'
+           isFocused && 'ring-2 ring-primary ring-offset-2 ring-offset-background',
+           searchResults && 'p-0' // Remove padding if it's a search result card
         )}
       >
-        <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90">
-          {content}
-        </div>
+        {searchResults ? (
+          <SearchResult results={searchResults.results} />
+        ) : (
+          <div className="prose prose-sm sm:prose-base prose-invert max-w-none prose-p:text-foreground/90">
+            {content}
+          </div>
+        )}
       </div>
       {role === 'user' && <ChatAvatar role="user" />}
     </div>

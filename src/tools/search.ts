@@ -27,6 +27,7 @@ export const search = ai.defineTool(
     console.log(`[Search Tool] Simulating search for: ${input.query}`);
     // Generate mock results using an internal AI flow.
     const mockResults = await generateMockSearchResults({ query: input.query });
+    // Return the results as a JSON string, which the frontend will parse.
     return JSON.stringify(mockResults);
   }
 );
