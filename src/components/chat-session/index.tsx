@@ -274,7 +274,31 @@ export function ChatSession() {
   }
 
   if (authLoading || !historyLoaded) {
-    return null; // Return null because the page itself provides the skeleton
+    return (
+       <div className="flex flex-col h-screen">
+        <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
+          <div className="flex items-center justify-between h-full w-full max-w-7xl mx-auto px-4 gap-4">
+            <Skeleton className="h-6 w-24" />
+            <div className="flex-1 w-full min-w-0 hidden md:block max-w-2xl">
+              <Skeleton className="h-12 w-full rounded-full" />
+            </div>
+            <div className="hidden md:flex items-center justify-end shrink-0 w-48">
+              <Skeleton className="h-8 w-full" />
+            </div>
+            <div className="md:hidden">
+              <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+          </div>
+        </header>
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex flex-col items-center justify-center h-full p-4">
+            <div className="flex-1 flex items-center justify-center w-full">
+              <Skeleton className="w-24 h-80" />
+            </div>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   const showInitialPrompts = messages.length <= 1 && !isAiResponding && !streamingMessage;
