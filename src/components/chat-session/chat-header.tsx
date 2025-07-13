@@ -70,7 +70,7 @@ const SovereigntyManifest = () => {
     );
 };
 
-const MobileMenu = ({ onNewChat }: { onNewChat: () => void }) => {
+const MobileMenu = ({ onNewChat, isAdmin }: { onNewChat: () => void; isAdmin: boolean; }) => {
     const { signOut } = useAuth();
     const [time, setTime] = useState('');
 
@@ -104,12 +104,14 @@ const MobileMenu = ({ onNewChat }: { onNewChat: () => void }) => {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onNewChat}>New Chat</DropdownMenuItem>
-                 <DropdownMenuItem asChild>
-                    <Link href="/admin">
-                        <Shield className="mr-2 h-4 w-4" />
-                        <span>Admin</span>
-                    </Link>
-                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                      <Link href="/admin">
+                          <Shield className="mr-2 h-4 w-4" />
+                          <span>Admin</span>
+                      </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={signOut}>
                     <LogOut className="mr-2 h-4 w-4" />
@@ -131,6 +133,11 @@ const MobileMenu = ({ onNewChat }: { onNewChat: () => void }) => {
  */
 export function ChatHeader({ onNewChat, children }: ChatHeaderProps) {
   const isMobile = useIsMobile();
+  const { user } = useAuth();
+
+  // In a real app, this would be based on roles/permissions from your database.
+  const isAdmin = user?.email === 'initiate@example.com';
+
   return (
     <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
       <div className="flex items-center justify-between h-full w-full max-w-7xl mx-auto px-4 gap-4">
@@ -144,11 +151,18 @@ export function ChatHeader({ onNewChat, children }: ChatHeaderProps) {
 
         <div className="hidden md:flex items-center justify-end shrink-0">
           <SovereigntyManifest />
+           {isAdmin && (
+              <Button variant="ghost" size="icon" asChild className="ml-2">
+                <Link href="/admin" title="Admin Dashboard">
+                  <Shield />
+                </Link>
+              </Button>
+            )}
         </div>
 
         {isMobile && (
            <div className="md:hidden">
-                <MobileMenu onNewChat={onNewChat} />
+                <MobileMenu onNewChat={onNewChat} isAdmin={isAdmin} />
             </div>
         )}
       </div>
