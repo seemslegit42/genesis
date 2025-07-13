@@ -6,7 +6,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import Firecrawl from 'firecrawl';
+import FireCrawl from 'firecrawl';
 
 // Ensure the API key is being loaded from environment variables
 const firecrawlApiKey = process.env.FIRECRAWL_API_KEY;
@@ -14,7 +14,7 @@ if (!firecrawlApiKey) {
   console.warn('FIRECRAWL_API_KEY is not set. The scrapeAndSummarizeWebsite tool will not work.');
 }
 
-const firecrawl = new Firecrawl({ apiKey: firecrawlApiKey || 'not-set' });
+const firecrawl = new FireCrawl({ apiKey: firecrawlApiKey || 'not-set' });
 
 /**
  * Defines a tool that scrapes a website's content using Firecrawl and then
