@@ -2,11 +2,14 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/generate-initial-prompt-ideas.ts';
-import '@/ai/flows/summarize-chat-history.ts';
-import '@/ai/flows/chat.ts';
+// Flows
+import '@/ai/flows/generate-initial-prompt-ideas';
+import '@/ai/flows/summarize-chat-history';
+import '@/ai/flows/chat';
 import '@/ai/flows/text-to-speech';
 import '@/ai/flows/speech-to-text';
 import '@/ai/flows/predict-next-task';
 import '@/ai/flows/suggest-break';
-import '@/tools/calendar';
+
+// Tools
+import '@/tools';
