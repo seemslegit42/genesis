@@ -7,7 +7,7 @@ import { ChatHeader } from '@/components/chat-session/chat-header';
 import { MessageList } from '@/components/chat-session/message-list';
 import { InitialPrompts } from '@/components/chat-session/initial-prompts';
 import { MessageInput } from '@/components/chat-session/message-input';
-import { generateInitialPromptIdeas, getAiResponse, textToSpeech, speechToText, predictNextTask, suggestBreak } from '@/lib/actions';
+import { generateInitialPromptIdeas, speechToText, predictNextTask, suggestBreak, generateConversationalAudio } from '@/lib/actions';
 import { getChatHistory, saveChatHistory } from '@/lib/services/chat';
 import { useAuth } from '@/hooks/use-auth';
 import type { Message, Vow } from '@/lib/types';
@@ -40,7 +40,7 @@ export function ChatSession() {
   const [isAiResponding, setIsAiResponding] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [transcriptionUnlocked, setTranscriptionUnlocked] = useState(false);
+  const [transcriptionUnlocked, setTranscriptionUnlocked] = useState(true); // Unlocked by default now
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const [isInitiated, setIsInitiated] = useState(false);
   const [vow, setVow] = useState<Vow | null>(null);
@@ -102,13 +102,13 @@ export function ChatSession() {
     
     const newMessage: Message = {
       id: String(Date.now()),
-      role: isBreakSuggestion ? 'assistant' : 'user',
+      role: 'user',
       content,
     };
     
     // If it's a break suggestion, just add it to messages and don't expect a response.
     if (isBreakSuggestion) {
-      setMessages(prev => [...prev, newMessage]);
+      setMessages(prev => [...prev, { ...newMessage, role: 'assistant' }]);
       return;
     }
     
@@ -119,53 +119,44 @@ export function ChatSession() {
     setAmbientState('focus');
 
     try {
-      const stream = await getAiResponse(updatedMessages, vow);
-      if (!stream) {
-        throw new Error("Failed to get a response from the AI. The stream is null.");
-      }
-
+      // The new audio-first flow
+      const { audioDataUri, script } = await generateConversationalAudio({ prompt: content, vow });
+      
+      // The AI response is the second part of the script
+      const assistantContent = script.split('Speaker2:')[1]?.trim() || "...";
+      
       const assistantMessage: Message = {
         id: String(Date.now() + 1),
         role: 'assistant',
-        content: '',
+        content: assistantContent,
       };
-      setStreamingMessage(assistantMessage);
 
-      let accumulatedContent = '';
-      const reader = stream.getReader();
-      const decoder = new TextDecoder();
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        accumulatedContent += chunk;
-        setStreamingMessage({ ...assistantMessage, content: accumulatedContent });
-      }
-      
-      const finalMessage = { ...assistantMessage, content: accumulatedContent };
-      const finalHistoryForPrediction = [...updatedMessages, finalMessage];
-      setMessages(finalHistoryForPrediction);
-      
-      const { audioDataUri } = await textToSpeech({ text: accumulatedContent });
+      // Play the full conversation audio
       if (audioRef.current) {
         audioRef.current.src = audioDataUri;
         audioRef.current.play();
       }
       
-      // After response, predict the next task
-      const finalHistory = finalHistoryForPrediction.map(({id, ...rest}) => rest);
-      const prediction = await predictNextTask({ chatHistory: finalHistory, vow });
-      if (prediction && prediction.nextTask) {
-        setPredictedTask(prediction.nextTask);
-      }
+      // Add the assistant's message to the chat history after a short delay
+      setTimeout(() => {
+         setMessages(prev => [...prev, assistantMessage]);
+         const finalHistoryForPrediction = [...updatedMessages, assistantMessage];
+         const finalHistory = finalHistoryForPrediction.map(({id, ...rest}) => rest);
+
+         predictNextTask({ chatHistory: finalHistory, vow }).then(prediction => {
+            if (prediction && prediction.nextTask) {
+                setPredictedTask(prediction.nextTask);
+            }
+         });
+
+      }, 500); // Delay to sync with audio start
+
       
-      // After a certain number of interactions, suggest a break.
+      // Check for break suggestion
       const userMessagesCount = updatedMessages.filter(m => m.role === 'user').length;
       if (userMessagesCount > 0 && userMessagesCount % 8 === 0) {
           const breakSuggestion = await suggestBreak({ vow });
           if(breakSuggestion.suggestion) {
-            // Use a timeout to make it feel less immediate
             setTimeout(() => {
                 handleSendMessage(breakSuggestion.suggestion, true);
             }, 1500);
@@ -173,7 +164,7 @@ export function ChatSession() {
       }
 
     } catch (error) {
-      console.error("Error getting AI response stream:", error);
+      console.error("Error in conversational flow:", error);
       const errorMessage: Message = {
         id: String(Date.now() + 1),
         role: 'assistant',
@@ -181,11 +172,11 @@ export function ChatSession() {
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
-      setStreamingMessage(null);
       setIsAiResponding(false);
       setAmbientState('calm');
     }
   }, [messages, vow, setAmbientState, setFocusLevel]);
+
 
   const transcribeRecording = useCallback(async (blobUrl: string) => {
     if (!transcriptionUnlocked) {

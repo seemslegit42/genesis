@@ -108,16 +108,18 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
           {isRecording ? <StopSigil isActive /> : <MicSigil isActive={isRecording} />}
           <span className="sr-only">{isRecording ? "Stop Recording" : "Start Recording"}</span>
         </Button>
-        <Button
-          type="submit"
-          size="icon"
-          variant="ghost"
-          className="text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-10 w-10"
-          disabled={isLoading || !content.trim() || isRecording}
-        >
-          <SendSigil isActive={!!content.trim()} />
-          <span className="sr-only">Send</span>
-        </Button>
+        {content.trim() && (
+            <Button
+                type="submit"
+                size="icon"
+                variant="ghost"
+                className="text-primary hover:text-primary hover:bg-primary/10 disabled:opacity-50 rounded-full h-10 w-10"
+                disabled={isLoading || !content.trim() || isRecording}
+            >
+                <SendSigil isActive={!!content.trim()} />
+                <span className="sr-only">Send</span>
+            </Button>
+        )}
       </div>
     </form>
   );

@@ -1,3 +1,4 @@
+
 'use server';
 
 import { chat as chatFlow } from '@/ai/flows/chat';
@@ -6,27 +7,11 @@ import { speechToText as speechToTextFlow } from '@/ai/flows/speech-to-text';
 import { textToSpeech as textToSpeechFlow } from '@/ai/flows/text-to-speech';
 import { predictNextTask as predictNextTaskFlow } from '@/ai/flows/predict-next-task';
 import { suggestBreak as suggestBreakFlow } from '@/ai/flows/suggest-break';
+import { generateConversationalAudio as generateConversationalAudioFlow } from '@/ai/flows/generate-conversational-audio';
 
 
-import type { Message, SpeechToTextInput, TextToSpeechInput, Vow, PredictNextTaskInput, PredictNextTaskOutput, SuggestBreakInput, SuggestBreakOutput } from '@/lib/types';
+import type { Message, SpeechToTextInput, TextToSpeechInput, Vow, PredictNextTaskInput, PredictNextTaskOutput, SuggestBreakInput, SuggestBreakOutput, ConversationalAudioInput, ConversationalAudioOutput } from '@/lib/types';
 
-/**
- * Server action to get a streaming AI response for a given set of messages.
- * Wraps the main 'chat' Genkit flow.
- * @param {Message[]} messages - The history of messages in the current chat.
- * @param {Vow} vow - The user's chosen path, which determines the AI's personality.
- * @returns {Promise<ReadableStream<Uint8Array> | null>} A promise that resolves to a readable stream of the AI's response, or null on error.
- */
-export async function getAiResponse(messages: Message[], vow: Vow): Promise<ReadableStream<Uint8Array> | null> {
-  if (!messages || messages.length === 0) {
-    console.error('getAiResponse called with no messages.');
-    return null;
-  }
-  // We only need the role and content for the AI, so we'll map over the messages
-  // to create a new array with just that data.
-  const history = messages.map(({ id, ...rest }) => rest);
-  return chatFlow({ messages: history, vow });
-}
 
 /**
  * Server action to generate initial prompt ideas for the user.
@@ -90,4 +75,13 @@ export async function predictNextTask(input: PredictNextTaskInput): Promise<Pred
  */
 export async function suggestBreak(input: SuggestBreakInput): Promise<SuggestBreakOutput> {
     return suggestBreakFlow(input);
+}
+
+/**
+ * Server action to generate a complete audio conversation.
+ * @param {ConversationalAudioInput} input - The user's prompt and vow.
+ * @returns {Promise<ConversationalAudioOutput>} A promise that resolves to the audio and script.
+ */
+export async function generateConversationalAudio(input: ConversationalAudioInput): Promise<ConversationalAudioOutput> {
+    return generateConversationalAudioFlow(input);
 }

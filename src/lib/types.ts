@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { PredictNextTaskInputSchema, PredictNextTaskOutputSchema } from '@/ai/flows/predict-next-task';
 import { SuggestBreakInputSchema, SuggestBreakOutputSchema } from '@/ai/flows/suggest-break';
 import { SearchResultsSchema as AppSearchResultsSchema, SearchResultItemSchema as AppSearchResultItemSchema } from './search-types';
+import type { ConversationalAudioInput as CAInput, ConversationalAudioOutput as CAOutput } from '@/ai/flows/generate-conversational-audio';
 
 
 /**
@@ -53,6 +54,9 @@ export type PredictNextTaskOutput = z.infer<typeof PredictNextTaskOutputSchema>;
 
 export type SuggestBreakInput = z.infer<typeof SuggestBreakInputSchema>;
 export type SuggestBreakOutput = z.infer<typeof SuggestBreakOutputSchema>;
+
+export type ConversationalAudioInput = CAInput;
+export type ConversationalAudioOutput = CAOutput;
 
 
 /**
