@@ -1,10 +1,10 @@
 
 import type { CalendarResult as CalendarResultType } from '@/lib/types';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import { CalendarIcon, Clock, Users } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from './ui/card';
+import { CalendarIcon, Clock, Users, BrainCircuit } from 'lucide-react';
 
 interface CalendarResultProps {
-  events: CalendarResultType['events'];
+  data: CalendarResultType;
 }
 
 /**
@@ -15,14 +15,16 @@ interface CalendarResultProps {
  * @param {CalendarResultProps} props The props for the component.
  * @returns {JSX.Element} The rendered calendar results component.
  */
-export function CalendarResult({ events }: CalendarResultProps) {
+export function CalendarResult({ data }: CalendarResultProps) {
+  const { summary, events, meetings, focusBlocks } = data;
   return (
     <Card className="bg-transparent border-0 shadow-none w-full max-w-sm md:max-w-lg lg:max-w-3xl">
-      <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-4 pt-5 px-5">
+      <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-2 pt-5 px-5">
         <CalendarIcon className="h-5 w-5 text-primary" />
         <CardTitle className="text-lg font-headline text-primary">Today's Cipher</CardTitle>
       </CardHeader>
       <CardContent className="px-5 pb-5">
+        <CardDescription className="mb-4">{summary}</CardDescription>
         <div className="space-y-4">
           {events.length > 0 ? (
             events.map((event, index) => (
@@ -30,9 +32,17 @@ export function CalendarResult({ events }: CalendarResultProps) {
                 key={index}
                 className="group block p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors duration-200"
               >
-                <h4 className="font-bold text-base text-foreground group-hover:text-primary transition-colors duration-200">
-                  {event.summary}
-                </h4>
+                <div className="flex justify-between items-start">
+                  <h4 className="font-bold text-base text-foreground group-hover:text-primary transition-colors duration-200">
+                    {event.summary}
+                  </h4>
+                  {meetings.includes(event.summary) && (
+                    <Users className="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
+                  )}
+                  {focusBlocks.includes(event.summary) && (
+                     <BrainCircuit className="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
+                  )}
+                </div>
                 <div className="text-sm text-muted-foreground flex items-center gap-2 mt-2">
                   <Clock className="h-4 w-4" />
                   <span>{event.start} - {event.end}</span>

@@ -71,7 +71,7 @@ export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) 
         case 'searchResults':
           return <SearchResult results={(richContent as SearchResults).results} />;
         case 'calendarResults':
-          return <CalendarResult events={(richContent as CalendarResultType).events} />;
+          return <CalendarResult data={(richContent as CalendarResultType)} />;
         default:
           // Fallback for unknown rich content types
           return (

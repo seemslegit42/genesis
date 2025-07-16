@@ -1,3 +1,4 @@
+
 /**
  * @fileoverview Defines a 'getCalendarEvents' tool for the AI.
  * This allows BEEP to fetch the user's schedule for the day, which is a
@@ -19,7 +20,7 @@ export const getCalendarEvents = ai.defineTool(
     name: 'getCalendarEvents',
     description: "Get the user's calendar events for today.",
     inputSchema: z.object({}), // No input needed
-    outputSchema: z.string().describe("A JSON string of today's calendar events."),
+    outputSchema: z.string().describe("A JSON string of today's calendar events, including a summary and key event types."),
   },
   async () => {
     console.log(`[Calendar Tool] Fetching today's mocked events.`);
@@ -28,6 +29,7 @@ export const getCalendarEvents = ai.defineTool(
     // This mock data simulates a busy day to demonstrate the "Daily Cipher" feature.
     const mockEvents = {
       type: 'calendarResults',
+      summary: 'Your day is a mix of collaborative sessions and dedicated focus time. The morning is meeting-heavy, but the afternoon opens up for deep work.',
       events: [
         {
           summary: 'Project Phoenix: Daily Stand-up',
@@ -59,6 +61,14 @@ export const getCalendarEvents = ai.defineTool(
           end: '05:00 PM',
           description: 'Implement the backend logic as discussed.',
         },
+      ],
+      meetings: [
+        'Project Phoenix: Daily Stand-up',
+        'Design Review: New Onboarding Flow',
+        '1:1 with Manager'
+      ],
+      focusBlocks: [
+        'Focus Block: Code implementation for feature #123'
       ]
     };
 

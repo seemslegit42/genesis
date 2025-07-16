@@ -1,3 +1,4 @@
+
 /**
  * @fileoverview This file centralizes all core type definitions for the application,
  * creating a single source of truth for our data structures.
@@ -88,6 +89,9 @@ export const CalendarEventSchema = z.object({
 
 export const CalendarResultSchema = z.object({
     type: z.literal('calendarResults'),
-    events: z.array(CalendarEventSchema).describe("A list of today's calendar events.")
+    summary: z.string().describe("A high-level summary of the day's schedule."),
+    events: z.array(CalendarEventSchema).describe("A list of today's calendar events."),
+    meetings: z.array(z.string()).describe("A list of event summaries that are considered key meetings."),
+    focusBlocks: z.array(z.string()).describe("A list of event summaries that are considered focus blocks."),
 })
 export type CalendarResult = z.infer<typeof CalendarResultSchema>;
