@@ -52,17 +52,14 @@ export default function UserManagementPage() {
 
   const renderBody = () => {
     if (loading) {
-      return (
-        <TableRow>
-          <TableCell colSpan={4} className="text-center">
-             <div className="space-y-2">
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-full" />
-            </div>
-          </TableCell>
+      return Array.from({ length: 3 }).map((_, index) => (
+         <TableRow key={index}>
+          <TableCell><Skeleton className="h-5 w-48" /></TableCell>
+          <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+          <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+          <TableCell><Skeleton className="h-5 w-24" /></TableCell>
         </TableRow>
-      );
+      ));
     }
     if (error) {
        return (
@@ -85,8 +82,9 @@ export default function UserManagementPage() {
     return users.map((user) => (
       <TableRow key={user.uid}>
         <TableCell className="font-medium">{user.email || 'N/A'}</TableCell>
+        <TableCell className="font-mono text-xs text-muted-foreground">{user.uid}</TableCell>
         <TableCell>
-          <Badge variant={!user.disabled ? 'default' : 'destructive'} className={!user.disabled ? "bg-green-500/80 text-white" : ""}>
+          <Badge variant={!user.disabled ? 'default' : 'destructive'} className={cn(!user.disabled ? "bg-green-500/80 text-white" : "", "border-transparent")}>
             {!user.disabled ? 'Active' : 'Disabled'}
           </Badge>
         </TableCell>
@@ -99,19 +97,20 @@ export default function UserManagementPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-display">User Management</h1>
-        <p className="text-muted-foreground">View and manage all registered users.</p>
+        <p className="text-muted-foreground">View and manage all registered users in the system.</p>
       </div>
 
       <Card className="glassmorphism">
         <CardHeader>
           <CardTitle>Registered Users</CardTitle>
-          <CardDescription>A list of all users in the system fetched directly from Firebase.</CardDescription>
+          <CardDescription>A list of all users fetched directly from Firebase Authentication.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Email</TableHead>
+                <TableHead>User ID</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Created At</TableHead>
               </TableRow>
