@@ -21,6 +21,7 @@ import { useAppStore } from '@/hooks/use-app-store';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BottomBar } from './bottom-bar';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { MessageList } from './message-list';
 
 
 /**
@@ -29,7 +30,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
  * interacts with AI services via Server Actions, and controls the UI state 
  * (loading, recording, etc.). This component is the heart of the user-facing 
  * application and the central hub for all user interactions.
- * @returns {JSX.Element} The rendered chat session interface.
  */
 export function ChatSession() {
   const { user, loading: authLoading } = useAuth();
@@ -239,7 +239,7 @@ export function ChatSession() {
         console.error("Failed to fetch initial prompts:", error);
       }
     };
-    if (isInitiated && messages.length === 0) {
+    if (isInitiated && messages.length <= 1) {
         fetchPrompts();
     }
   }, [isInitiated, messages.length]);
@@ -278,11 +278,6 @@ export function ChatSession() {
     setPredictedTask('');
   }
 
-  const handleObeliskClick = () => {
-    if (focusedMessageId) {
-      setFocusedMessageId(null);
-    }
-  };
 
   if (authLoading || !historyLoaded) {
     return (
@@ -326,7 +321,7 @@ export function ChatSession() {
 
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen overflow-hidden">
       {!isInitiated ? (
         <RiteOfInvocation onComplete={handleInitiation} />
       ) : (
@@ -344,20 +339,32 @@ export function ChatSession() {
             <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
             <div className="flex-1 flex overflow-hidden">
-                <main className="flex-1 flex flex-col items-center justify-center p-4 overflow-hidden">
-                  <div className="flex-1 flex items-center justify-center w-full" onClick={handleObeliskClick}>
-                    <Obelisk 
-                      typographicState={currentState}
-                      isInteractive={!!focusedMessageId}
-                      cipherStream={cipherStream}
-                      isAiResponding={isAiResponding || isTranscribing}
-                    />
-                  </div>
-                  {showInitialPrompts && (
-                    <div className="w-full max-w-4xl mx-auto pb-8">
-                        <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
-                    </div>
-                  )}
+                <main className="flex-1 flex flex-col overflow-hidden">
+                    <ScrollArea className="flex-1">
+                        <div className="max-w-4xl mx-auto px-4 w-full">
+                           <MessageList 
+                             messages={messages} 
+                             isAiResponding={isAiResponding || isTranscribing} 
+                             focusedMessageId={focusedMessageId}
+                            />
+
+                            {messages.length === 0 && (
+                                <div className="h-[calc(100vh-200px)] flex flex-col justify-center items-center">
+                                    <div className="h-80 w-24">
+                                        <Obelisk
+                                            typographicState={currentState}
+                                            isInteractive={false}
+                                            cipherStream={[]}
+                                            isAiResponding={isAiResponding || isTranscribing}
+                                        />
+                                    </div>
+                                    <div className="w-full max-w-4xl mx-auto pt-8">
+                                      <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </ScrollArea>
                 </main>
                 <Sidecar 
                     predictedTask={predictedTask} 
@@ -365,10 +372,16 @@ export function ChatSession() {
                     onClose={() => setPredictedTask('')}
                 />
             </div>
-             {isMobile && (
+             {isMobile ? (
                 <BottomBar>
                     {messageInput}
                 </BottomBar>
+            ) : (
+                <footer className="w-full p-4">
+                    <div className="max-w-2xl mx-auto">
+                        {messageInput}
+                    </div>
+                </footer>
             )}
             <audio ref={audioRef} className="hidden" />
         </>

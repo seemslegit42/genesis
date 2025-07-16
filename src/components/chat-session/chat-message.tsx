@@ -1,4 +1,5 @@
 
+
 import type { Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChatAvatar } from '@/components/chat-session/chat-avatar';
@@ -87,7 +88,7 @@ export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) 
   return (
     <div
       className={cn(
-        'flex items-start gap-4 transition-opacity duration-300',
+        'group flex items-start gap-4 transition-opacity duration-300',
         role === 'user' && 'justify-end',
         isDimmed && 'opacity-30 hover:opacity-100',
         isFocused && 'opacity-100'
@@ -100,7 +101,7 @@ export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) 
           'p-4 rounded-lg max-w-sm md:max-w-lg lg:max-w-3xl break-words cursor-pointer',
           'glassmorphism',
            isFocused && 'ring-2 ring-primary ring-offset-2 ring-offset-background',
-           richContent && 'p-0' // Remove padding if it's a rich component card
+           richContent ? 'p-0' : 'p-4' 
         )}
       >
         {renderContent()}

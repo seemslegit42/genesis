@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '../ui/skeleton';
 import { ArrowUpRight } from 'lucide-react';
@@ -29,7 +30,7 @@ interface InitialPromptsProps {
 export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) {
   if (prompts.length === 0) {
     return (
-        <div className="flex flex-col items-center justify-center text-center animate-float-in w-full max-w-3xl prose prose-invert" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
+        <div className="flex flex-col items-center justify-center text-center w-full max-w-3xl prose prose-invert">
              <h2 className="text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
                 AWAITING INVOCATION
             </h2>
@@ -47,7 +48,7 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
   }
 
   return (
-    <div className="flex flex-col items-center justify-center text-center animate-float-in prose prose-invert" style={{animationDelay: '500ms', animationFillMode: 'backwards'}}>
+    <div className="flex flex-col items-center justify-center text-center prose prose-invert">
       <h2 className="text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
         Invoke Your Genesis
       </h2>
