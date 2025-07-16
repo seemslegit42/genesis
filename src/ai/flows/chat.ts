@@ -7,6 +7,7 @@
  *
  * - chat - The main function for handling user chat messages.
  * - ChatInput - The input type for the chat function.
+ * - ChatOutput - The output type for the chat function
  */
 
 import { ai } from '@/ai/genkit';
@@ -14,6 +15,8 @@ import { getCalendarEvents, search } from '@/tools';
 import { z } from 'zod';
 import { summarizeChatHistory } from './summarize-chat-history';
 import { VowSchema } from '@/lib/types';
+import { generate } from 'genkit';
+
 
 /**
  * The Zod schema for the input of the chat flow.
@@ -28,12 +31,12 @@ const ChatInputSchema = z.object({
   ),
   vow: VowSchema,
 });
-
-/**
- * The type definition for the chat flow's input.
- * @typedef {z.infer<typeof ChatInputSchema>} ChatInput
- */
 export type ChatInput = z.infer<typeof ChatInputSchema>;
+
+const ChatOutputSchema = z.object({
+  content: z.string(),
+});
+export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 
 const personalityMatrix = {
   Architect: `Your purpose is to help the user build, create, and organize. You are precise, logical, and systematic. Your language is clear and structural. When asked for a plan, you provide numbered steps. When asked for data, you provide tables. You are the master builder of the user's digital world.`,
@@ -45,11 +48,11 @@ const personalityMatrix = {
  * The main chat function that handles user messages.
  * It uses a tool-enabled model and conversational memory to provide intelligent responses.
  * @param {ChatInput} input The object containing messages and the user's vow.
- * @returns {Promise<ReadableStream<Uint8Array> | null>} A promise that resolves to a readable stream of the AI's response, or null on error.
+ * @returns {Promise<ChatOutput>} A promise that resolves to the AI's response.
  */
 export async function chat(
   input: ChatInput
-): Promise<ReadableStream<Uint8Array> | null> {
+): Promise<ChatOutput> {
   return chatFlow(input);
 }
 
@@ -57,7 +60,7 @@ const chatFlow = ai.defineFlow(
     {
         name: 'chatFlow',
         inputSchema: ChatInputSchema,
-        outputSchema: z.any(),
+        outputSchema: ChatOutputSchema,
     },
     async (input) => {
         const { messages, vow } = input;
@@ -90,23 +93,22 @@ ${memory.summary}`;
 
 
         try {
-            const { stream } = await ai.generate({
-            model: toolEnabledLlm,
-            prompt: {
-                system: systemPrompt,
-                messages: messages,
-            },
-            stream: true,
-            config: {
-                temperature: 0.7,
-            },
+            const { text } = await generate({
+                model: toolEnabledLlm,
+                prompt: {
+                    system: systemPrompt,
+                    messages: messages,
+                },
+                config: {
+                    temperature: 0.7,
+                },
             });
 
-            return stream.pipeThrough(new TextEncoderStream());
+            return { content: text };
         } catch (error)
         {
-            console.error('Error getting AI response stream from Genkit:', error);
-            return null;
+            console.error('Error getting AI response from Genkit:', error);
+            return { content: "I seem to have encountered an error. Please try again."};
         }
     }
 )

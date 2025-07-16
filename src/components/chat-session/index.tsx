@@ -7,7 +7,7 @@ import { ChatHeader } from '@/components/chat-session/chat-header';
 import { MessageList } from '@/components/chat-session/message-list';
 import { InitialPrompts } from '@/components/chat-session/initial-prompts';
 import { MessageInput } from '@/components/chat-session/message-input';
-import { generateInitialPromptIdeas, speechToText, predictNextTask, suggestBreak, generateConversationalAudio } from '@/lib/actions';
+import { generateInitialPromptIdeas, speechToText, predictNextTask, suggestBreak, generateConversationalAudio, chat } from '@/lib/actions';
 import { getChatHistory, saveChatHistory } from '@/lib/services/chat';
 import { useAuth } from '@/hooks/use-auth';
 import type { Message, Vow } from '@/lib/types';
@@ -54,6 +54,7 @@ export function ChatSession() {
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
     video: false,
     audio: true,
+    onStop: (blobUrl, blob) => transcribeRecording(blobUrl, blob)
   });
   
   // Effect to manage focus decay
@@ -106,15 +107,14 @@ export function ChatSession() {
       content,
     };
     
+    setMessages(prev => [...prev, newMessage]);
+
     // If it's a break suggestion, just add it to messages and don't expect a response.
     if (isBreakSuggestion) {
-      setMessages(prev => [...prev, { ...newMessage, role: 'assistant' }]);
       return;
     }
     
     setFocusLevel(100); // Replenish focus on user action
-    const updatedMessages = [...messages, newMessage];
-    setMessages(updatedMessages);
     setIsAiResponding(true);
     setAmbientState('focus');
 
@@ -137,20 +137,16 @@ export function ChatSession() {
         audioRef.current.play();
       }
       
-      // Add the assistant's message to the chat history after a short delay
-      setTimeout(() => {
-         setMessages(prev => [...prev, assistantMessage]);
-         const finalHistoryForPrediction = [...updatedMessages, assistantMessage];
-         const finalHistory = finalHistoryForPrediction.map(({id, ...rest}) => rest);
+      const updatedMessages = [...messages, newMessage, assistantMessage];
+      setMessages(updatedMessages);
 
-         predictNextTask({ chatHistory: finalHistory, vow }).then(prediction => {
+      const finalHistory = updatedMessages.map(({id, ...rest}) => rest);
+      
+       predictNextTask({ chatHistory: finalHistory, vow }).then(prediction => {
             if (prediction && prediction.nextTask) {
                 setPredictedTask(prediction.nextTask);
             }
          });
-
-      }, 500); // Delay to sync with audio start
-
       
       // Check for break suggestion
       const userMessagesCount = updatedMessages.filter(m => m.role === 'user').length;
@@ -158,7 +154,12 @@ export function ChatSession() {
           const breakSuggestion = await suggestBreak({ vow });
           if(breakSuggestion.suggestion) {
             setTimeout(() => {
-                handleSendMessage(breakSuggestion.suggestion, true);
+                const breakMessage: Message = {
+                    id: String(Date.now() + 2),
+                    role: 'assistant',
+                    content: breakSuggestion.suggestion
+                };
+                setMessages(prev => [...prev, breakMessage]);
             }, 1500);
           }
       }
@@ -178,7 +179,8 @@ export function ChatSession() {
   }, [messages, vow, setAmbientState, setFocusLevel]);
 
 
-  const transcribeRecording = useCallback(async (blobUrl: string) => {
+  const transcribeRecording = useCallback(async (blobUrl: string, blob: Blob | null) => {
+    if (!blob) return;
     if (!transcriptionUnlocked) {
       setShowShareModal(true);
       return;
@@ -187,8 +189,6 @@ export function ChatSession() {
     setIsTranscribing(true);
     setAmbientState('focus');
     try {
-      const response = await fetch(blobUrl);
-      const blob = await response.blob();
       const reader = new FileReader();
       reader.readAsDataURL(blob);
       reader.onloadend = async () => {
@@ -223,12 +223,6 @@ export function ChatSession() {
         setAmbientState('recording');
     }
   };
-
-  useEffect(() => {
-    if (mediaBlobUrl) {
-      transcribeRecording(mediaBlobUrl);
-    }
-  }, [mediaBlobUrl, transcribeRecording]);
 
 
   useEffect(() => {
