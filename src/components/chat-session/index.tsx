@@ -4,10 +4,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import { ChatHeader } from '@/components/chat-session/chat-header';
-import { MessageList } from '@/components/chat-session/message-list';
 import { InitialPrompts } from '@/components/chat-session/initial-prompts';
 import { MessageInput } from '@/components/chat-session/message-input';
-import { generateInitialPromptIdeas, speechToText, predictNextTask, suggestBreak, generateConversationalAudio, chat } from '@/lib/actions';
+import { generateInitialPromptIdeas, speechToText, predictNextTask, suggestBreak, generateConversationalAudio } from '@/lib/actions';
 import { getChatHistory, saveChatHistory } from '@/lib/services/chat';
 import { useAuth } from '@/hooks/use-auth';
 import type { Message, Vow } from '@/lib/types';
@@ -35,7 +34,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 export function ChatSession() {
   const { user, loading: authLoading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [streamingMessage, setStreamingMessage] = useState<Message | null>(null);
+  const [cipherStream, setCipherStream] = useState<string[]>([]);
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
   const [isAiResponding, setIsAiResponding] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -74,6 +73,9 @@ export function ChatSession() {
     if (user && !historyLoaded) {
       getChatHistory(user.uid).then((history) => {
         setMessages(history);
+        const assistantMessages = history.filter(m => m.role === 'assistant').map(m => m.content);
+        setCipherStream(assistantMessages);
+
         if (history.length > 0) {
             setIsInitiated(true);
             // A simple way to persist the vow is to check the first message.
@@ -139,6 +141,7 @@ export function ChatSession() {
       
       const updatedMessages = [...messages, newMessage, assistantMessage];
       setMessages(updatedMessages);
+      setCipherStream(prev => [...prev, assistantContent]);
 
       const finalHistory = updatedMessages.map(({id, ...rest}) => rest);
       
@@ -160,6 +163,7 @@ export function ChatSession() {
                     content: breakSuggestion.suggestion
                 };
                 setMessages(prev => [...prev, breakMessage]);
+                setCipherStream(prev => [...prev, breakMessage.content]);
             }, 1500);
           }
       }
@@ -172,6 +176,7 @@ export function ChatSession() {
         content: "Sorry, I encountered an error. Please try again.",
       };
       setMessages(prev => [...prev, errorMessage]);
+      setCipherStream(prev => [...prev, errorMessage.content]);
     } finally {
       setIsAiResponding(false);
       setAmbientState('calm');
@@ -241,7 +246,7 @@ export function ChatSession() {
 
   const handleNewChat = () => {
     setMessages([]);
-    setStreamingMessage(null);
+    setCipherStream([]);
      if (user) {
       saveChatHistory(user.uid, []); // Clear history in DB as well
     }
@@ -307,7 +312,7 @@ export function ChatSession() {
     );
   }
 
-  const showInitialPrompts = messages.length <= 1 && !isAiResponding && !streamingMessage;
+  const showInitialPrompts = messages.length <= 1 && !isAiResponding;
   
   const messageInput = (
     <MessageInput
@@ -339,25 +344,19 @@ export function ChatSession() {
             <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
             <div className="flex-1 flex overflow-hidden">
-                <main className="flex-1 flex flex-col">
-                  {showInitialPrompts ? (
-                      <div className="flex-1 flex flex-col items-center justify-center p-4 overflow-hidden">
-                          <div className="flex-1 flex items-center justify-center w-full" onClick={handleObeliskClick}>
-                            <Obelisk 
-                              typographicState={currentState}
-                              isInteractive={!!focusedMessageId}
-                            />
-                          </div>
-                          <div className="w-full max-w-4xl mx-auto pb-8">
-                              <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
-                          </div>
-                      </div>
-                  ) : (
-                      <ScrollArea className="flex-1">
-                          <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-                              <MessageList messages={messages} streamingMessage={streamingMessage} isAiResponding={isAiResponding} isTranscribing={isTranscribing} />
-                          </div>
-                      </ScrollArea>
+                <main className="flex-1 flex flex-col items-center justify-center p-4 overflow-hidden">
+                  <div className="flex-1 flex items-center justify-center w-full" onClick={handleObeliskClick}>
+                    <Obelisk 
+                      typographicState={currentState}
+                      isInteractive={!!focusedMessageId}
+                      cipherStream={cipherStream}
+                      isAiResponding={isAiResponding || isTranscribing}
+                    />
+                  </div>
+                  {showInitialPrompts && (
+                    <div className="w-full max-w-4xl mx-auto pb-8">
+                        <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+                    </div>
                   )}
                 </main>
                 <Sidecar 

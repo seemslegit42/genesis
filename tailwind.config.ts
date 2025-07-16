@@ -140,6 +140,10 @@ export default {
         'float-in': {
           from: { opacity: '0', transform: 'translateY(20px) scale(0.95)' },
           to: { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+        'cipher-scroll': {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(-100%)' },
         }
       },
       animation: {
@@ -147,6 +151,7 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'float': 'float 6s ease-in-out infinite',
         'float-in': 'float-in 0.8s ease-out',
+        'cipher-scroll': 'cipher-scroll 30s linear infinite',
       },
     },
   },
