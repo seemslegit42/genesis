@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
@@ -47,7 +48,7 @@ export function Sidecar({ predictedTask, onAcceptTask, onClose }: SidecarProps) 
   if (isMobile) {
     return (
         <Sheet open={!!predictedTask} onOpenChange={(isOpen) => !isOpen && onClose()}>
-            <SheetContent side="bottom" className="glassmorphism h-[45%] rounded-t-lg">
+            <SheetContent side="bottom" className="glassmorphism h-[40%] rounded-t-lg">
                 <SidecarContent predictedTask={predictedTask} onAcceptTask={onAcceptTask} />
             </SheetContent>
         </Sheet>
