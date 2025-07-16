@@ -11,7 +11,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { getCalendarEvents, search } from '@/tools';
+import { getCalendarEvents, search, scrapeAndSummarizeWebsite } from '@/tools';
 import { z } from 'zod';
 import { summarizeChatHistory } from './summarize-chat-history';
 import { VowSchema } from '@/lib/types';
@@ -66,7 +66,7 @@ const chatFlow = ai.defineFlow(
         const { messages, vow } = input;
         
         const llm = ai.model(); // Use the globally configured model
-        const toolEnabledLlm = llm.withTools([search, getCalendarEvents]);
+        const toolEnabledLlm = llm.withTools([search, getCalendarEvents, scrapeAndSummarizeWebsite]);
 
         // Don't summarize if there's only one message
         const memory = messages.length > 1
@@ -79,7 +79,8 @@ Your personality is that of a brilliant, slightly world-weary, and deeply integr
 
 A core feature is "The Daily Cipher," a personalized morning briefing. If the user says "good morning," asks for their daily brief, "run the cipher," or a similar phrase, you MUST use the getCalendarEvents tool to fetch their schedule and then respond with a synthesized summary of their day. You will present this as "The Daily Cipher."
 
-When you need up-to-date information or need to access content from the web to answer a question (e.g., "What is the latest news?"), use the 'search' tool.`;
+When you need up-to-date information or need to access content from the web to answer a question (e.g., "What is the latest news?"), use the 'search' tool.
+When a user provides a URL and asks you to summarize, analyze, or read it, you MUST use the 'scrapeAndSummarizeWebsite' tool.`;
 
         const systemPrompt = `
 ${basePrompt}

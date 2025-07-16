@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -17,8 +18,6 @@ import { RiteOfInvocation } from '@/components/rite-of-invocation';
 import { useTypographicState } from '@/hooks/use-typographic-state';
 import { Sidecar } from '../sidecar';
 import { useAppStore } from '@/hooks/use-app-store';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { BottomBar } from './bottom-bar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageList } from './message-list';
 
@@ -46,7 +45,6 @@ export function ChatSession() {
   const { setAmbientState, setFocusLevel, focusedMessageId, setFocusedMessageId } = useAppStore();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
-  const isMobile = useIsMobile();
 
 
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
@@ -330,11 +328,7 @@ export function ChatSession() {
                 onClose={() => setShowShareModal(false)}
                 onUnlock={handleUnlock}
             />
-            <ChatHeader 
-                onNewChat={handleNewChat}
-            >
-                {!isMobile && messageInput}
-            </ChatHeader>
+            <ChatHeader onNewChat={handleNewChat} />
             <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
             <div className="flex-1 flex overflow-hidden">
@@ -371,17 +365,12 @@ export function ChatSession() {
                     onClose={() => setPredictedTask('')}
                 />
             </div>
-             {isMobile ? (
-                <BottomBar>
+            
+            <footer className="w-full p-4 shrink-0">
+                <div className="max-w-2xl mx-auto">
                     {messageInput}
-                </BottomBar>
-            ) : (
-                <footer className="w-full p-4">
-                    <div className="max-w-2xl mx-auto">
-                        {messageInput}
-                    </div>
-                </footer>
-            )}
+                </div>
+            </footer>
             <audio ref={audioRef} className="hidden" />
         </>
       )}

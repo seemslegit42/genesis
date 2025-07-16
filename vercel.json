@@ -8,7 +8,7 @@
       "NEXT_PUBLIC_FIREBASE_PROJECT_ID": "@next_public_firebase_project_id",
       "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET": "@next_public_firebase_storage_bucket",
       "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "@next_public_firebase_messaging_sender_id",
-      "NEXT_PUBLIC_FIREBASE_APP_ID": "@next_public_firebase_app_id",
+      "NEXT_PUBLIC_FIREBAsE_APP_ID": "@next_public_firebase_app_id",
       "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID": "@next_public_firebase_measurement_id"
     }
   }

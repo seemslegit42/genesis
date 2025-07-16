@@ -30,8 +30,6 @@ interface ChatHeaderProps {
    * reset mechanism for the user's workflow.
    */
   onNewChat: () => void;
-  /** The content to be rendered in the center of the header (e.g., the message input on desktop). */
-  children?: React.ReactNode;
 }
 
 /**
@@ -131,7 +129,7 @@ const MobileMenu = ({ onNewChat, isAdmin }: { onNewChat: () => void; isAdmin: bo
  * @param {ChatHeaderProps} props The props for the component.
  * @returns {JSX.Element} The rendered header component.
  */
-export function ChatHeader({ onNewChat, children }: ChatHeaderProps) {
+export function ChatHeader({ onNewChat }: ChatHeaderProps) {
   const isMobile = useIsMobile();
   const { user } = useAuth();
 
@@ -139,14 +137,10 @@ export function ChatHeader({ onNewChat, children }: ChatHeaderProps) {
   const isAdmin = user?.email === 'initiate@example.com';
 
   return (
-    <header className="sticky top-0 z-20 w-full glassmorphism h-[70px]">
+    <header className="sticky top-0 z-20 w-full glassmorphism h-[70px] shrink-0">
       <div className="flex items-center justify-between h-full w-full max-w-7xl mx-auto px-4 gap-4">
         <div className="flex items-center gap-2 cursor-pointer font-headline shrink-0" onClick={onNewChat} title="Start New Chat">
            <Logo className="h-6 w-auto" />
-        </div>
-
-        <div className="flex-1 w-full min-w-0 hidden md:block max-w-2xl">
-          {children}
         </div>
 
         <div className="hidden md:flex items-center justify-end shrink-0">
