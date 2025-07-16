@@ -3,7 +3,6 @@
 
 import { ChatMessage, LoadingMessage } from '@/components/chat-session/chat-message';
 import type { Message } from '@/lib/types';
-import { useAppStore } from '@/hooks/use-app-store';
 
 interface MessageListProps {
   messages: Message[];

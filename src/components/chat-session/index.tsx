@@ -350,10 +350,10 @@ export function ChatSession() {
 
                             {messages.length === 0 && (
                                 <div className="h-[calc(100vh-200px)] flex flex-col justify-center items-center">
-                                    <div className="h-80 w-24">
+                                    <div className="h-80 w-24" onClick={() => setFocusedMessageId(null)}>
                                         <Obelisk
                                             typographicState={currentState}
-                                            isInteractive={false}
+                                            isInteractive={!!focusedMessageId}
                                             cipherStream={[]}
                                             isAiResponding={isAiResponding || isTranscribing}
                                         />
