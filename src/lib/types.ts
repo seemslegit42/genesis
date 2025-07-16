@@ -32,15 +32,6 @@ export type Vow = z.infer<typeof VowSchema>;
 
 
 /**
- * Defines the input structure for the text-to-speech conversion flow.
- * @interface TextToSpeechInput
- */
-export interface TextToSpeechInput {
-    /** The text to be synthesized into audio. */
-    text: string;
-}
-
-/**
  * Defines the input structure for the speech-to-text transcription flow.
  * @interface SpeechToTextInput
  */

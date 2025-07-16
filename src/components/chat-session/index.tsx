@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -342,13 +341,13 @@ export function ChatSession() {
                 <main className="flex-1 flex flex-col overflow-hidden">
                     <ScrollArea className="flex-1">
                         <div className="max-w-4xl mx-auto px-4 w-full">
-                           <MessageList 
-                             messages={messages} 
-                             isAiResponding={isAiResponding || isTranscribing} 
-                             focusedMessageId={focusedMessageId}
-                            />
-
-                            {messages.length === 0 && (
+                           {messages.length > 0 ? (
+                             <MessageList 
+                               messages={messages} 
+                               isAiResponding={isAiResponding || isTranscribing} 
+                               focusedMessageId={focusedMessageId}
+                              />
+                           ) : (
                                 <div className="h-[calc(100vh-200px)] flex flex-col justify-center items-center">
                                     <div className="h-80 w-24" onClick={() => setFocusedMessageId(null)}>
                                         <Obelisk
@@ -362,7 +361,7 @@ export function ChatSession() {
                                       <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
                                     </div>
                                 </div>
-                            )}
+                           )}
                         </div>
                     </ScrollArea>
                 </main>

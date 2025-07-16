@@ -1,16 +1,14 @@
-
 'use server';
 
 import { chat as chatFlow } from '@/ai/flows/chat';
 import { generateInitialPromptIdeas as generateInitialPromptIdeasFlow } from '@/ai/flows/generate-initial-prompt-ideas';
 import { speechToText as speechToTextFlow } from '@/ai/flows/speech-to-text';
-import { textToSpeech as textToSpeechFlow } from '@/ai/flows/text-to-speech';
 import { predictNextTask as predictNextTaskFlow } from '@/ai/flows/predict-next-task';
 import { suggestBreak as suggestBreakFlow } from '@/ai/flows/suggest-break';
 import { generateConversationalAudio as generateConversationalAudioFlow } from '@/ai/flows/generate-conversational-audio';
 
 
-import type { Message, SpeechToTextInput, TextToSpeechInput, Vow, PredictNextTaskInput, PredictNextTaskOutput, SuggestBreakInput, SuggestBreakOutput, ConversationalAudioInput, ConversationalAudioOutput } from '@/lib/types';
+import type { Message, SpeechToTextInput, Vow, PredictNextTaskInput, PredictNextTaskOutput, SuggestBreakInput, SuggestBreakOutput, ConversationalAudioInput, ConversationalAudioOutput } from '@/lib/types';
 
 
 /**
@@ -34,16 +32,6 @@ export async function generateInitialPromptIdeas() {
       ],
     };
   }
-}
-
-/**
- * Server action to convert text to speech.
- * Wraps the 'textToSpeech' Genkit flow.
- * @param {TextToSpeechInput} input - The text to be converted.
- * @returns {Promise<{audioDataUri: string}>} A promise that resolves to the audio data URI.
- */
-export async function textToSpeech(input: TextToSpeechInput) {
-  return textToSpeechFlow(input);
 }
 
 /**
