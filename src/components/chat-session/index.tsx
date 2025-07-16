@@ -20,6 +20,7 @@ import { Sidecar } from '../sidecar';
 import { useAppStore } from '@/hooks/use-app-store';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageList } from './message-list';
+import { UndoBar } from './undo-bar';
 
 
 /**
@@ -45,6 +46,7 @@ export function ChatSession() {
   const { setAmbientState, setFocusLevel, focusedMessageId, setFocusedMessageId } = useAppStore();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
+  const [lastMessagePair, setLastMessagePair] = useState<string[] | null>(null);
 
 
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
@@ -94,10 +96,22 @@ export function ChatSession() {
     }
   }, [messages, user, historyLoaded]);
 
+  // Effect for the undo bar timeout
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (lastMessagePair) {
+      timer = setTimeout(() => {
+        setLastMessagePair(null);
+      }, 7000); // User has 7 seconds to undo
+    }
+    return () => clearTimeout(timer);
+  }, [lastMessagePair]);
+
 
   const handleSendMessage = useCallback(async (content: string, isBreakSuggestion: boolean = false) => {
     if (!content.trim() || !vow) return;
     
+    setLastMessagePair(null); // Clear previous undo opportunity
     setPredictedTask(''); // Clear previous prediction
     
     const newMessage: Message = {
@@ -139,6 +153,7 @@ export function ChatSession() {
       const updatedMessages = [...messages, newMessage, assistantMessage];
       setMessages(updatedMessages);
       setCipherStream(prev => [...prev, assistantContent]);
+      setLastMessagePair([newMessage.id, assistantMessage.id]);
 
       const finalHistory = updatedMessages.map(({id, ...rest}) => rest);
       
@@ -252,6 +267,7 @@ export function ChatSession() {
     setPredictedTask('');
     setFocusedMessageId(null);
     setFocusLevel(80); // Reset focus for new session
+    setLastMessagePair(null);
   };
 
   const onPromptClick = (prompt: string) => {
@@ -274,6 +290,14 @@ export function ChatSession() {
     handleSendMessage(task);
     setPredictedTask('');
   }
+
+  const handleUndo = () => {
+    if (!lastMessagePair) return;
+    setMessages(prev => prev.filter(m => !lastMessagePair.includes(m.id)));
+    setCipherStream(prev => prev.slice(0, -1));
+    setLastMessagePair(null); // Prevent multiple undos
+    setPredictedTask(''); // Clear any prediction based on the undone action
+  };
 
 
   if (authLoading || !historyLoaded) {
@@ -372,6 +396,7 @@ export function ChatSession() {
                     {messageInput}
                 </div>
             </footer>
+            <UndoBar isVisible={!!lastMessagePair} onUndo={handleUndo} />
             <audio ref={audioRef} className="hidden" />
         </>
       )}
