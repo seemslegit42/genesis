@@ -3,12 +3,34 @@
 import { chat as chatFlow } from '@/ai/flows/chat';
 import { generateInitialPromptIdeas as generateInitialPromptIdeasFlow } from '@/ai/flows/generate-initial-prompt-ideas';
 import { speechToText as speechToTextFlow } from '@/ai/flows/speech-to-text';
+import { textToSpeech as textToSpeechFlow } from '@/ai/flows/text-to-speech';
 import { predictNextTask as predictNextTaskFlow } from '@/ai/flows/predict-next-task';
 import { suggestBreak as suggestBreakFlow } from '@/ai/flows/suggest-break';
-import { generateConversationalAudio as generateConversationalAudioFlow } from '@/ai/flows/generate-conversational-audio';
+
+import type { 
+    Message, 
+    SpeechToTextInput, 
+    Vow, 
+    PredictNextTaskInput, 
+    PredictNextTaskOutput, 
+    SuggestBreakInput, 
+    SuggestBreakOutput,
+    TextToSpeechInput,
+    TextToSpeechOutput,
+    ChatInput,
+    ChatOutput
+} from '@/lib/types';
 
 
-import type { Message, SpeechToTextInput, Vow, PredictNextTaskInput, PredictNextTaskOutput, SuggestBreakInput, SuggestBreakOutput, ConversationalAudioInput, ConversationalAudioOutput } from '@/lib/types';
+/**
+ * Server action to get a response from the AI.
+ * Wraps the 'chat' Genkit flow.
+ * @param {ChatInput} input - The messages and user vow.
+ * @returns {Promise<ChatOutput>} A promise that resolves to the AI's response.
+ */
+export async function chat(input: ChatInput): Promise<ChatOutput> {
+    return chatFlow(input);
+}
 
 
 /**
@@ -44,6 +66,16 @@ export async function speechToText(input: SpeechToTextInput) {
   return speechToTextFlow(input);
 }
 
+/**
+ * Server action to convert text to speech.
+ * Wraps the 'textToSpeech' Genkit flow.
+ * @param {TextToSpeechInput} input - The text to be synthesized.
+ * @returns {Promise<TextToSpeechOutput>} A promise that resolves to the audio data URI.
+ */
+export async function textToSpeech(input: TextToSpeechInput): Promise<TextToSpeechOutput> {
+    return textToSpeechFlow(input);
+}
+
 
 /**
  * Server action to predict the user's next logical task.
@@ -63,13 +95,4 @@ export async function predictNextTask(input: PredictNextTaskInput): Promise<Pred
  */
 export async function suggestBreak(input: SuggestBreakInput): Promise<SuggestBreakOutput> {
     return suggestBreakFlow(input);
-}
-
-/**
- * Server action to generate a complete audio conversation.
- * @param {ConversationalAudioInput} input - The user's prompt and vow.
- * @returns {Promise<ConversationalAudioOutput>} A promise that resolves to the audio and script.
- */
-export async function generateConversationalAudio(input: ConversationalAudioInput): Promise<ConversationalAudioOutput> {
-    return generateConversationalAudioFlow(input);
 }

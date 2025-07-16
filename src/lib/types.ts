@@ -4,11 +4,11 @@
  * creating a single source of truth for our data structures.
  */
 import { z } from 'zod';
+import type { ChatInput as AppChatInput, ChatOutput as AppChatOutput } from '@/ai/flows/chat';
 import { PredictNextTaskInputSchema, PredictNextTaskOutputSchema } from '@/ai/flows/predict-next-task';
 import { SuggestBreakInputSchema, SuggestBreakOutputSchema } from '@/ai/flows/suggest-break';
 import { SearchResultsSchema as AppSearchResultsSchema, SearchResultItemSchema as AppSearchResultItemSchema } from './search-types';
-import type { ConversationalAudioInput as CAInput, ConversationalAudioOutput as CAOutput } from '@/ai/flows/generate-conversational-audio';
-
+import type { TextToSpeechInput as TTSInput, TextToSpeechOutput as TTSOutput } from '@/ai/flows/text-to-speech';
 
 /**
  * Represents a single message in a chat conversation.
@@ -41,14 +41,17 @@ export interface SpeechToTextInput {
     audioDataUri: string;
 }
 
+export type ChatInput = AppChatInput;
+export type ChatOutput = AppChatOutput;
+
+export type TextToSpeechInput = TTSInput;
+export type TextToSpeechOutput = TTSOutput;
+
 export type PredictNextTaskInput = z.infer<typeof PredictNextTaskInputSchema>;
 export type PredictNextTaskOutput = z.infer<typeof PredictNextTaskOutputSchema>;
 
 export type SuggestBreakInput = z.infer<typeof SuggestBreakInputSchema>;
 export type SuggestBreakOutput = z.infer<typeof SuggestBreakOutputSchema>;
-
-export type ConversationalAudioInput = CAInput;
-export type ConversationalAudioOutput = CAOutput;
 
 
 /**

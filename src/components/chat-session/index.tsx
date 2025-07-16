@@ -6,7 +6,7 @@ import { useReactMediaRecorder } from 'react-media-recorder';
 import { ChatHeader } from '@/components/chat-session/chat-header';
 import { InitialPrompts } from '@/components/chat-session/initial-prompts';
 import { MessageInput } from '@/components/chat-session/message-input';
-import { generateInitialPromptIdeas, speechToText, predictNextTask, suggestBreak, generateConversationalAudio } from '@/lib/actions';
+import { chat, generateInitialPromptIdeas, speechToText, predictNextTask, suggestBreak, textToSpeech } from '@/lib/actions';
 import { getChatHistory, saveChatHistory } from '@/lib/services/chat';
 import { useAuth } from '@/hooks/use-auth';
 import type { Message, Vow } from '@/lib/types';
@@ -108,7 +108,7 @@ export function ChatSession() {
   }, [lastMessagePair]);
 
 
-  const handleSendMessage = useCallback(async (content: string, isBreakSuggestion: boolean = false) => {
+  const handleSendMessage = useCallback(async (content: string) => {
     if (!content.trim() || !vow) return;
     
     setLastMessagePair(null); // Clear previous undo opportunity
@@ -120,23 +120,18 @@ export function ChatSession() {
       content,
     };
     
-    setMessages(prev => [...prev, newMessage]);
-
-    // If it's a break suggestion, just add it to messages and don't expect a response.
-    if (isBreakSuggestion) {
-      return;
-    }
+    const currentMessages = [...messages, newMessage];
+    setMessages(currentMessages);
     
     setFocusLevel(100); // Replenish focus on user action
     setIsAiResponding(true);
     setAmbientState('focus');
 
     try {
-      // The new audio-first flow
-      const { audioDataUri, script } = await generateConversationalAudio({ prompt: content, vow });
+      const chatHistoryForAi = currentMessages.map(({id, ...rest}) => rest);
       
-      // The AI response is the second part of the script
-      const assistantContent = script.split('Speaker2:')[1]?.trim() || "...";
+      // 1. Get the text response from the AI
+      const { content: assistantContent } = await chat({ messages: chatHistoryForAi, vow });
       
       const assistantMessage: Message = {
         id: String(Date.now() + 1),
@@ -144,26 +139,29 @@ export function ChatSession() {
         content: assistantContent,
       };
 
-      // Play the full conversation audio
-      if (audioRef.current) {
-        audioRef.current.src = audioDataUri;
-        audioRef.current.play();
-      }
-      
-      const updatedMessages = [...messages, newMessage, assistantMessage];
+      const updatedMessages = [...currentMessages, assistantMessage];
       setMessages(updatedMessages);
       setCipherStream(prev => [...prev, assistantContent]);
       setLastMessagePair([newMessage.id, assistantMessage.id]);
 
+      // 2. Generate audio for the response in parallel
+      textToSpeech({ text: assistantContent }).then(({ audioDataUri }) => {
+          if (audioRef.current) {
+            audioRef.current.src = audioDataUri;
+            audioRef.current.play();
+          }
+      }).catch(err => console.error("Error generating audio:", err));
+
+
+      // 3. Predict next task
       const finalHistory = updatedMessages.map(({id, ...rest}) => rest);
+      predictNextTask({ chatHistory: finalHistory, vow }).then(prediction => {
+          if (prediction && prediction.nextTask) {
+              setPredictedTask(prediction.nextTask);
+          }
+       });
       
-       predictNextTask({ chatHistory: finalHistory, vow }).then(prediction => {
-            if (prediction && prediction.nextTask) {
-                setPredictedTask(prediction.nextTask);
-            }
-         });
-      
-      // Check for break suggestion
+      // 4. Check for break suggestion
       const userMessagesCount = updatedMessages.filter(m => m.role === 'user').length;
       if (userMessagesCount > 0 && userMessagesCount % 8 === 0) {
           const breakSuggestion = await suggestBreak({ vow });
@@ -328,13 +326,12 @@ export function ChatSession() {
     );
   }
 
-  const showInitialPrompts = messages.length <= 1 && !isAiResponding;
-  
   const messageInput = (
     <MessageInput
         onSendMessage={handleSendMessage}
         isLoading={isAiResponding || isTranscribing}
-        isRecording={status === 'recording'}
+        isRecording={status === 'recording'
+        }
         startRecording={handleVoiceRecording}
         stopRecording={handleVoiceRecording}
     />
