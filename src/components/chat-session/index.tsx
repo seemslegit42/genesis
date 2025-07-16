@@ -340,6 +340,7 @@ export function ChatSession() {
                                messages={messages} 
                                isAiResponding={isAiResponding || isTranscribing} 
                                focusedMessageId={focusedMessageId}
+                               vow={vow}
                               />
                            ) : (
                                 <div className="h-[calc(100vh-200px)] flex flex-col justify-center items-center">

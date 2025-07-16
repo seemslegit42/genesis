@@ -1,12 +1,13 @@
 'use client';
 
 import { ChatMessage, LoadingMessage } from '@/components/chat-session/chat-message';
-import type { Message } from '@/lib/types';
+import type { Message, Vow } from '@/lib/types';
 
 interface MessageListProps {
   messages: Message[];
   isAiResponding: boolean;
   focusedMessageId: string | null;
+  vow: Vow | null;
 }
 
 /**
@@ -17,7 +18,7 @@ interface MessageListProps {
  * @param {MessageListProps} props The props for the component.
  * @returns {JSX.Element} The rendered list of messages.
  */
-export function MessageList({ messages, isAiResponding, focusedMessageId }: MessageListProps) {
+export function MessageList({ messages, isAiResponding, focusedMessageId, vow }: MessageListProps) {
   const isFocusMode = !!focusedMessageId;
 
   return (
@@ -28,9 +29,10 @@ export function MessageList({ messages, isAiResponding, focusedMessageId }: Mess
           message={message}
           isFocused={focusedMessageId === message.id}
           isDimmed={isFocusMode && focusedMessageId !== message.id}
+          vow={vow}
         />
       ))}
-      {isAiResponding && <LoadingMessage />}
+      {isAiResponding && <LoadingMessage vow={vow} />}
     </div>
   );
 }

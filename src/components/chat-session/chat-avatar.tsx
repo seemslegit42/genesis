@@ -1,27 +1,32 @@
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { Beep3DAvatar } from '../beep-3d-avatar';
+import { Beep3DAvatarV2 } from '../beep-3d-avatar-v2';
+import type { Vow } from '@/lib/types';
 
 /**
  * Props for the ChatAvatar component.
  * @interface ChatAvatarProps
  */
 interface ChatAvatarProps {
-  /** 
-   * The role of the entity this avatar represents. This determines the
-   * styling and text of the avatar.
+  /**
+   * The role of the entity this avatar represents.
    * 'user' represents the human user.
    * 'assistant' represents the AI, BEEP.
    * @type {'user' | 'assistant'}
    */
   role: 'user' | 'assistant';
-  /** 
+  /**
    * Optional path to a custom SVG icon for the avatar.
    * If provided, this will be rendered instead of the text identifier.
    * @type {string}
    * @example "/icons/user-sigil.svg"
    */
   icon?: string;
+  /**
+   * The current Vow of the user, which determines the AI's persona and avatar appearance.
+   * @type {Vow | null}
+   */
+  vow: Vow | null;
 }
 
 /**
@@ -31,7 +36,7 @@ interface ChatAvatarProps {
  * @param {ChatAvatarProps} props The props for the component.
  * @returns {JSX.Element} The rendered avatar component.
  */
-export function ChatAvatar({ role, icon }: ChatAvatarProps) {
+export function ChatAvatar({ role, icon, vow }: ChatAvatarProps) {
   return (
     <div
       className={cn(
@@ -39,7 +44,7 @@ export function ChatAvatar({ role, icon }: ChatAvatarProps) {
       )}
     >
       {role === 'assistant' ? (
-        <Beep3DAvatar />
+        <Beep3DAvatarV2 vow={vow} />
       ) : icon ? (
         <Image src={icon} alt={`${role} avatar`} width={24} height={24} className="opacity-80" />
       ) : (

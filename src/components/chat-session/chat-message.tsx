@@ -1,6 +1,6 @@
 
 
-import type { Message } from '@/lib/types';
+import type { Message, Vow } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChatAvatar } from '@/components/chat-session/chat-avatar';
 import { useAppStore } from '@/hooks/use-app-store';
@@ -19,6 +19,8 @@ interface ChatMessageProps {
   isFocused: boolean;
   /** A boolean indicating if another message is currently focused. */
   isDimmed: boolean;
+  /** The current Vow of the user, to pass to the avatar. */
+  vow: Vow | null;
 }
 
 /**
@@ -55,7 +57,7 @@ function parseRichContent(content: string): any | null {
  * @param {ChatMessageProps} props The props for the component.
  * @returns {JSX.Element} The rendered chat message.
  */
-export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) {
+export function ChatMessage({ message, isFocused, isDimmed, vow }: ChatMessageProps) {
   const { role, content, id } = message;
   const { setFocusedMessageId } = useAppStore();
   const richContent = parseRichContent(content);
@@ -95,7 +97,7 @@ export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) 
       )}
       onClick={handleFocus}
     >
-      {role === 'assistant' && <ChatAvatar role="assistant" />}
+      {role === 'assistant' && <ChatAvatar role="assistant" vow={vow} />}
       <div
         className={cn(
           'p-4 rounded-lg max-w-sm md:max-w-lg lg:max-w-3xl break-words cursor-pointer',
@@ -106,7 +108,7 @@ export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) 
       >
         {renderContent()}
       </div>
-      {role === 'user' && <ChatAvatar role="user" />}
+      {role === 'user' && <ChatAvatar role="user" vow={vow} />}
     </div>
   );
 }
@@ -118,10 +120,10 @@ export function ChatMessage({ message, isFocused, isDimmed }: ChatMessageProps) 
  * which manages user expectation and reduces perceived latency.
  * @returns {JSX.Element} The rendered loading indicator component.
  */
-export function LoadingMessage() {
+export function LoadingMessage({ vow }: { vow: Vow | null }) {
   return (
     <div className="flex items-center gap-4">
-      <ChatAvatar role="assistant" />
+      <ChatAvatar role="assistant" vow={vow} />
       <div className="p-4 rounded-lg glassmorphism">
         <div className="flex items-center justify-center gap-2">
           <span className="size-2 rounded-full bg-primary/70 animate-pulse [animation-delay:-0.3s]" />
