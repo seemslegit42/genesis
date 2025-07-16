@@ -1,54 +1,27 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { getFunctions, httpsCallable, HttpsCallableResult } from 'firebase/functions';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
-// This is the expected shape of the user data from our Cloud Function.
-interface AppUser {
-  uid: string;
-  email?: string;
-  disabled: boolean;
-  creationTime: string;
-}
-
-// Define the shape of the Cloud Function's response
-interface ListUsersResult extends HttpsCallableResult {
-    readonly data: {
-        users: AppUser[];
-    };
-}
-
-
-// In a real application, you would protect this function call.
-// For now, we'll assume the user has access if they can reach this page.
-const functions = getFunctions();
-const listUsers = httpsCallable(functions, 'listUsers');
+// This is a mock implementation.
+// In a future step, we'll fetch real users from a backend function.
+const mockUsers = [
+  {
+    uid: 'mock-uid-1',
+    email: 'initiate@example.com',
+    disabled: false,
+    creationTime: new Date().toISOString(),
+  }
+];
 
 export default function UserManagementPage() {
-  const [users, setUsers] = useState<AppUser[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        const result = await listUsers() as ListUsersResult;
-        setUsers(result.data.users);
-      } catch (err: any) {
-        console.error("Error fetching users:", err);
-        setError(err.message || 'Failed to fetch users. You may not have the required permissions.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsers();
-  }, []);
+  const users = mockUsers;
+  const loading = false;
+  const error = null;
 
   const renderBody = () => {
     if (loading) {
@@ -103,7 +76,7 @@ export default function UserManagementPage() {
       <Card className="glassmorphism">
         <CardHeader>
           <CardTitle>Registered Users</CardTitle>
-          <CardDescription>A list of all users fetched directly from Firebase Authentication.</CardDescription>
+          <CardDescription>A list of all users in the system. (Currently showing mock data)</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>

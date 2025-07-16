@@ -1,44 +1,16 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getFunctions, httpsCallable, HttpsCallableResult } from 'firebase/functions';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Users, ShieldCheck, Activity } from 'lucide-react';
 
-interface AppUser {
-  uid: string;
-}
-
-interface ListUsersResult extends HttpsCallableResult {
-    readonly data: {
-        users: AppUser[];
-    };
-}
-
-const functions = getFunctions();
-const listUsersCallable = httpsCallable(functions, 'listUsers');
+// This is a mock implementation for the dashboard.
+// In a future step, we will connect this to live data.
 
 export default function AdminDashboard() {
-  const [userCount, setUserCount] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setLoading(true);
-        const result = await listUsersCallable() as ListUsersResult;
-        setUserCount(result.data.users.length);
-      } catch (err) {
-        console.error("Error fetching admin stats:", err);
-        setUserCount(0); // Default to 0 on error
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
-  }, []);
+  const loading = false; // Set to false to show mock data
+  const userCount = 1; // Mock data
 
   return (
     <div className="space-y-8">
