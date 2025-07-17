@@ -13,8 +13,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@genkit-ai/googleai": "~1.13.0",
-    "@genkit-ai/next": "~1.13.0",
+    "@genkit-ai/googleai": "~1.12.0",
+    "@genkit-ai/next": "~1.12.0",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
@@ -48,7 +48,7 @@
     "firebase-functions": "^6.0.1",
     "firecrawl": "latest",
     "geist": "^1.4.2",
-    "genkit": "~1.13.0",
+    "genkit": "~1.12.0",
     "lucide": "^0.525.0",
     "lucide-react": "^0.417.0",
     "next": "14.2.5",
@@ -75,7 +75,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "^9.1.0",
-    "genkit-cli": "~1.13.0",
+    "genkit-cli": "~1.12.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"

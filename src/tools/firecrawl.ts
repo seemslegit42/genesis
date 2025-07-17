@@ -7,6 +7,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import FireCrawl from 'firecrawl';
+import { generate } from 'genkit';
 
 // Ensure the API key is being loaded from environment variables
 const firecrawlApiKey = process.env.FIRECRAWL_API_KEY;
@@ -42,15 +43,15 @@ export const scrapeAndSummarizeWebsite = ai.defineTool(
         },
       });
       
-      if (!scrapeResult || !scrapeResult.data.markdown) {
+      if (!scrapeResult || !scrapeResult.data || !scrapeResult.data.markdown) {
         return `Could not retrieve content from ${url}.`;
       }
       
       console.log(`[Firecrawl Tool] Summarizing content for: ${url}`);
       
       // Use a powerful model to summarize the scraped text.
-      const llm = ai.model('googleai/gemini-2.0-flash');
-      const { text: summary } = await ai.generate({
+      const llm = ai.model();
+      const { text } = await generate({
         model: llm,
         prompt: `Provide a concise, neutral summary of the following web content. Focus on the key facts and information. Do not add any preamble.
         
@@ -64,7 +65,7 @@ export const scrapeAndSummarizeWebsite = ai.defineTool(
         },
       });
       
-      return summary;
+      return text;
 
     } catch (error: any) {
       console.error(`[Firecrawl Tool] Error scraping or summarizing ${url}:`, error);

@@ -12,6 +12,10 @@ interface SearchResultProps {
  * This component takes the raw JSON output from the search tool and transforms it
  * into a rich, interactive element within the chat stream, making the information
  * immediately scannable and actionable for the user.
+ * 
+ * NOTE: This component is being deprecated in favor of direct answers from the
+ * Chronicle Ingestor tool, but is kept for potential legacy use or future features.
+ * 
  * @param {SearchResultProps} props The props for the component.
  * @returns {JSX.Element} The rendered search results component.
  */
