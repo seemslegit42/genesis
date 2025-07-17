@@ -124,5 +124,3 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
     </form>
   );
 }
-
-    
