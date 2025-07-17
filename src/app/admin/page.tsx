@@ -1,16 +1,64 @@
-
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, ShieldCheck, Activity } from 'lucide-react';
+import { Users, ShieldCheck, Activity, AlertTriangle } from 'lucide-react';
+import { listUsers as listUsersService } from '@/lib/services/admin';
+import { useToast } from '@/hooks/use-toast';
 
-// This is a mock implementation for the dashboard.
-// In a future step, we will connect this to live data.
+interface User {
+    uid: string;
+    email?: string;
+    disabled: boolean;
+    creationTime: string;
+}
 
 export default function AdminDashboard() {
-  const loading = false; // Set to false to show mock data
-  const userCount = 1; // Mock data
+  const [userCount, setUserCount] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await listUsersService();
+        if (result.success && result.users) {
+            setUserCount(result.users.length);
+        } else {
+            throw new Error(result.error || 'Failed to fetch dashboard data.');
+        }
+      } catch (err: any) {
+        setError(err.message || 'An unexpected error occurred.');
+        toast({
+            variant: 'destructive',
+            title: 'Error Fetching Dashboard Data',
+            description: err.message || 'Could not retrieve data from the server.'
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboardData();
+  }, [toast]);
+
+  const renderStat = (value: number | null, description: string) => {
+    if (loading) {
+      return <Skeleton className="h-8 w-1/2" />;
+    }
+    if (error) {
+      return <div className="text-sm text-destructive flex items-center gap-2"><AlertTriangle className="h-4 w-4" /> Error</div>
+    }
+    return (
+        <>
+            <div className="text-2xl font-bold">{value}</div>
+            <p className="text-xs text-muted-foreground">{description}</p>
+        </>
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -26,12 +74,7 @@ export default function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? (
-              <Skeleton className="h-8 w-1/2" />
-            ) : (
-              <div className="text-2xl font-bold">{userCount}</div>
-            )}
-            <p className="text-xs text-muted-foreground">Currently registered Initiates</p>
+            {renderStat(userCount, 'Currently registered Initiates')}
           </CardContent>
         </Card>
         <Card className="glassmorphism">
@@ -40,12 +83,7 @@ export default function AdminDashboard() {
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? (
-              <Skeleton className="h-8 w-1/2" />
-            ) : (
-              <div className="text-2xl font-bold">{userCount}</div>
-            )}
-            <p className="text-xs text-muted-foreground">Each user makes one Vow</p>
+             {renderStat(userCount, 'Each user makes one Vow')}
           </CardContent>
         </Card>
         <Card className="glassmorphism">
