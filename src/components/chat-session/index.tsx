@@ -15,7 +15,6 @@ import { Progress } from '@/components/ui/progress';
 import { ShareToUnlock } from './share-to-unlock';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RiteOfInvocation } from '@/components/rite-of-invocation';
-import { useTypographicState } from '@/hooks/use-typographic-state';
 import { Sidecar } from '../sidecar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageList } from './message-list';
@@ -42,7 +41,6 @@ export function ChatSession() {
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const [isInitiated, setIsInitiated] = useState(false);
   const [vow, setVow] = useState<Vow | null>(null);
-  const { currentState, applyState } = useTypographicState();
   const { setAmbientState, setFocusLevel, focusedMessageId, setFocusedMessageId } = useAppStore();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
@@ -126,7 +124,6 @@ export function ChatSession() {
     setFocusLevel(100); // Replenish focus on user action
     setIsAiResponding(true);
     setAmbientState('focus');
-    applyState('active');
 
     try {
       const chatHistoryForAi = currentMessages.map(({id, ...rest}) => rest);
@@ -191,9 +188,8 @@ export function ChatSession() {
     } finally {
       setIsAiResponding(false);
       setAmbientState('calm');
-      applyState('default');
     }
-  }, [messages, vow, setAmbientState, setFocusLevel, applyState]);
+  }, [messages, vow, setAmbientState, setFocusLevel]);
 
 
   const transcribeRecording = useCallback(async (blobUrl: string, blob: Blob | null) => {
@@ -378,13 +374,11 @@ export function ChatSession() {
 
             {/* Obelisk & Sidecar Column */}
             <div className="relative hidden md:flex md:col-span-1 flex-col overflow-hidden border-l border-border/20">
-              <div className="flex-1 flex items-center justify-center" onClick={() => setFocusedMessageId(null)}>
+              <div className="flex-1 flex items-center justify-center">
                   <div className="h-80 w-24">
                        <Obelisk
-                          typographicState={currentState}
-                          isInteractive={!!focusedMessageId}
-                          cipherStream={cipherStream}
                           isAiResponding={isAiResponding || isTranscribing}
+                          cipherStream={cipherStream}
                       />
                   </div>
               </div>
