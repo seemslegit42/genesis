@@ -1,7 +1,7 @@
 
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { Beep3DAvatar } from '../beep-3d-avatar';
+import { Beep3DAvatarV2 } from '../beep-3d-avatar-v2';
 import type { Vow } from '@/lib/types';
 
 /**
@@ -45,7 +45,9 @@ export function ChatAvatar({ role, icon, vow }: ChatAvatarProps) {
       )}
     >
       {role === 'assistant' ? (
-        <Beep3DAvatar />
+        <div className="w-16 h-16">
+          <Beep3DAvatarV2 vow={vow} />
+        </div>
       ) : icon ? (
         <Image src={icon} alt={`${role} avatar`} width={24} height={24} className="opacity-80" />
       ) : (
