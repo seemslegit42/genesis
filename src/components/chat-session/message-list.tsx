@@ -24,7 +24,7 @@ export function MessageList({ messages, isAiResponding, focusedMessageId, vow }:
   const isFocusMode = !!focusedMessageId;
 
   return (
-    <div className={cn("flex flex-col gap-6 py-8", messages.length === 0 && 'h-full justify-end')}>
+    <div className={cn("flex flex-col gap-6 py-8")}>
       {messages.map((message) => (
         <ChatMessage
           key={message.id}

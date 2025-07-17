@@ -42,7 +42,7 @@ export function ChatSession() {
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const [isInitiated, setIsInitiated] = useState(false);
   const [vow, setVow] = useState<Vow | null>(null);
-  const { currentState } = useTypographicState();
+  const { currentState, applyState } = useTypographicState();
   const { setAmbientState, setFocusLevel, focusedMessageId, setFocusedMessageId } = useAppStore();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [predictedTask, setPredictedTask] = useState<string>('');
@@ -126,6 +126,7 @@ export function ChatSession() {
     setFocusLevel(100); // Replenish focus on user action
     setIsAiResponding(true);
     setAmbientState('focus');
+    applyState('active');
 
     try {
       const chatHistoryForAi = currentMessages.map(({id, ...rest}) => rest);
@@ -190,8 +191,9 @@ export function ChatSession() {
     } finally {
       setIsAiResponding(false);
       setAmbientState('calm');
+      applyState('default');
     }
-  }, [messages, vow, setAmbientState, setFocusLevel]);
+  }, [messages, vow, setAmbientState, setFocusLevel, applyState]);
 
 
   const transcribeRecording = useCallback(async (blobUrl: string, blob: Blob | null) => {
@@ -345,17 +347,20 @@ export function ChatSession() {
             <div className="md:col-span-2 flex flex-col overflow-hidden">
               <ScrollArea className="flex-1">
                 <div className="max-w-4xl mx-auto px-4 w-full">
-                  <MessageList 
-                    messages={messages} 
-                    isAiResponding={isAiResponding || isTranscribing} 
-                    focusedMessageId={focusedMessageId}
-                    vow={vow}
-                  />
-                  {messages.length === 0 && (
-                     <div className="w-full max-w-4xl mx-auto pt-8">
-                       <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
-                     </div>
-                  )}
+                   {messages.length > 0 ? (
+                      <MessageList 
+                        messages={messages} 
+                        isAiResponding={isAiResponding || isTranscribing} 
+                        focusedMessageId={focusedMessageId}
+                        vow={vow}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center pt-8">
+                         <div className="w-full max-w-md">
+                           <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+                         </div>
+                       </div>
+                    )}
                 </div>
               </ScrollArea>
               <footer className="w-full p-4 shrink-0">

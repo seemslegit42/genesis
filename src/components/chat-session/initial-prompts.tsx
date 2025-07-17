@@ -37,7 +37,7 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
              <p className="text-muted-foreground mb-8 max-w-md">
                 Generating suggestions...
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full not-prose">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full not-prose">
                 <Skeleton className="h-20 rounded-lg" />
                 <Skeleton className="h-20 rounded-lg" />
                 <Skeleton className="h-20 rounded-lg" />
@@ -55,7 +55,7 @@ export function InitialPrompts({ prompts, onPromptClick }: InitialPromptsProps) 
       <p className="text-muted-foreground mb-8 max-w-md">
         Your intent is the key. Select an incantation below to begin the ritual.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-3xl not-prose">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-3xl not-prose">
         {prompts.slice(0, 4).map((prompt, i) => (
           <Card
             key={i}
