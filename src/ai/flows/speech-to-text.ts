@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Transcribes audio to text using a Genkit flow.
@@ -58,9 +59,11 @@ const speechToTextFlow = ai.defineFlow(
   },
   async (input) => {
     const { text } = await ai.generate({
-      model: googleAI.model('gemini-2.0-flash'),
+      model: googleAI.model('gemini-1.5-flash'),
       prompt: [{ media: { url: input.audioDataUri } }, { text: 'Transcribe the audio.' }],
     });
     return { text };
   }
 );
+
+    

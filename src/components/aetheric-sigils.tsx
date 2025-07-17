@@ -47,12 +47,12 @@ export function MicSigil({ className, isActive }: SigilProps) {
                      <Mic
                         className={cn("w-full h-full text-primary transition-all duration-300", isActive ? "text-destructive" : "text-primary")}
                         strokeWidth={1.5}
-                        fill={isActive ? "hsl(var(--primary) / 0.3)" : "none"}
+                        fill={isActive ? "hsl(var(--destructive) / 0.3)" : "none"}
                      />
                      {isActive && (
                         <>
-                           <path d="M5 12a7 7 0 0 0 14 0" stroke="hsl(var(--primary))" strokeWidth="1" strokeOpacity="0.5" className="animate-pulse" />
-                           <path d="M8 12a4 4 0 0 0 8 0" stroke="hsl(var(--primary))" strokeWidth="1" strokeOpacity="0.7" className="animate-pulse [animation-delay:0.2s]" />
+                           <path d="M5 12a7 7 0 0 0 14 0" stroke="hsl(var(--destructive))" strokeWidth="1" strokeOpacity="0.5" className="animate-pulse" />
+                           <path d="M8 12a4 4 0 0 0 8 0" stroke="hsl(var(--destructive))" strokeWidth="1" strokeOpacity="0.7" className="animate-pulse [animation-delay:0.2s]" />
                         </>
                      )}
                 </g>
@@ -86,3 +86,5 @@ export function StopSigil({ className, isActive }: SigilProps) {
         </div>
     );
 }
+
+    

@@ -12,7 +12,6 @@ import { useAuth } from '@/hooks/use-auth';
 import type { Message, Vow } from '@/lib/types';
 import { Obelisk } from '@/components/obelisk';
 import { Progress } from '@/components/ui/progress';
-import { ShareToUnlock } from './share-to-unlock';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RiteOfInvocation } from '@/components/rite-of-invocation';
 import { Sidecar } from '../sidecar';
@@ -36,8 +35,6 @@ export function ChatSession() {
   const [initialPrompts, setInitialPrompts] = useState<string[]>([]);
   const [isAiResponding, setIsAiResponding] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [transcriptionUnlocked, setTranscriptionUnlocked] = useState(true); // Unlocked by default now
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const [isInitiated, setIsInitiated] = useState(false);
   const [vow, setVow] = useState<Vow | null>(null);
@@ -194,10 +191,6 @@ export function ChatSession() {
 
   const transcribeRecording = useCallback(async (blobUrl: string, blob: Blob | null) => {
     if (!blob) return;
-    if (!transcriptionUnlocked) {
-      setShowShareModal(true);
-      return;
-    }
     
     setIsTranscribing(true);
     setAmbientState('focus');
@@ -220,13 +213,9 @@ export function ChatSession() {
       setIsTranscribing(false);
       setAmbientState('calm');
     }
-  }, [transcriptionUnlocked, handleSendMessage, setAmbientState]);
+  }, [handleSendMessage, setAmbientState]);
   
   const handleVoiceRecording = () => {
-    if (!transcriptionUnlocked) {
-        setShowShareModal(true);
-        return;
-    }
     if (status === 'recording') {
         stopRecording();
         setAmbientState('calm');
@@ -268,11 +257,6 @@ export function ChatSession() {
 
   const onPromptClick = (prompt: string) => {
     handleSendMessage(prompt);
-  };
-  
-  const handleUnlock = () => {
-    setTranscriptionUnlocked(true);
-    setShowShareModal(false);
   };
 
   const handleInitiation = (chosenVow: Vow) => {
@@ -330,11 +314,6 @@ export function ChatSession() {
         <RiteOfInvocation onComplete={handleInitiation} />
       ) : (
         <>
-          <ShareToUnlock 
-              isOpen={showShareModal}
-              onClose={() => setShowShareModal(false)}
-              onUnlock={handleUnlock}
-          />
           <ChatHeader onNewChat={handleNewChat} />
           <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
@@ -397,3 +376,5 @@ export function ChatSession() {
     </div>
   );
 }
+
+    

@@ -100,7 +100,7 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
         <Button
           type="button"
           size="icon"
-          variant={isRecording ? "destructive" : "ghost"}
+          variant="ghost"
           onClick={isRecording ? stopRecording : startRecording}
           className="text-primary hover:text-primary disabled:opacity-50 rounded-full h-10 w-10"
           disabled={isLoading}
@@ -124,3 +124,5 @@ export function MessageInput({ onSendMessage, isLoading, isRecording, startRecor
     </form>
   );
 }
+
+    
