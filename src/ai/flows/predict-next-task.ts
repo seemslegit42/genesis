@@ -23,7 +23,7 @@ const PredictNextTaskInputSchema = z.object({
       })
     )
     .describe('The recent chat history.'),
-  vow: VowSchema.describe('The user\'s current persona vow.'),
+  vow: VowSchema.describe("The user's current persona vow."),
 });
 export type PredictNextTaskInput = z.infer<typeof PredictNextTaskInputSchema>;
 
