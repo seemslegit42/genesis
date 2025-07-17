@@ -58,8 +58,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("dark", fontDisplay.variable, fontInscription.variable, fontCodex.variable)}>
-      <body className={cn("antialiased", "min-h-screen", "font-body")}>
+    <html lang="en" className="dark">
+      <body className={cn(
+        "antialiased min-h-screen font-body",
+        fontDisplay.variable, 
+        fontInscription.variable, 
+        fontCodex.variable
+      )}>
         <AppProvider>
             {children}
         </AppProvider>
