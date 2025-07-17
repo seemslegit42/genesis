@@ -56,16 +56,18 @@ export function Sidecar({ predictedTask, onAcceptTask, onClose }: SidecarProps) 
   }
 
   return (
-    <aside
+    <div
       className={cn(
-        'relative hidden md:flex flex-col items-center justify-center p-6 w-64 glassmorphism border-l-2 border-primary/20 m-4 rounded-lg animate-in fade-in-50 slide-in-from-right-10 duration-500'
+        'absolute bottom-0 left-0 right-0 m-4 animate-in fade-in-50 slide-in-from-bottom-10 duration-500'
       )}
     >
-      <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={onClose}>
-        <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </Button>
-      <SidecarContent predictedTask={predictedTask} onAcceptTask={onAcceptTask} />
-    </aside>
+        <div className="relative p-6 glassmorphism border-t-2 border-primary/20 rounded-lg">
+            <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={onClose}>
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close</span>
+            </Button>
+            <SidecarContent predictedTask={predictedTask} onAcceptTask={onAcceptTask} />
+        </div>
+    </div>
   );
 }

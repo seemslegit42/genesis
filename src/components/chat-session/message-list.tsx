@@ -1,7 +1,9 @@
+
 'use client';
 
 import { ChatMessage, LoadingMessage } from '@/components/chat-session/chat-message';
 import type { Message, Vow } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 interface MessageListProps {
   messages: Message[];
@@ -22,7 +24,7 @@ export function MessageList({ messages, isAiResponding, focusedMessageId, vow }:
   const isFocusMode = !!focusedMessageId;
 
   return (
-    <div className="flex flex-col gap-6 py-8">
+    <div className={cn("flex flex-col gap-6 py-8", messages.length === 0 && 'h-full justify-end')}>
       {messages.map((message) => (
         <ChatMessage
           key={message.id}

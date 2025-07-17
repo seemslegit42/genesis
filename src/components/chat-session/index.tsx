@@ -17,10 +17,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { RiteOfInvocation } from '@/components/rite-of-invocation';
 import { useTypographicState } from '@/hooks/use-typographic-state';
 import { Sidecar } from '../sidecar';
-import { useAppStore } from '@/hooks/use-app-store';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageList } from './message-list';
 import { UndoBar } from './undo-bar';
+import { useAppStore } from '@/hooks/use-app-store';
 
 
 /**
@@ -326,75 +326,73 @@ export function ChatSession() {
     );
   }
 
-  const messageInput = (
-    <MessageInput
-        onSendMessage={handleSendMessage}
-        isLoading={isAiResponding || isTranscribing}
-        isRecording={status === 'recording'
-        }
-        startRecording={handleVoiceRecording}
-        stopRecording={handleVoiceRecording}
-    />
-  );
-
-
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       {!isInitiated ? (
         <RiteOfInvocation onComplete={handleInitiation} />
       ) : (
         <>
-            <ShareToUnlock 
-                isOpen={showShareModal}
-                onClose={() => setShowShareModal(false)}
-                onUnlock={handleUnlock}
-            />
-            <ChatHeader onNewChat={handleNewChat} />
-            <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
+          <ShareToUnlock 
+              isOpen={showShareModal}
+              onClose={() => setShowShareModal(false)}
+              onUnlock={handleUnlock}
+          />
+          <ChatHeader onNewChat={handleNewChat} />
+          <Progress value={isAiResponding || isTranscribing ? 100 : 0} className="h-[2px] w-full bg-transparent" />
             
-            <div className="flex-1 flex overflow-hidden">
-                <main className="flex-1 flex flex-col overflow-hidden">
-                    <ScrollArea className="flex-1">
-                        <div className="max-w-4xl mx-auto px-4 w-full">
-                           {messages.length > 0 ? (
-                             <MessageList 
-                               messages={messages} 
-                               isAiResponding={isAiResponding || isTranscribing} 
-                               focusedMessageId={focusedMessageId}
-                               vow={vow}
-                              />
-                           ) : (
-                                <div className="h-[calc(100vh-200px)] flex flex-col justify-center items-center">
-                                    <div className="h-80 w-24" onClick={() => setFocusedMessageId(null)}>
-                                        <Obelisk
-                                            typographicState={currentState}
-                                            isInteractive={!!focusedMessageId}
-                                            cipherStream={[]}
-                                            isAiResponding={isAiResponding || isTranscribing}
-                                        />
-                                    </div>
-                                    <div className="w-full max-w-4xl mx-auto pt-8">
-                                      <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
-                                    </div>
-                                </div>
-                           )}
-                        </div>
-                    </ScrollArea>
-                </main>
-                <Sidecar 
-                    predictedTask={predictedTask} 
-                    onAcceptTask={handleAcceptTask}
-                    onClose={() => setPredictedTask('')}
-                />
-            </div>
-            
-            <footer className="w-full p-4 shrink-0">
-                <div className="max-w-2xl mx-auto">
-                    {messageInput}
+          <div className="flex-1 grid md:grid-cols-3 overflow-hidden">
+            {/* Main Chat Column */}
+            <div className="md:col-span-2 flex flex-col overflow-hidden">
+              <ScrollArea className="flex-1">
+                <div className="max-w-4xl mx-auto px-4 w-full">
+                  <MessageList 
+                    messages={messages} 
+                    isAiResponding={isAiResponding || isTranscribing} 
+                    focusedMessageId={focusedMessageId}
+                    vow={vow}
+                  />
+                  {messages.length === 0 && (
+                     <div className="w-full max-w-4xl mx-auto pt-8">
+                       <InitialPrompts prompts={initialPrompts} onPromptClick={onPromptClick} />
+                     </div>
+                  )}
                 </div>
-            </footer>
-            <UndoBar isVisible={!!lastMessagePair} onUndo={handleUndo} />
-            <audio ref={audioRef} className="hidden" />
+              </ScrollArea>
+              <footer className="w-full p-4 shrink-0">
+                <div className="max-w-2xl mx-auto">
+                   <MessageInput
+                      onSendMessage={handleSendMessage}
+                      isLoading={isAiResponding || isTranscribing}
+                      isRecording={status === 'recording'}
+                      startRecording={handleVoiceRecording}
+                      stopRecording={handleVoiceRecording}
+                  />
+                </div>
+              </footer>
+            </div>
+
+            {/* Obelisk & Sidecar Column */}
+            <div className="relative hidden md:flex md:col-span-1 flex-col overflow-hidden border-l border-border/20">
+              <div className="flex-1 flex items-center justify-center" onClick={() => setFocusedMessageId(null)}>
+                  <div className="h-80 w-24">
+                       <Obelisk
+                          typographicState={currentState}
+                          isInteractive={!!focusedMessageId}
+                          cipherStream={cipherStream}
+                          isAiResponding={isAiResponding || isTranscribing}
+                      />
+                  </div>
+              </div>
+              <Sidecar 
+                  predictedTask={predictedTask} 
+                  onAcceptTask={handleAcceptTask}
+                  onClose={() => setPredictedTask('')}
+              />
+            </div>
+          </div>
+            
+          <UndoBar isVisible={!!lastMessagePair} onUndo={handleUndo} />
+          <audio ref={audioRef} className="hidden" />
         </>
       )}
     </div>
