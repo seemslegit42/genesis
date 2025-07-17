@@ -17,13 +17,14 @@ import { useAuth } from '@/hooks/use-auth';
 import { SignUpPayload, SignUpPayloadSchema } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { Separator } from './ui/separator';
 
 interface SignupProps {
     onSwitchToLogin: () => void;
 }
 
 export function Signup({ onSwitchToLogin }: SignupProps) {
-  const { signUp, loading } = useAuth();
+  const { signUp, signInAsGuest, loading } = useAuth();
   const { toast } = useToast();
   const form = useForm<SignUpPayload>({
     resolver: zodResolver(SignUpPayloadSchema),
@@ -39,6 +40,17 @@ export function Signup({ onSwitchToLogin }: SignupProps) {
       toast({
         variant: 'destructive',
         title: 'Sign Up Failed',
+        description: result.error || 'An unexpected error occurred.',
+      });
+    }
+  }
+
+  async function onGuestSignIn() {
+    const result = await signInAsGuest();
+    if (result && !result.success) {
+      toast({
+        variant: 'destructive',
+        title: 'Guest Sign In Failed',
         description: result.error || 'An unexpected error occurred.',
       });
     }
@@ -86,9 +98,20 @@ export function Signup({ onSwitchToLogin }: SignupProps) {
             </Button>
           </form>
         </Form>
+
+        <div className="relative my-4">
+          <Separator />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-2 bg-card text-muted-foreground text-xs uppercase">
+            Or
+          </div>
+        </div>
+        <Button variant="secondary" className="w-full" onClick={onGuestSignIn} disabled={loading}>
+          {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Continue as Guest"}
+        </Button>
+
         <div className="mt-4 text-center text-sm">
           Already have an account?{' '}
-          <Button variant="link" onClick={onSwitchToLogin} className="px-1">
+          <Button variant="link" onClick={onSwitchToLogin} className="px-1" disabled={loading}>
             Sign in
           </Button>
         </div>

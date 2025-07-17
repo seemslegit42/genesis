@@ -1,5 +1,4 @@
 
-
 // IMPORTANT: You must create a .env.local file in the root of your project
 // and add your Firebase project's configuration details there.
 //
@@ -15,6 +14,7 @@ import {
     getAuth, 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword,
+    signInAnonymously,
     signOut as firebaseSignOut
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
@@ -58,8 +58,12 @@ const signIn = (payload: SignInPayload) => {
     return signInWithEmailAndPassword(auth, payload.email, payload.password);
 }
 
+const signInAsGuest = () => {
+    return signInAnonymously(auth);
+}
+
 const signOut = () => {
     return firebaseSignOut(auth);
 }
 
-export { app, auth, db, functions, signUp, signIn, signOut };
+export { app, auth, db, functions, signUp, signIn, signOut, signInAsGuest };

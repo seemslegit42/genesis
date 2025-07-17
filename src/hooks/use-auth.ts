@@ -1,7 +1,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth, signIn, signUp, signOut } from '@/lib/firebase';
+import { auth, signIn, signUp, signOut, signInAsGuest } from '@/lib/firebase';
 import type { SignUpPayload, SignInPayload } from '@/lib/types';
 
 
@@ -58,6 +58,20 @@ export function useAuth() {
     }
   }, []);
 
+  const handleSignInAsGuest = useCallback(async () => {
+    setLoading(true);
+    try {
+        const userCredential = await signInAsGuest();
+        setUser(userCredential.user);
+        return { success: true, user: userCredential.user };
+    } catch (error: any) {
+        console.error("Guest sign in failed:", error);
+        return { success: false, error: error.message };
+    } finally {
+        setLoading(false);
+    }
+  }, []);
 
-  return { user, loading, signUp: handleSignUp, signIn: handleSignIn, signOut: handleSignOut };
+
+  return { user, loading, signUp: handleSignUp, signIn: handleSignIn, signOut: handleSignOut, signInAsGuest: handleSignInAsGuest };
 }
