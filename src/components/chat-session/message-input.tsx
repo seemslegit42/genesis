@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTypographicState } from '@/hooks/use-typographic-state';
-import { SendSigil, MicSigil, StopSigil } from '../aetheric-sigils';
+import { SendSigil, MicSigil, StopSigil } from '../sigils';
 
 /**
  * Props for the MessageInput component.

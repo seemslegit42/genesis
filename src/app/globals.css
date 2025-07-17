@@ -5,8 +5,9 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%; /* Dark Gray */
-    --foreground: 0 0% 98%; /* Vitreous White */
+    /* Official Aetheric Sigils Color Palette */
+    --background: 240 10% 3.9%;      /* Obsidian Black */
+    --foreground: 0 0% 98%;           /* Vitreous White */
 
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -14,27 +15,26 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 270 50% 60%; /* Imperial Purple */
-    --primary-foreground: 270 50% 10%;
+    --primary: 185 100% 45%;          /* Roman Aqua */
+    --primary-foreground: 185 100% 10%;
 
-    --secondary: 150 40% 50%; /* Patina Green */
-    --secondary-foreground: 150 40% 95%;
+    --secondary: 270 50% 60%;         /* Imperial Purple */
+    --secondary-foreground: 270 50% 95%;
 
-    --muted: 240 3.7% 15.9%;
+    --muted: 240 5% 20%;              /* Conchoidal Gray */
     --muted-foreground: 240 5% 64.9%;
 
-    --accent: 322 100% 70%; /* Bright Pink - Kept for secondary accents */
-    --accent-foreground: 0 0% 98%;
+    --accent: 150 40% 50%;            /* Patina Green */
+    --accent-foreground: 150 40% 95%;
 
-    --destructive: 0 70% 55%; /* Gilded Red */
+    --destructive: 30 80% 60%;        /* Gilded Accent */
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 270 50% 60%; /* Imperial Purple */
+    --border: 240 5% 20%;
+    --input: 240 5% 20%;
+    --ring: 185 100% 45%;              /* Roman Aqua */
 
     --radius: 0.75rem;
-    --obsidian-black: 240 10% 2%;
 
     /* Typographic Sigil Engine */
     --sigil-wght: 400;
@@ -50,9 +50,8 @@
     --obelisk-animation: float 6s ease-in-out infinite;
 
     /* Ambient Ward Engine */
-    --aurora-intensity: 0.2;
+    --aurora-intensity: 0.15;
     --aurora-speed: 30s;
-
   }
 
   body {
@@ -69,8 +68,8 @@
     background-image:
       radial-gradient(at 27% 37%, hsla(var(--primary), var(--aurora-intensity)) 0px, transparent 50%),
       radial-gradient(at 97% 21%, hsla(var(--accent), var(--aurora-intensity)) 0px, transparent 50%),
-      radial-gradient(at 52% 99%, hsla(var(--primary), var(--aurora-intensity)) 0px, transparent 50%),
-      radial-gradient(at 10% 29%, hsla(var(--accent), calc(var(--aurora-intensity) / 2)) 0px, transparent 50%),
+      radial-gradient(at 52% 99%, hsla(var(--secondary), var(--aurora-intensity)) 0px, transparent 50%),
+      radial-gradient(at 10% 29%, hsla(var(--primary), calc(var(--aurora-intensity) / 2)) 0px, transparent 50%),
       radial-gradient(at 97% 96%, hsla(var(--foreground), calc(var(--aurora-intensity) / 4)) 0px, transparent 50%),
       radial-gradient(at 33% 50%, hsla(var(--secondary), calc(var(--aurora-intensity) / 2)) 0px, transparent 50%),
       radial-gradient(at 79% 53%, hsla(var(--accent), calc(var(--aurora-intensity) / 2)) 0px, transparent 50%);
