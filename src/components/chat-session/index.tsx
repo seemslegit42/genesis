@@ -376,5 +376,3 @@ export function ChatSession() {
     </div>
   );
 }
-
-    

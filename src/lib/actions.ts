@@ -39,7 +39,7 @@ export async function chat(input: ChatInput): Promise<ChatOutput> {
  * Wraps the 'generateInitialPromptIdeas' Genkit flow.
  * @returns {Promise<{prompts: string[]}>} A promise that resolves to an object containing a list of prompts.
  */
-export async function generateInitialPromptIdeas() {
+export async function generateInitialPromptideas() {
   try {
     const result = await generateInitialPromptIdeasFlow();
     return result;
@@ -97,5 +97,3 @@ export async function predictNextTask(input: PredictNextTaskInput): Promise<Pred
 export async function suggestBreak(input: SuggestBreakInput): Promise<SuggestBreakOutput> {
     return suggestBreakFlow(input);
 }
-
-    
