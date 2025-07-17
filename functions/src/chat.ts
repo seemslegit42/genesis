@@ -8,7 +8,6 @@ if (admin.apps.length === 0) {
 }
 
 const db = admin.firestore();
-const auth = admin.auth();
 
 interface Message {
     id: string;
@@ -73,40 +72,4 @@ export const getChatHistory = onCall(async (request) => {
     logger.error("Error getting chat history:", error);
     throw new HttpsError("internal", "Failed to get chat history.", error);
   }
-});
-
-
-/**
- * Fetches all users from Firebase Authentication.
- * This is a privileged operation and should be protected by security rules
- * or an admin check in a real application.
- */
-export const listUsers = onCall(async (request) => {
-    logger.info("listUsers called", {uid: request.auth?.uid});
-
-    // IMPORTANT: In a production app, you MUST add a check here to ensure
-    // that the caller is an administrator.
-    // Example:
-    // const uid = request.auth?.uid;
-    // if (!uid) {
-    //   throw new HttpsError("unauthenticated", "Authentication required.");
-    // }
-    // const userRecord = await auth.getUser(uid);
-    // if (userRecord.customClaims?.['admin'] !== true) {
-    //   throw new HttpsError("permission-denied", "You must be an admin to perform this action.");
-    // }
-
-    try {
-        const userRecords = await auth.listUsers();
-        const users = userRecords.users.map((user) => ({
-            uid: user.uid,
-            email: user.email,
-            disabled: user.disabled,
-            creationTime: user.metadata.creationTime,
-        }));
-        return {users};
-    } catch (error) {
-        logger.error("Error listing users:", error);
-        throw new HttpsError("internal", "Failed to list users.", error);
-    }
 });

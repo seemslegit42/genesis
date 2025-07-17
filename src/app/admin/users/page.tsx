@@ -1,27 +1,54 @@
 
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { listUsers as listUsersService } from '@/lib/services/admin';
+import { useToast } from '@/hooks/use-toast';
 
-// This is a mock implementation.
-// In a future step, we'll fetch real users from a backend function.
-const mockUsers = [
-  {
-    uid: 'mock-uid-1',
-    email: 'initiate@example.com',
-    disabled: false,
-    creationTime: new Date().toISOString(),
-  }
-];
+interface User {
+    uid: string;
+    email?: string;
+    disabled: boolean;
+    creationTime: string;
+}
 
 export default function UserManagementPage() {
-  const users = mockUsers;
-  const loading = false;
-  const error = null;
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await listUsersService();
+        if (result.success && result.users) {
+            setUsers(result.users);
+        } else {
+            throw new Error(result.error || 'Failed to fetch users.');
+        }
+      } catch (err: any) {
+        setError(err.message || 'An unexpected error occurred.');
+        toast({
+            variant: 'destructive',
+            title: 'Error Fetching Users',
+            description: err.message || 'Could not retrieve user list from the server.'
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, [toast]);
+
 
   const renderBody = () => {
     if (loading) {
@@ -76,7 +103,7 @@ export default function UserManagementPage() {
       <Card className="glassmorphism">
         <CardHeader>
           <CardTitle>Registered Users</CardTitle>
-          <CardDescription>A list of all users in the system. (Currently showing mock data)</CardDescription>
+          <CardDescription>A list of all users in the system.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
