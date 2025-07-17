@@ -1,3 +1,4 @@
+
 import { cn } from "@/lib/utils";
 import { Scale, ShieldQuestion, Briefcase, HeartHandshake, Construction, ArrowUp, Mic, Square } from "lucide-react";
 
@@ -25,17 +26,27 @@ export function ArchitectSigil({ className, ...props }: SigilProps) {
         <svg
             viewBox="0 0 100 100"
             stroke="currentColor"
-            strokeWidth="4"
+            strokeWidth="1.5"
             fill="none"
             className={cn("transition-all duration-300", className)}
-            style={{ filter: 'url(#sigil-glow-bespoke)' }}
+            style={{ filter: 'url(#sigil-glow-architect)' }}
             {...props}
         >
-            {sigilGlowFilter("sigil-glow-bespoke", 3)}
-            <rect x="20" y="20" width="60" height="60" />
-            <line x1="20" y1="20" x2="80" y2="80" />
-            <line x1="80" y1="20" x2="20" y2="80" />
-            <circle cx="50" cy="50" r="15" />
+            {sigilGlowFilter("sigil-glow-architect", 4)}
+            {/* Outer structure - represents a blueprint or framework */}
+            <path d="M50 2 L2 28 V72 L50 98 L98 72 V28 Z" strokeWidth="1" opacity="0.5" />
+            {/* Inner cube - represents creation and building blocks */}
+            <g transform="translate(50 50)">
+                <path d="M0 -20 L17.3 -10 V10 L0 20 L-17.3 10 V-10 Z" />
+                <path d="M0 -20 L0 20 M-17.3 -10 L17.3 10 M-17.3 10 L17.3 -10" />
+            </g>
+            {/* Facets of the cube - representing detail and precision */}
+            <path d="M50 50 L50 30" />
+            <path d="M50 50 L32.7 40" />
+            <path d="M50 50 L32.7 60" />
+            <path d="M50 50 L67.3 60" />
+            <path d="M50 50 L67.3 40" />
+             <circle cx="50" cy="50" r="5" fill="currentColor" stroke="none" />
         </svg>
     );
 }
@@ -45,17 +56,24 @@ export function OracleSigil({ className, ...props }: SigilProps) {
         <svg
             viewBox="0 0 100 100"
             stroke="currentColor"
-            strokeWidth="4"
+            strokeWidth="1.5"
             fill="none"
             className={cn("transition-all duration-300", className)}
-            style={{ filter: 'url(#sigil-glow-bespoke)' }}
+            style={{ filter: 'url(#sigil-glow-oracle)' }}
             {...props}
         >
-            {sigilGlowFilter("sigil-glow-bespoke", 3)}
-            <circle cx="50" cy="50" r="40" />
-            <path d="M 50 30 A 20 20 0 0 1 50 70" />
-            <path d="M 50 30 A 20 20 0 0 0 50 70" />
-            <circle cx="50" cy="50" r="8" fill="currentColor"/>
+            {sigilGlowFilter("sigil-glow-oracle", 5)}
+            {/* Outer circles - representing ripples of insight */}
+            <circle cx="50" cy="50" r="48" strokeWidth="1" opacity="0.3" />
+            <circle cx="50" cy="50" r="38" strokeWidth="1" opacity="0.6" />
+            {/* Central eye/lotus form - representing vision and wisdom */}
+            <path d="M50 30 C 65 40, 65 60, 50 70" />
+            <path d="M50 30 C 35 40, 35 60, 50 70" />
+            <path d="M30 50 C 40 35, 60 35, 70 50" />
+            <path d="M30 50 C 40 65, 60 65, 70 50" />
+            {/* Pupil */}
+            <circle cx="50" cy="50" r="10" fill="currentColor" stroke="none" />
+            <circle cx="50" cy="50" r="4" fill="hsl(var(--background))" stroke="none" />
         </svg>
     );
 }
@@ -65,15 +83,20 @@ export function SentinelSigil({ className, ...props }: SigilProps) {
         <svg
             viewBox="0 0 100 100"
             stroke="currentColor"
-            strokeWidth="4"
+            strokeWidth="1.5"
             fill="none"
             className={cn("transition-all duration-300", className)}
-            style={{ filter: 'url(#sigil-glow-bespoke)' }}
+            style={{ filter: 'url(#sigil-glow-sentinel)' }}
             {...props}
         >
-            {sigilGlowFilter("sigil-glow-bespoke", 3)}
-            <path d="M10 50 L50 10 L90 50 L50 90 Z" />
-            <path d="M30 50 L50 30 L70 50 L50 70 Z" />
+            {sigilGlowFilter("sigil-glow-sentinel", 4)}
+            {/* Main shield shape */}
+            <path d="M50 2 L98 25 V60 C98 85, 75 98, 50 98 C25 98, 2 85, 2 60 V25 Z" strokeWidth="2" />
+            {/* Inner shield layers - representing defense in depth */}
+            <path d="M50 12 L88 32 V60 C88 80, 70 90, 50 90 C30 90, 12 80, 12 60 V32 Z" opacity="0.7" />
+            {/* Central keyhole/gate - representing protection and access control */}
+            <circle cx="50" cy="50" r="12" />
+            <path d="M50 62 L50 75" />
         </svg>
     );
 }
