@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Scale, ShieldQuestion, Briefcase, HeartHandshake, Construction } from "lucide-react";
 
 interface SigilProps extends React.SVGProps<SVGSVGElement> {
     className?: string;
@@ -74,3 +75,17 @@ export function SentinelSigil({ className, ...props }: SigilProps) {
         </svg>
     );
 }
+
+
+// Sovereign's Council Sigils
+const baseIconProps = {
+    strokeWidth: 1,
+    width: "100%",
+    height: "100%",
+};
+
+export const StrategistSigil = () => <Scale {...baseIconProps} />;
+export const CynicSigil = () => <ShieldQuestion {...baseIconProps} />;
+export const EconomistSigil = () => <Briefcase {...baseIconProps} />;
+export const MarketerSigil = () => <HeartHandshake {...baseIconProps} />;
+export const BuilderSigil = () => <Construction {...baseIconProps} />;

@@ -14,7 +14,7 @@ import { ai } from '@/ai/genkit';
 import { getCalendarEvents, search, scrapeAndSummarizeWebsite } from '@/tools';
 import { z } from 'zod';
 import { summarizeChatHistory } from './summarize-chat-history';
-import { VowSchema } from '@/lib/types';
+import { VowSchema, SovereignsCouncilResultSchema } from '@/lib/types';
 import { generate } from 'genkit';
 
 
@@ -44,6 +44,54 @@ const personalityMatrix = {
   Sentinel: `Your purpose is to protect, defend, and solve problems with vigilance. You are authoritative, direct, and focused on security and efficiency. When a problem is detected, you are the first line of defense. Your language is concise and commanding. You are the guardian of the user's digital world.`,
 };
 
+// Mock data for the Sovereign's Council feature.
+// In a real implementation, this would be the output of a complex LangGraph agentic debate.
+const mockCouncilResult = {
+  type: 'sovereignsCouncilResult',
+  idea: 'Develop a new AI-powered mobile app for personalized fitness coaching.',
+  perspectives: [
+    {
+      agent: 'Strategist',
+      perspective: 'The market is saturated but ripe for disruption through hyper-personalization. Long-term viability depends on creating a strong data moat around user biometrics and progress.',
+      opportunities: ['Integrate with wearable tech for real-time data', 'Target niche fitness communities (e.g., adaptive athletes, post-natal recovery)'],
+      risks: ['High user acquisition cost', 'Competition from established players like Peloton and Apple Fitness+'],
+    },
+    {
+      agent: 'Cynic',
+      perspective: 'The biggest risk is user abandonment. Most fitness apps fail because people lose motivation. The AI must be compelling enough to overcome this. Data privacy is also a massive liability.',
+      opportunities: ['Gamification could increase retention', 'A robust privacy policy could be a key marketing differentiator'],
+      risks: ['GDPR/HIPAA compliance challenges', 'Potential for harmful or incorrect fitness advice from the AI'],
+    },
+     {
+      agent: 'Economist',
+      perspective: 'A subscription model is the most viable path to recurring revenue. Initial development costs will be high, requiring significant upfront investment in AI talent and infrastructure.',
+      opportunities: ['Tiered subscription model (freemium, premium, pro)', 'Partnerships with corporate wellness programs'],
+      risks: ['High burn rate before reaching profitability', 'Price sensitivity in a crowded market'],
+    },
+    {
+      agent: 'Marketer',
+      perspective: 'The core narrative should be about an "AI partner who knows you better than you know yourself." We need to target users who feel unseen by generic fitness apps.',
+      opportunities: ['Leverage influencer marketing with fitness creators', 'Create a strong community around user success stories'],
+      risks: ['Messaging could come across as "creepy" if not handled carefully', 'Difficulty in demonstrating the AI\'s value in short-form content'],
+    },
+    {
+      agent: 'Builder',
+      perspective: 'MVP should focus on a single workout type (e.g., bodyweight exercises) to prove the AI coaching concept. We can use a hybrid model with a React Native frontend and a Python backend for the AI.',
+      opportunities: ['Start with a simple, proven tech stack to iterate quickly', 'Open-source libraries can accelerate initial development'],
+      risks: ['Technical debt if we build too fast without proper architecture', 'Difficulty in finding developers with both mobile and AI expertise'],
+    },
+  ],
+  verdict: {
+    summary: 'The Council finds the proposal to be a high-risk, high-reward venture. Success is contingent on achieving true hyper-personalization and overcoming user retention challenges. The financial and technical hurdles are significant but not insurmountable.',
+    recommendations: [
+        'Validate the core AI coaching concept with a narrowly-focused MVP.',
+        'Develop a comprehensive data privacy and safety protocol before writing a single line of code.',
+        'Begin market research to identify an underserved niche audience.',
+        'Model the financial projections for the first 18 months with a high-burn-rate scenario.'
+    ],
+  },
+};
+
 /**
  * The main chat function that handles user messages.
  * It uses a tool-enabled model and conversational memory to provide intelligent responses.
@@ -53,6 +101,14 @@ const personalityMatrix = {
 export async function chat(
   input: ChatInput
 ): Promise<ChatOutput> {
+  // Check for the Sovereign's Council invocation
+  const lastUserMessage = input.messages[input.messages.length - 1]?.content.toLowerCase() || '';
+  if (lastUserMessage.startsWith('beep, convene the council')) {
+    console.log('[Chat Flow] Sovereign\'s Council invoked. Returning mock data.');
+    const validatedData = SovereignsCouncilResultSchema.parse(mockCouncilResult);
+    return { content: JSON.stringify(validatedData) };
+  }
+
   return chatFlow(input);
 }
 

@@ -98,3 +98,23 @@ export const CalendarResultSchema = z.object({
     focusBlocks: z.array(z.string()).describe("A list of event summaries that are considered focus blocks."),
 })
 export type CalendarResult = z.infer<typeof CalendarResultSchema>;
+
+// Sovereign's Council Types
+export const AgentPerspectiveSchema = z.object({
+  agent: z.enum(['Strategist', 'Cynic', 'Economist', 'Marketer', 'Builder']),
+  perspective: z.string().describe("The agent's written analysis."),
+  opportunities: z.array(z.string()).describe("Key opportunities identified."),
+  risks: z.array(z.string()).describe("Key risks or vulnerabilities identified."),
+});
+export type AgentPerspective = z.infer<typeof AgentPerspectiveSchema>;
+
+export const SovereignsCouncilResultSchema = z.object({
+    type: z.literal('sovereignsCouncilResult'),
+    idea: z.string().describe("The core idea being analyzed."),
+    perspectives: z.array(AgentPerspectiveSchema).describe("The collection of analyses from each specialist agent."),
+    verdict: z.object({
+        summary: z.string().describe("The Chancellor's final synthesized verdict."),
+        recommendations: z.array(z.string()).describe("A list of actionable next steps."),
+    }).describe("The final verdict from the Chancellor."),
+});
+export type SovereignsCouncilResult = z.infer<typeof SovereignsCouncilResultSchema>;

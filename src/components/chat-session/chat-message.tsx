@@ -7,7 +7,8 @@ import { ChatAvatar } from '@/components/chat-session/chat-avatar';
 import { useAppStore } from '@/hooks/use-app-store';
 import { SearchResult } from '../search-result';
 import { CalendarResult } from '../calendar-result';
-import type { SearchResults, CalendarResult as CalendarResultType } from '@/lib/types';
+import { SovereignsCouncil } from '../sovereigns-council';
+import type { SearchResults, CalendarResult as CalendarResultType, SovereignsCouncilResult } from '@/lib/types';
 
 /**
  * Props for the ChatMessage component.
@@ -75,6 +76,8 @@ export function ChatMessage({ message, isFocused, isDimmed, vow }: ChatMessagePr
           return <SearchResult results={(richContent as SearchResults).results} />;
         case 'calendarResults':
           return <CalendarResult data={(richContent as CalendarResultType)} />;
+        case 'sovereignsCouncilResult':
+            return <SovereignsCouncil data={(richContent as SovereignsCouncilResult)} />;
         default:
           // Fallback for unknown rich content types
           return (
@@ -101,7 +104,7 @@ export function ChatMessage({ message, isFocused, isDimmed, vow }: ChatMessagePr
       {role === 'assistant' && <ChatAvatar role="assistant" vow={vow} />}
       <div
         className={cn(
-          'p-4 rounded-lg max-w-sm md:max-w-lg lg:max-w-3xl break-words cursor-pointer',
+          'p-4 rounded-lg max-w-sm md:max-w-lg lg:max-w-4xl break-words cursor-pointer',
           'glassmorphism',
            isFocused && 'ring-2 ring-primary ring-offset-2 ring-offset-background',
            richContent ? 'p-0' : 'p-4' 
