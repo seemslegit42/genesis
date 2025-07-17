@@ -149,7 +149,7 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'float': 'float 6s ease-in-out infinite',
+        'float': 'var(--obelisk-animation, float 6s ease-in-out infinite)',
         'float-in': 'float-in 0.8s ease-out',
         'cipher-scroll': 'cipher-scroll 30s linear infinite',
       },

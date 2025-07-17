@@ -49,8 +49,8 @@ export function Obelisk({ isAiResponding, cipherStream }: ObeliskProps) {
       }
       const { clientX, clientY } = event;
       const { innerWidth, innerHeight } = window;
-      const rotateY = (clientX / innerWidth - 0.5) * 20; // Max rotation 10deg
-      const rotateX = (0.5 - clientY / innerHeight) * 20; // Max rotation 10deg
+      const rotateY = (clientX / innerWidth - 0.5) * 30; // Increased rotation for more effect
+      const rotateX = (0.5 - clientY / innerHeight) * 30; // Increased rotation for more effect
       setTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`);
     };
 
@@ -64,9 +64,9 @@ export function Obelisk({ isAiResponding, cipherStream }: ObeliskProps) {
   const cipherContent = (
       <div key={key} className="absolute inset-0 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
         <div className="absolute bottom-0 left-0 w-full animate-cipher-scroll flex flex-col items-center text-center">
-            {cipherStream.slice().reverse().map((line, index) => (
+            {cipherStream.slice(-10).reverse().map((line, index) => (
                 <p key={index} className="font-mono text-primary/60 text-sm py-2 leading-tight tracking-wider" style={{ textShadow: '0 0 5px hsl(var(--primary)/0.7)'}}>
-                    {line}
+                    {line.substring(0, 50)}
                 </p>
             ))}
         </div>
