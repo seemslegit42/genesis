@@ -1,3 +1,4 @@
+
 /**
  * @fileoverview Defines a 'search' tool that the AI can use to look up information.
  * This is a foundational tool for the "BEEP as Task Architect" feature, allowing the

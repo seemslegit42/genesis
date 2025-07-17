@@ -1,4 +1,5 @@
 
+'use client';
 
 import type { Message, Vow } from '@/lib/types';
 import { cn } from '@/lib/utils';

@@ -1,3 +1,4 @@
+
 /**
  * @fileoverview This file centralizes all search-related type definitions for the application,
  * creating a single source of truth for our search data structures.

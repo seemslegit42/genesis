@@ -1,3 +1,4 @@
+
 import type { SearchResults } from '@/lib/search-types';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Globe } from 'lucide-react';

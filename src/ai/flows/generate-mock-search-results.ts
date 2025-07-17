@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Generates realistic mock search results for a given query.
