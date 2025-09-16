@@ -50,7 +50,7 @@
     "genkit": "~1.12.0",
     "lucide": "^0.525.0",
     "lucide-react": "^0.417.0",
-    "next": "15.3.3",
+    "next": "14.2.32",
     "patch-package": "^8.0.0",
     "react": "18.3.1",
     "react-day-picker": "^8.10.1",
